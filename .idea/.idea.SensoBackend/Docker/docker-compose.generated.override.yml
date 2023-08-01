@@ -1,0 +1,20 @@
+# This is a generated file. Not intended for manual editing.
+version: "3.8"
+services:
+  sensobackend:
+    build:
+      context: "D:\\Code\\SensoBackend"
+      dockerfile: "SensoBackend/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net7.0/SensoBackend.dll"
+    environment: {}
+    image: "sensobackend:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\Kuba\\AppData\\Roaming\\ASP.NET\\Https:/root/.aspnet/https"
+    - "C:\\Users\\Kuba\\AppData\\Roaming\\Microsoft\\UserSecrets:/root/.microsoft/usersecrets"
+    - "D:\\Code\\SensoBackend\\SensoBackend:/app:rw"
+    working_dir: "/app"

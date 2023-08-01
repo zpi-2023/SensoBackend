@@ -1,0 +1,41 @@
+﻿version: "3.8"
+networks:
+  dev:
+    driver: bridge
+    
+services:
+  sensobackend:
+    image: sensobackend
+    depends_on:
+      - "sensobackend_database"
+    container_name: sensobackend-services
+    ports:
+      - "8088:80"
+    build:
+      context: .
+      dockerfile: SensoBackend/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=sensobackend_database;Port=5432;Database=SensoBackendDb;IntegratedSecurity=true;Pooling=true
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - dev
+        
+  sensobackend_database:
+    image: postgres:latest
+    container_name: sensobackend_database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=SensoBackendDb
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - "sensobackend_data:/var/lib/postgresql/data"
+    networks: 
+      - dev
+  
+volumes:
+  sensobackend_data:
+    
