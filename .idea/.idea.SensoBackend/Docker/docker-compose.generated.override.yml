@@ -10,8 +10,7 @@ services:
     entrypoint:
     - "dotnet"
     - "/app/bin/Debug/net7.0/SensoBackend.dll"
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
+    environment: {}
     image: "sensobackend:dev"
     ports: []
     volumes:
