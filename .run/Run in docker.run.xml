@@ -7,6 +7,8 @@
       </settings>
     </deployment>
     <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="true" />
-    <method v="2" />
+    <method v="2">
+      <option name="LaunchBrowser.Before.Run" url="https://localhost:8088/swagger" />
+    </method>
   </configuration>
 </component>

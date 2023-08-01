@@ -3,7 +3,7 @@ version: "3.8"
 services:
   sensobackend:
     build:
-      context: "D:\\Code\\xd\\SensoBackend"
+      context: "D:\\Code\\SensoBackend"
       dockerfile: "SensoBackend/Dockerfile"
       target: "base"
     command: []
@@ -17,5 +17,5 @@ services:
     volumes:
     - "C:\\Users\\Kuba\\AppData\\Roaming\\ASP.NET\\Https:/root/.aspnet/https"
     - "C:\\Users\\Kuba\\AppData\\Roaming\\Microsoft\\UserSecrets:/root/.microsoft/usersecrets"
-    - "D:\\Code\\xd\\SensoBackend\\SensoBackend:/app:rw"
+    - "D:\\Code\\SensoBackend\\SensoBackend:/app:rw"
     working_dir: "/app"
