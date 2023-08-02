@@ -10,11 +10,16 @@ services:
     entrypoint:
     - "dotnet"
     - "/app/bin/Debug/net7.0/SensoBackend.dll"
-    environment: {}
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      NUGET_PACKAGES: "C:\\Users\\Kuba\\.nuget\\packages"
+      NUGET_FALLBACK_PACKAGES: "C:\\Users\\Kuba\\.nuget\\packages"
     image: "sensobackend:dev"
     ports: []
     volumes:
-    - "C:\\Users\\Kuba\\AppData\\Roaming\\ASP.NET\\Https:/root/.aspnet/https"
     - "C:\\Users\\Kuba\\AppData\\Roaming\\Microsoft\\UserSecrets:/root/.microsoft/usersecrets"
+    - "C:\\Users\\Kuba\\AppData\\Roaming\\ASP.NET\\Https:/root/.aspnet/https"
+    - "C:\\Users\\Kuba\\.nuget\\packages:/root/.nuget/fallbackpackages"
     - "D:\\Code\\SensoBackend\\SensoBackend:/app:rw"
+    - "D:\\Code\\SensoBackend:/src:rw"
     working_dir: "/app"

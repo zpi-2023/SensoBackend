@@ -10,10 +10,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 // Configure database
 var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(dbConnectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dbConnectionString));
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// I'm not sure this will work as I think it will xD 
+// I'm not sure this will work as I think it will xD
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
