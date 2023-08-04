@@ -18,6 +18,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("GET: GetAll");
@@ -26,6 +27,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(CreateUserDto newUser)
     {
         _logger.LogInformation("POST: Create");

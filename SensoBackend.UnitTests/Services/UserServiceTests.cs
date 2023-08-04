@@ -35,7 +35,7 @@ public class UserServiceTests
         var users = sut.GetAll();
 
         Assert.NotNull(users);
-        Assert.Equal(2, users.Count());
+        Assert.Equal(GetUsersList().Count(), users.Count());
     }
 
     [Fact]

@@ -32,11 +32,6 @@
 
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-
-    <ItemGroup>
       <ProjectReference Include="..\SensoBackend\SensoBackend.csproj" />
     </ItemGroup>
 
