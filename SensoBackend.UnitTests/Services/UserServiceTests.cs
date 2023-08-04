@@ -29,7 +29,7 @@ public class UserServiceTests
     [Fact]
     private void GetAll_ShouldReturnAllUsers()
     {
-        _appDbContextMock.Setup(x => x.Users).ReturnsDbSet(GetUsersList());
+        _appDbContextMock.Setup(db => db.Users).ReturnsDbSet(GetUsersList());
 
         var sut = CreateSut();
         var users = sut.GetAll();
@@ -41,12 +41,26 @@ public class UserServiceTests
     [Fact]
     private void GetAll_ShouldReturnEmptyWhenNoUsers()
     {
-        _appDbContextMock.Setup(x => x.Users).ReturnsDbSet(new List<User>());
+        _appDbContextMock.Setup(db => db.Users).ReturnsDbSet(new List<User>());
 
         var sut = CreateSut();
         var users = sut.GetAll();
 
         Assert.NotNull(users);
         Assert.Empty(users);
+    }
+
+    [Fact]
+    private void Create_ShouldCreateUserAndReturnTrue()
+    {
+        _appDbContextMock.Setup(db => db.Users.Add(It.IsAny<User>()));
+        _appDbContextMock.Setup(db => db.SaveChanges());
+
+        var sut = CreateSut();
+        var newUser = new CreateUserDto { Name = "Bernadetta Maleszka" };
+        var result = sut.Create(newUser);
+
+        Assert.True(result);
+        _appDbContextMock.Verify(db => db.Users.Add(It.IsAny<User>()), Times.Exactly(1));
     }
 }
