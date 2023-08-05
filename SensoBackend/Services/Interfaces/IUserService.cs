@@ -4,6 +4,6 @@ namespace SensoBackend.Services;
 
 public interface IUserService
 {
-    IEnumerable<UserDto> GetAll();
+    IList<UserDto> GetAll();
     bool Create(CreateUserDto newUser);
 }

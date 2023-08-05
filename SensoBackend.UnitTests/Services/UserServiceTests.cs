@@ -1,7 +1,4 @@
-﻿using Mapster;
-using Moq;
-using Moq.EntityFrameworkCore;
-using SensoBackend.Contracts.User;
+﻿using SensoBackend.Contracts.User;
 using SensoBackend.Data;
 using SensoBackend.Models;
 using SensoBackend.Services;
@@ -17,7 +14,7 @@ public class UserServiceTests
         return new UserService(_appDbContextMock.Object);
     }
 
-    private static IEnumerable<User> GetUsersList()
+    private static IList<User> GetUsersList()
     {
         return new List<User>
         {
@@ -34,8 +31,8 @@ public class UserServiceTests
         var sut = CreateSut();
         var users = sut.GetAll();
 
-        Assert.NotNull(users);
-        Assert.Equal(GetUsersList().Count(), users.Count());
+        users.Should().NotBeNull();
+        users.Should().HaveCount(GetUsersList().Count);
     }
 
     [Fact]
@@ -46,8 +43,8 @@ public class UserServiceTests
         var sut = CreateSut();
         var users = sut.GetAll();
 
-        Assert.NotNull(users);
-        Assert.Empty(users);
+        users.Should().NotBeNull();
+        users.Should().BeEmpty();
     }
 
     [Fact]
@@ -60,7 +57,8 @@ public class UserServiceTests
         var newUser = new CreateUserDto { Name = "Bernadetta Maleszka" };
         var result = sut.Create(newUser);
 
-        Assert.True(result);
+        result.Should().BeTrue();
         _appDbContextMock.Verify(db => db.Users.Add(It.IsAny<User>()), Times.Exactly(1));
+        _appDbContextMock.Verify(db => db.SaveChanges(), Times.Exactly(1));
     }
 }

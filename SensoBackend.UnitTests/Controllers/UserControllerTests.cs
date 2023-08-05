@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SensoBackend.Contracts.User;
 using SensoBackend.Controllers;
 using SensoBackend.Services;
@@ -9,10 +8,6 @@ namespace SensoBackend.Tests.Controllers;
 
 public class UserControllerTests
 {
-    // Ważna kwestia do przemyślenia:
-    // Czy mockujemy logger
-    // Czy wstawiamy legitny logger, który pozwoli na analizę logów z testów
-    // To oczywiście zakłada, że będziemy tworzyć sensowne logi :)
     private readonly Mock<ILogger<UserController>> _loggerMock = new();
     private readonly Mock<IUserService> _userServiceMock = new();
 
@@ -21,7 +16,7 @@ public class UserControllerTests
         return new UserController(_loggerMock.Object, _userServiceMock.Object);
     }
 
-    private static IEnumerable<UserDto> GetUsersDtosList()
+    private static IList<UserDto> GetUsersDtosList()
     {
         return new List<UserDto>
         {
@@ -38,14 +33,15 @@ public class UserControllerTests
         var sut = CreateSut();
         var actionResult = sut.GetAll();
 
-        Assert.NotNull(actionResult.Result);
-        Assert.Equal(typeof(OkObjectResult), actionResult.Result.GetType());
-
+        actionResult.Result.Should().NotBeNull();
+        actionResult.Result.Should().BeOfType<OkObjectResult>();
         var result = actionResult.Result as OkObjectResult;
-        var returnUsers = result!.Value as IEnumerable<UserDto>;
 
-        Assert.NotNull(returnUsers);
-        Assert.Equal(GetUsersDtosList().Count(), returnUsers.Count());
+        result!.Value.Should().BeOfType<List<UserDto>>();
+        var returnUsers = result.Value as List<UserDto>;
+
+        returnUsers.Should().NotBeNull();
+        returnUsers.Should().HaveCount(GetUsersDtosList().Count);
     }
 
     [Fact]
@@ -57,8 +53,8 @@ public class UserControllerTests
         var newUser = new CreateUserDto { Name = "Bernadetta Maleszka" };
         var actionResult = sut.Create(newUser);
 
-        Assert.NotNull(actionResult.Result);
-        Assert.Equal(typeof(NoContentResult), actionResult.Result.GetType());
+        actionResult.Result.Should().NotBeNull();
+        actionResult.Result.Should().BeOfType<NoContentResult>();
     }
 
     [Fact]
@@ -70,7 +66,7 @@ public class UserControllerTests
         var newUser = new CreateUserDto { Name = "Bernadetta Maleszka" };
         var actionResult = sut.Create(newUser);
 
-        Assert.NotNull(actionResult.Result);
-        Assert.Equal(typeof(BadRequestResult), actionResult.Result.GetType());
+        actionResult.Result.Should().NotBeNull();
+        actionResult.Result.Should().BeOfType<BadRequestResult>();
     }
 }
