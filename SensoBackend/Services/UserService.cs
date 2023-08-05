@@ -14,9 +14,9 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public IEnumerable<UserDto> GetAll()
+    public IList<UserDto> GetAll()
     {
-        return _context.Users.Adapt<IEnumerable<UserDto>>();
+        return _context.Users.Adapt<IList<UserDto>>();
     }
 
     public bool Create(CreateUserDto newUser)

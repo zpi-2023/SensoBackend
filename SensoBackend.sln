@@ -6,7 +6,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 		README.md = README.md
+		.gitignore = .gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensoBackend.UnitTests", "SensoBackend.UnitTests\SensoBackend.UnitTests.csproj", "{BA7FFD40-1430-47AA-A850-999653CFC55C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +21,9 @@ Global
 		{FE3FC04F-89E9-4946-8145-AE0024F72E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE3FC04F-89E9-4946-8145-AE0024F72E53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE3FC04F-89E9-4946-8145-AE0024F72E53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA7FFD40-1430-47AA-A850-999653CFC55C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA7FFD40-1430-47AA-A850-999653CFC55C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA7FFD40-1430-47AA-A850-999653CFC55C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA7FFD40-1430-47AA-A850-999653CFC55C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
