@@ -1,4 +1,4 @@
-<div style="display: grid; place-items: center; text-align: center;">
+<div align=center style="display: grid; place-items: center;">
 <p>
     <img src="./docs/Senso.png" height="128" alt="Senso logo">
 </p>
