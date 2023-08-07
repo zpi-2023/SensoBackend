@@ -50,5 +50,5 @@ jobs:
         with:
           name: UnitTests-Results
           path: UnitTestsResults
-        if: ${{ always() }} # Always when there are test failures
+        if: ${{ always() }}
         
