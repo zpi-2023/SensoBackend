@@ -22,4 +22,17 @@ public class TokenController : ControllerBase
     // Login integration with Google?
     // What should be in db table?
     // Its mobile app, how long should be token valid?
+
+    // DB columns ideas:
+    // id: int
+    // active: bool
+    // verified: bool
+    // email: string
+    // created: Date
+    // last_login: Date
+    // login: string
+    // password: string
+    // last_password_change: string
+    // phone_number: string ???? should we verify phone number? is it overkill?
+    // display_name: string -> should it be here? or in other table? this table should be only for log in correlated things
 }
