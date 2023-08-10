@@ -11,4 +11,8 @@ public class AppDbContext : DbContext
         : base(options) { }
 
     public virtual DbSet<User> Users => Set<User>();
+<<<<<<< HEAD:SensoBackend/Infrastructure/Data/AppDbContext.cs
+=======
+    public virtual DbSet<Account> Accounts => Set<Account>();
+>>>>>>> 51c84df (add account model and jwt options):SensoBackend/Data/AppDbContext.cs
 }
