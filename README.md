@@ -50,23 +50,24 @@ Make sure you are using http instead of https.
 3. Ensure you are using the the correct .NET version: `dotnet --version`
 4. Ensure you are using up-to-date dependencies: `dotnet restore`
 5. Ensure you are using up-to-date tools: `dotnet tool restore`
-6. Develop your feature
+6. Ensure you installed husky: `dotnet husky install`
+7. Develop your feature
     - Move your task to the **"In Progress"** column
     - Make sure to add test coverage whenever possible
     - Check that you did not violate any conventions with `dotnet csharpier --check .`
     - Make sure that all tests are passing with `dotnet test`
     - Make sure that db diagram in README is up-to-date
-7. Commit your changes
+8. Commit your changes
     - Husky.Net should ensure that your commit does not violate any coding conventions
     - Feel free to add multiple commits to your feature, they will get squashed anyway
-8. Create a PR
+9. Create a PR
     - Move your task to the **"In Review"** column
     - Notify the team that your change is pending review
     - Feel free to create the PR before finishing and include "DRAFT" in its name
-9. Make sure your PR is ready to merge
+10. Make sure your PR is ready to merge
     - **Wait for at least one review from another team member**
     - Wait for all CI actions to pass successfully
-10. Squash and merge! 🚀
+11. Squash and merge! 🚀
 
 ## Current DB Diagram
 ```mermaid
