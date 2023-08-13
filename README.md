@@ -14,10 +14,13 @@
 </div>
 
 ## Requirements
+
 ### Launching the project
+
 - Docker
 
 ### Developing the project
+
 - C# 11
 - .NET 7.0
 - PostgreSQL 15
@@ -27,8 +30,8 @@
 `dotnet restore`  
 `dotnet tool restore`
 
-
 ## Getting started
+
 1. Clone repository  
 `git clone git@github.com:zpi-2023/SensoBackend.git`  
 `cd SensoBackend`
@@ -39,6 +42,7 @@
 Make sure you are using http instead of https.
 
 ## Delivering features in this repository
+>
 > ⚠️ The following description is extended to include all common troubleshooting steps. Feel free to skip some steps if you know what you are doing.
 
 1. **Assign yourself** to an issue in this repository
@@ -70,6 +74,7 @@ Make sure you are using http instead of https.
 11. Squash and merge! 🚀
 
 ## Current DB Diagram
+
 ```mermaid
 erDiagram
     User {
