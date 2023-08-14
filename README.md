@@ -77,8 +77,22 @@ Make sure you are using http instead of https.
 
 ```mermaid
 erDiagram
-    User {
+    Users {
         int Id 
         string Name 
+    }
+
+    Accounts {
+        int Id
+        string Email
+        string Login
+        string Password
+        bool Active
+        bool Verified
+        string PhoneNumber
+        string DisplayName
+        Date CreatedAt
+        Date LastLoginAt
+        Date LastPasswordChangeAt
     }
 ```
