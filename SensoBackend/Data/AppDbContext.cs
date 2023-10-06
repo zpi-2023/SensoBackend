@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SensoBackend.Models;
+using SensoBackend.Domain.Entities;
 
 namespace SensoBackend.Data;
 

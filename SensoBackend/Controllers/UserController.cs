@@ -1,20 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SensoBackend.Contracts.User;
-using SensoBackend.Services;
+using Mapster;
+using MediatR;
+using SensoBackend.Application.Users.Contracts;
+using SensoBackend.Application.Users.CreateUser;
+using SensoBackend.Application.Users.GetUsers;
 
 namespace SensoBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public sealed class UserController : ControllerBase
 {
+    private readonly IMediator _mediator;
     private readonly ILogger<UserController> _logger;
-    private readonly IUserService _service;
 
-    public UserController(ILogger<UserController> logger, IUserService service)
+    public UserController(ILogger<UserController> logger, IMediator mediator)
     {
         _logger = logger;
-        _service = service;
+        _mediator = mediator;
     }
 
     [HttpGet]
@@ -22,17 +25,18 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("GET: GetAll");
-        var users = _service.GetAll();
+        var users = await _mediator.Send(new GetUsersRequest());
         return Ok(users);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create(CreateUserDto newUser)
+    public async Task<IActionResult> Create(CreateUserDto dto)
     {
         _logger.LogInformation("POST: Create");
-        var result = _service.Create(newUser);
-        return result ? NoContent() : BadRequest();
+        await _mediator.Send(dto.Adapt<CreateUserRequest>());
+        // TODO: Handle bad request
+        return NoContent();
     }
 }

@@ -8,7 +8,10 @@
     <UserSecretsId>68727e10-3436-4517-9c06-77faec4b581f</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Mapster" Version="7.3.0" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

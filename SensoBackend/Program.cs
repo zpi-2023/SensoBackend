@@ -1,11 +1,15 @@
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using FluentValidation;
 using SensoBackend.Data;
-using SensoBackend.Services;
+using SensoBackend.Application.Users.CreateUser;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+builder.Services.AddTransient<IValidator<CreateUserRequest>, CreateUserValidator>();
 
 // Configure database
 var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
