@@ -27,7 +27,11 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
         if (!_validators.Any())
             return next();
 
-        _logger.LogInformation("Validating {}...", typeof(TRequest).Name);
+        _logger.LogInformation(
+            "Validating {} with {} validator(s)...",
+            typeof(TRequest).Name,
+            _validators.Count()
+        );
 
         var context = new ValidationContext<TRequest>(request);
         var failures = _validators
