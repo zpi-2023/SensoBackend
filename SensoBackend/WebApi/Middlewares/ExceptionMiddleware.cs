@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace SensoBackend.Application.Middlewares;
+namespace SensoBackend.WebApi.Middlewares;
 
 public sealed class ExceptionMiddleware
 {

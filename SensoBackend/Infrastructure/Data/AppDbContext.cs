@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SensoBackend.Domain.Entities;
 
-namespace SensoBackend.Data;
+namespace SensoBackend.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {

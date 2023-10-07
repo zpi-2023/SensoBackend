@@ -3,7 +3,7 @@ using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Users.Contracts;
-using SensoBackend.Data;
+using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Users.GetUsers;
 

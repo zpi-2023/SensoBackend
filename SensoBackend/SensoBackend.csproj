@@ -26,8 +26,4 @@
       <Link>.dockerignore</Link>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Application\Modules\" />
-    <Folder Include="Migrations\" />
-  </ItemGroup>
 </Project>

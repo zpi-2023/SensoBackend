@@ -1,8 +1,8 @@
 using JetBrains.Annotations;
 using Mapster;
 using MediatR;
-using SensoBackend.Data;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Users.CreateUser;
 

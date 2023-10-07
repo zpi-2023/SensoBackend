@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MediatR;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Users.Contracts;
 using SensoBackend.Application.Modules.Users.CreateUser;
 using SensoBackend.Application.Modules.Users.GetUsers;
 
-namespace SensoBackend.Controllers;
+namespace SensoBackend.WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -20,7 +20,7 @@ public sealed class UserController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<UserDto>))]
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("GET: GetAll");
