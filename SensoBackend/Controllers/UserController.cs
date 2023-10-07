@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Mapster;
 using MediatR;
 using SensoBackend.Application.Modules.Users.Contracts;
 using SensoBackend.Application.Modules.Users.CreateUser;
@@ -25,9 +24,7 @@ public sealed class UserController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("GET: GetAll");
-        var response = await _mediator.Send(new GetUsersRequest());
-        var users = response.Adapt<IList<UserDto>>();
-        return Ok(users);
+        return Ok(await _mediator.Send(new GetUsersRequest()));
     }
 
     [HttpPost]
@@ -36,7 +33,7 @@ public sealed class UserController : ControllerBase
     public async Task<IActionResult> Create(CreateUserDto dto)
     {
         _logger.LogInformation("POST: Create");
-        await _mediator.Send(dto.Adapt<CreateUserRequest>());
+        await _mediator.Send(new CreateUserRequest(dto));
         return NoContent();
     }
 }

@@ -1,6 +1,6 @@
 using MediatR;
-using SensoBackend.Domain.Entities;
+using SensoBackend.Application.Modules.Users.Contracts;
 
 namespace SensoBackend.Application.Modules.Users.GetUsers;
 
-public sealed record GetUsersRequest : IRequest<IList<User>>;
+public sealed record GetUsersRequest : IRequest<IList<UserDto>>;

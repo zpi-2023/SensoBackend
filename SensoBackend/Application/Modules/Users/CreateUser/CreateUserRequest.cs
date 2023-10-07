@@ -1,8 +1,6 @@
 using MediatR;
+using SensoBackend.Application.Modules.Users.Contracts;
 
 namespace SensoBackend.Application.Modules.Users.CreateUser;
 
-public sealed record CreateUserRequest : IRequest
-{
-    public required string Name { get; init; }
-}
+public sealed record CreateUserRequest(CreateUserDto Dto) : IRequest;

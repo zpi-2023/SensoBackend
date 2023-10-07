@@ -15,7 +15,7 @@ public sealed class CreateUserHandler : IRequestHandler<CreateUserRequest>
 
     public async Task Handle(CreateUserRequest request, CancellationToken ct)
     {
-        await _context.Users.AddAsync(request.Adapt<User>(), ct);
+        await _context.Users.AddAsync(request.Dto.Adapt<User>(), ct);
         await _context.SaveChangesAsync(ct);
     }
 }

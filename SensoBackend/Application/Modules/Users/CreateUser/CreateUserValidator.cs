@@ -8,6 +8,6 @@ public sealed class CreateUserValidator : AbstractValidator<CreateUserRequest>
 {
     public CreateUserValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
+        RuleFor(r => r.Dto.Name).NotEmpty().MaximumLength(50);
     }
 }
