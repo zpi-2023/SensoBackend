@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="MediatR" Version="12.1.1" />
@@ -26,6 +27,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Application\Modules\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

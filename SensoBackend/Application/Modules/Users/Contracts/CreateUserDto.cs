@@ -1,4 +1,4 @@
-namespace SensoBackend.Application.Users.Contracts;
+namespace SensoBackend.Application.Modules.Users.Contracts;
 
 public sealed record CreateUserDto
 {

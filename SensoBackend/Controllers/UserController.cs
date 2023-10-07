@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mapster;
 using MediatR;
-using SensoBackend.Application.Users.Contracts;
-using SensoBackend.Application.Users.CreateUser;
-using SensoBackend.Application.Users.GetUsers;
+using SensoBackend.Application.Modules.Users.Contracts;
+using SensoBackend.Application.Modules.Users.CreateUser;
+using SensoBackend.Application.Modules.Users.GetUsers;
 
 namespace SensoBackend.Controllers;
 
@@ -11,8 +11,8 @@ namespace SensoBackend.Controllers;
 [Route("[controller]")]
 public sealed class UserController : ControllerBase
 {
-    private readonly IMediator _mediator;
     private readonly ILogger<UserController> _logger;
+    private readonly IMediator _mediator;
 
     public UserController(ILogger<UserController> logger, IMediator mediator)
     {
@@ -25,7 +25,8 @@ public sealed class UserController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("GET: GetAll");
-        var users = await _mediator.Send(new GetUsersRequest());
+        var response = await _mediator.Send(new GetUsersRequest());
+        var users = response.Adapt<IList<UserDto>>();
         return Ok(users);
     }
 
@@ -36,7 +37,6 @@ public sealed class UserController : ControllerBase
     {
         _logger.LogInformation("POST: Create");
         await _mediator.Send(dto.Adapt<CreateUserRequest>());
-        // TODO: Handle bad request
         return NoContent();
     }
 }

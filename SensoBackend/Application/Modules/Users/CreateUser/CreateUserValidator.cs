@@ -1,7 +1,9 @@
 using FluentValidation;
+using JetBrains.Annotations;
 
-namespace SensoBackend.Application.Users.CreateUser;
+namespace SensoBackend.Application.Modules.Users.CreateUser;
 
+[UsedImplicitly]
 public sealed class CreateUserValidator : AbstractValidator<CreateUserRequest>
 {
     public CreateUserValidator()

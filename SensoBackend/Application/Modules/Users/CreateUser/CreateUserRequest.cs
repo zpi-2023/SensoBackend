@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace SensoBackend.Application.Users.CreateUser;
+namespace SensoBackend.Application.Modules.Users.CreateUser;
 
 public sealed record CreateUserRequest : IRequest
 {

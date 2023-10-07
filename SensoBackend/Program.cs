@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 using FluentValidation;
+using SensoBackend.Application.Behaviors;
+using SensoBackend.Application.Middlewares;
 using SensoBackend.Data;
-using SensoBackend.Application.Users.CreateUser;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-builder.Services.AddTransient<IValidator<CreateUserRequest>, CreateUserValidator>();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 // Configure database
 var dbConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -40,6 +42,8 @@ if (!app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Auto database migration
 using (var scope = app.Services.CreateScope())
