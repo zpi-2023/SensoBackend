@@ -2,37 +2,35 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using NSubstitute.ExceptionExtensions;
 using SensoBackend.WebApi.Middlewares;
 
 namespace SensoBackend.Tests.WebApi.Middlewares;
 
 public sealed class ExceptionMiddlewareTests
 {
-    private readonly Mock<RequestDelegate> _nextMock = new();
-    private readonly Mock<ILogger<ExceptionMiddleware>> _loggerMock = new();
+    private readonly RequestDelegate _next = Substitute.For<RequestDelegate>();
+    private readonly ILogger<ExceptionMiddleware> _logger = Substitute.For<
+        ILogger<ExceptionMiddleware>
+    >();
     private readonly ExceptionMiddleware _sut;
 
-    public ExceptionMiddlewareTests() =>
-        _sut = new ExceptionMiddleware(_nextMock.Object, _loggerMock.Object);
+    public ExceptionMiddlewareTests() => _sut = new ExceptionMiddleware(_next, _logger);
 
     [Fact]
     public async Task Invoke_ShouldCallNextDelegateInChain()
     {
-        _nextMock.Setup(s => s(It.IsAny<HttpContext>()));
-
         await _sut.Invoke(new DefaultHttpContext());
 
-        _nextMock.Verify(s => s(It.IsAny<HttpContext>()), Times.Once);
+        _next.ReceivedWithAnyArgs();
     }
 
     [Fact]
     public async Task Invoke_ShouldSetBadRequestStatusCode_WhenValidationErrorOccurred()
     {
-        _nextMock
-            .Setup(s => s(It.IsAny<HttpContext>()))
-            .ThrowsAsync(new ValidationException(new List<ValidationFailure>()));
-
         var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new ValidationException(new List<ValidationFailure>()));
+
         await _sut.Invoke(context);
 
         context.Response.StatusCode.Should().Be(400);
@@ -41,9 +39,9 @@ public sealed class ExceptionMiddlewareTests
     [Fact]
     public async Task Invoke_ShouldSetInternalErrorStatusCode_WhenUnknownErrorOccurred()
     {
-        _nextMock.Setup(s => s(It.IsAny<HttpContext>())).ThrowsAsync(new Exception());
-
         var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new Exception());
+
         await _sut.Invoke(context);
 
         context.Response.StatusCode.Should().Be(500);
