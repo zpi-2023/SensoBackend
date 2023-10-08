@@ -16,7 +16,9 @@ public static class AppExtensions
             app.UseHttpsRedirection();
         }
 
+        app.UseAuthentication();
         app.UseAuthorization();
+
         app.MapControllers();
 
         app.UseMiddleware<ExceptionMiddleware>();

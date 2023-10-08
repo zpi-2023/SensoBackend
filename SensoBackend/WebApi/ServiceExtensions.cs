@@ -13,7 +13,7 @@ public static class ServiceExtensions
         services.AddSwaggerGen(options => options.SupportNonNullableReferenceTypes());
     }
 
-    public static void AddAuthenticationLayer(
+    public static void AddJWTAuthentication(
         this IServiceCollection services,
         IConfiguration configuration,
         IWebHostEnvironment environment
@@ -29,10 +29,12 @@ public static class ServiceExtensions
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     ValidAudience = configuration["Jwt:Audience"],
                     ValidIssuer = configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)
+                        Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]!)
                     )
                 };
             });
