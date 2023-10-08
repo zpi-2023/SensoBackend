@@ -7,6 +7,8 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Users.GetUsers;
 
+public sealed record GetUsersRequest : IRequest<IList<UserDto>>;
+
 [UsedImplicitly]
 public sealed class GetUsersHandler : IRequestHandler<GetUsersRequest, IList<UserDto>>
 {

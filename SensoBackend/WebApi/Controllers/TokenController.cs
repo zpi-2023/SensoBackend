@@ -9,6 +9,8 @@ public class TokenController : ControllerBase
     private readonly ILogger<TokenController> _logger;
     private readonly IConfiguration _configuration;
 
+    private static readonly TimeSpan TokenLifetime = TimeSpan.FromDays(7);
+
     public TokenController(ILogger<TokenController> logger, IConfiguration configuration)
     {
         _logger = logger;

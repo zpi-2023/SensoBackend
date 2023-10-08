@@ -6,8 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructureLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
-builder.Services.AddJWTAuthentication(builder.Configuration, builder.Environment);
-builder.Services.AddWebApiLayer();
+builder.Services.AddWebApiLayer(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 

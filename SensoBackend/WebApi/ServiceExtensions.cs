@@ -6,19 +6,16 @@ using Microsoft.IdentityModel.Tokens;
 
 public static class ServiceExtensions
 {
-    public static void AddWebApiLayer(this IServiceCollection services)
-    {
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options => options.SupportNonNullableReferenceTypes());
-    }
-
-    public static void AddJWTAuthentication(
+    public static void AddWebApiLayer(
         this IServiceCollection services,
         IConfiguration configuration,
         IWebHostEnvironment environment
     )
     {
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(options => options.SupportNonNullableReferenceTypes());
+
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -31,10 +28,10 @@ public static class ServiceExtensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidAudience = configuration["Jwt:Audience"],
-                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["JwtSettings:Audience"],
+                    ValidIssuer = configuration["JwtSettings:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]!)
+                        Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!)
                     )
                 };
             });

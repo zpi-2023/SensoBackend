@@ -2,22 +2,22 @@
 
 namespace SensoBackend.Domain.Entities;
 
-public class Account
+public sealed class Account
 {
     public required int Id { get; init; }
-    public required string Email { get; init; }
-    public required string Password { get; init; }
-    public required bool Active { get; init; }
-    public required bool Verified { get; init; }
-    public string? PhoneNumber { get; init; }
-    public string? DisplayName { get; init; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
+    public required bool Active { get; set; }
+    public required bool Verified { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? DisplayName { get; set; }
 
     [DataType(DataType.DateTime)]
-    public required DateTimeOffset CreatedAt { get; init; }
+    public required DateTimeOffset CreatedAt { get; set; }
 
     [DataType(DataType.DateTime)]
-    public required DateTimeOffset LastLoginAt { get; init; }
+    public required DateTimeOffset LastLoginAt { get; set; }
 
     [DataType(DataType.DateTime)]
-    public required DateTimeOffset LastPasswordChangeAt { get; init; }
+    public required DateTimeOffset LastPasswordChangeAt { get; set; }
 }
