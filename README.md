@@ -85,7 +85,6 @@ erDiagram
     Accounts {
         int Id
         string Email
-        string Login
         string Password
         bool Active
         bool Verified

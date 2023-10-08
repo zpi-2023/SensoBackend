@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SensoBackend.Models;
+namespace SensoBackend.Domain.Entities;
 
 public class Account
 {
     public required int Id { get; init; }
     public required string Email { get; init; }
-    public required string Login { get; init; }
     public required string Password { get; init; }
     public required bool Active { get; init; }
     public required bool Verified { get; init; }
