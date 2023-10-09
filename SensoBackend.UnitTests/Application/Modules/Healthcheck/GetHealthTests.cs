@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using SensoBackend.Application.Modules.Healthcheck;
 using SensoBackend.Application.Modules.Healthcheck.Contracts;
-using SensoBackend.Application.Modules.Healthcheck.GetHealth;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Tests.Application.Modules.Healthcheck.GetHealth;
+namespace SensoBackend.Tests.Application.Modules.Healthcheck;
 
-public sealed class GetHealthHandlerTests
+public sealed class GetHealthTests
 {
     private readonly DatabaseFacade _db;
     private readonly GetHealthHandler _sut;
 
-    public GetHealthHandlerTests()
+    public GetHealthTests()
     {
         var context = Substitute.For<AppDbContext>();
         _db = Substitute.For<DatabaseFacade>(context);

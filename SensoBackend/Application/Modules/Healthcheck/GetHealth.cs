@@ -3,7 +3,9 @@ using MediatR;
 using SensoBackend.Application.Modules.Healthcheck.Contracts;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Healthcheck.GetHealth;
+namespace SensoBackend.Application.Modules.Healthcheck;
+
+public sealed record GetHealthRequest : IRequest<HealthcheckDto>;
 
 [UsedImplicitly]
 public sealed class GetHealthHandler : IRequestHandler<GetHealthRequest, HealthcheckDto>

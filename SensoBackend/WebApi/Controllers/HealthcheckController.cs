@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SensoBackend.Application.Modules.Healthcheck;
 using SensoBackend.Application.Modules.Healthcheck.Contracts;
-using SensoBackend.Application.Modules.Healthcheck.GetHealth;
 
 namespace SensoBackend.WebApi.Controllers;
 
