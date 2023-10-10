@@ -2,6 +2,7 @@ using FluentValidation;
 using JetBrains.Annotations;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Infrastructure.Data;
@@ -25,6 +26,11 @@ public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
 
     public async Task Handle(CreateAccountRequest request, CancellationToken ct)
     {
+        if (await _context.Accounts.AnyAsync(a => a.Email == request.Dto.Email, ct))
+        {
+            throw new ValidationException("Email is already taken");
+        }
+
         var account = request.Dto.Adapt<Account>();
         account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
         account.CreatedAt = DateTime.UtcNow;

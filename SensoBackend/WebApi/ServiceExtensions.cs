@@ -1,18 +1,15 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+using SensoBackend.Application.Abstractions;
+using SensoBackend.WebApi.Authenticaion;
+using SensoBackend.WebApi.OptionsSetup;
 
 namespace SensoBackend.WebApi;
 
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-
 public static class ServiceExtensions
 {
-    public static void AddWebApiLayer(
-        this IServiceCollection services,
-        IConfiguration configuration,
-        IWebHostEnvironment environment
-    )
+    public static void AddWebApiLayer(this IServiceCollection services)
     {
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         services
@@ -22,26 +19,44 @@ public static class ServiceExtensions
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
             );
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options => options.SupportNonNullableReferenceTypes());
-
-        services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = !environment.IsDevelopment();
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters()
+        services.AddSwaggerGen(options =>
+        {
+            options.SupportNonNullableReferenceTypes();
+            options.AddSecurityDefinition(
+                "Bearer",
+                new OpenApiSecurityScheme()
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidAudience = configuration["JwtSettings:Audience"],
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!)
-                    )
-                };
-            });
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+                }
+            );
+            options.AddSecurityRequirement(
+                new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                }
+            );
+        });
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        services.ConfigureOptions<JwtOptionsSetup>();
+        services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+        services.AddTransient<IJwtProvider, JwtProvider>();
     }
 }
