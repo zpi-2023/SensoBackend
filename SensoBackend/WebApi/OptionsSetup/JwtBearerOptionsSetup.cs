@@ -6,13 +6,14 @@ using SensoBackend.WebApi.Authentication;
 
 namespace SensoBackend.WebApi.OptionsSetup;
 
-public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
+public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly JwtOptions _jwtOptions;
 
     public JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions) => _jwtOptions = jwtOptions.Value;
 
-    public void Configure(JwtBearerOptions options)
+    public void Configure(JwtBearerOptions options) => Configure(Options.DefaultName, options);
+    public void Configure(string? name, JwtBearerOptions options)
     {
         options.TokenValidationParameters = new()
         {
@@ -20,11 +21,11 @@ public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidAudience = _jwtOptions.Audience,
             ValidIssuer = _jwtOptions.Issuer,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)
             )
         };
+        options.Audience = _jwtOptions.Audience;
     }
 }

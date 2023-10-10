@@ -1,6 +1,4 @@
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.WebApi.Authenticaion;
 using SensoBackend.WebApi.OptionsSetup;
@@ -20,6 +18,7 @@ public static class ServiceExtensions
         services.ConfigureOptions<SwaggerGenOptionsSetup>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
         services.ConfigureOptions<JwtOptionsSetup>();
         services.ConfigureOptions<JwtBearerOptionsSetup>();
 
