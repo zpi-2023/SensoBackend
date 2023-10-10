@@ -10,7 +10,7 @@ public sealed class CreateUserValidatorTests
     [Fact]
     public void Validate_ShouldReturnValid_WhenRequestIsValid()
     {
-        var request = new CreateUserRequest(new CreateUserDto { Name = "Mariusz Fraś" });
+        var request = new CreateUserRequest(new CreateUserDto { Name = "Full Name" });
 
         var result = _sut.Validate(request);
 

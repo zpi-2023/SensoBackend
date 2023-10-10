@@ -2,34 +2,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SensoBackend.Application.Modules.Users.Contracts;
-using SensoBackend.Application.Modules.Users.CreateUser;
 using SensoBackend.Application.Modules.Users.GetUsers;
+using SensoBackend.Tests.Utils;
 using SensoBackend.WebApi.Controllers;
 
 namespace SensoBackend.Tests.WebApi.Controllers;
 
 public sealed class UserControllerTests
 {
-    private readonly Mock<ILogger<UserController>> _loggerMock = new();
-    private readonly Mock<IMediator> _mediatorMock = new();
+    private readonly ILogger<UserController> _logger = Substitute.For<ILogger<UserController>>();
+    private readonly IMediator _mediator = Substitute.For<IMediator>();
     private readonly UserController _sut;
 
-    public UserControllerTests() =>
-        _sut = new UserController(_loggerMock.Object, _mediatorMock.Object);
-
-    private static IList<UserDto> GetUsersDtoList() =>
-        new List<UserDto>
-        {
-            new() { Id = 0, Name = "Bernadetta Maleszka" },
-            new() { Id = 1, Name = "Mariusz Fraś" }
-        };
+    public UserControllerTests() => _sut = new UserController(_logger, _mediator);
 
     [Fact]
     public void GetAll_ShouldReturnOkWithAllUsers()
     {
-        _mediatorMock
-            .Setup(s => s.Send(It.IsAny<GetUsersRequest>(), default))
-            .ReturnsAsync(GetUsersDtoList());
+        const int count = 3;
+        _mediator.Send(Arg.Any<GetUsersRequest>()).Returns(Generators.UserDto.Generate(count));
 
         var actionResult = _sut.GetAll();
 
@@ -41,17 +32,13 @@ public sealed class UserControllerTests
         var returnUsers = result.Value as List<UserDto>;
 
         returnUsers.Should().NotBeNull();
-        returnUsers.Should().HaveCount(GetUsersDtoList().Count);
+        returnUsers.Should().HaveCount(count);
     }
 
     [Fact]
     public void Create_ShouldReturnNoContent_WhenSuccessful()
     {
-        _mediatorMock
-            .Setup(s => s.Send(It.IsAny<CreateUserRequest>(), default))
-            .Returns(Task.CompletedTask);
-
-        var newUser = new CreateUserDto { Name = "Bernadetta Maleszka" };
+        var newUser = Generators.CreateUserDto.Generate();
         var actionResult = _sut.Create(newUser);
 
         actionResult.Result.Should().NotBeNull();

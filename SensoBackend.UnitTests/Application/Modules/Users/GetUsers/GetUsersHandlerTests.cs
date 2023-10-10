@@ -1,39 +1,35 @@
 using SensoBackend.Application.Modules.Users.GetUsers;
-using SensoBackend.Domain.Entities;
 using SensoBackend.Infrastructure.Data;
+using SensoBackend.Tests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Users.GetUsers;
 
-public sealed class GetUsersHandlerTests
+public sealed class GetUsersHandlerTests : IDisposable
 {
-    private readonly Mock<AppDbContext> _contextMock = new();
+    private readonly AppDbContext _context = Database.CreateFixture();
     private readonly GetUsersHandler _sut;
 
-    public GetUsersHandlerTests() => _sut = new GetUsersHandler(_contextMock.Object);
+    public GetUsersHandlerTests() => _sut = new GetUsersHandler(_context);
 
-    private static IList<User> GetUserList() =>
-        new List<User>
-        {
-            new() { Id = 0, Name = "Bernadetta Maleszka" },
-            new() { Id = 1, Name = "Mariusz Fraś" }
-        };
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task GetAll_ShouldReturnAllUsers()
     {
-        _contextMock.Setup(db => db.Users).ReturnsDbSet(GetUserList());
+        const int count = 5;
+        var entities = Generators.User.Generate(count);
+        await _context.Users.AddRangeAsync(entities);
+        await _context.SaveChangesAsync();
 
         var users = await _sut.Handle(new GetUsersRequest(), CancellationToken.None);
 
         users.Should().NotBeNull();
-        users.Should().HaveCount(GetUserList().Count);
+        users.Should().HaveCount(count);
     }
 
     [Fact]
     public async Task GetAll_ShouldReturnEmptyWhenNoUsers()
     {
-        _contextMock.Setup(db => db.Users).ReturnsDbSet(new List<User>());
-
         var users = await _sut.Handle(new GetUsersRequest(), CancellationToken.None);
 
         users.Should().NotBeNull();

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace SensoBackend.WebApi;
 
 using System.Text;
@@ -12,7 +14,13 @@ public static class ServiceExtensions
         IWebHostEnvironment environment
     )
     {
-        services.AddControllers();
+        services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+        services
+            .AddControllers()
+            .AddJsonOptions(
+                options =>
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+            );
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options => options.SupportNonNullableReferenceTypes());
 
