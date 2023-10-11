@@ -1,9 +1,10 @@
 using SensoBackend.Application.Modules.Accounts.Contracts;
 
-namespace SensoBackend.Application.Abstractions
+namespace SensoBackend.Application.Abstractions;
+
+public sealed record TokenDto(string Token);
+
+public interface IJwtProvider
 {
-    public interface IJwtProvider
-    {
-        string GenerateToken(AccountDto account);
-    }
+    TokenDto GenerateToken(AccountDto account);
 }

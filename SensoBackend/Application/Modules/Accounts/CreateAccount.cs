@@ -16,9 +16,21 @@ public sealed class CreateAccountValidator : AbstractValidator<CreateAccountRequ
 {
     public CreateAccountValidator()
     {
-        RuleFor(r => r.Dto.Email).NotEmpty().EmailAddress();
-        RuleFor(r => r.Dto.Password).NotEmpty().MinimumLength(8).MaximumLength(50);
-        RuleFor(r => r.Dto.PhoneNumber).Matches("^[0-9]{9}$");
+        RuleFor(r => r.Dto.Email)
+            .NotEmpty()
+            .WithMessage("Email is empty.")
+            .EmailAddress()
+            .WithMessage("Email is invalid.");
+        RuleFor(r => r.Dto.Password)
+            .NotEmpty()
+            .WithMessage("Password is empty.")
+            .MinimumLength(8)
+            .WithMessage("Password is too short.")
+            .MaximumLength(50)
+            .WithMessage("Password is too long.");
+        RuleFor(r => r.Dto.PhoneNumber)
+            .Matches("^[0-9]{9}$")
+            .WithMessage("Phone number is invalid.");
     }
 }
 

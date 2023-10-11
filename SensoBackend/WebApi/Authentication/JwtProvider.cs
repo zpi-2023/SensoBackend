@@ -15,7 +15,7 @@ internal sealed class JwtProvider : IJwtProvider
 
     public JwtProvider(IOptions<JwtOptions> options) => _options = options.Value;
 
-    public string GenerateToken(AccountDto account)
+    public TokenDto GenerateToken(AccountDto account)
     {
         var claims = new Claim[]
         {
@@ -39,6 +39,6 @@ internal sealed class JwtProvider : IJwtProvider
 
         var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return tokenValue;
+        return new TokenDto(tokenValue);
     }
 }

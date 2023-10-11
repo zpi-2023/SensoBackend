@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Accounts.ValidateAccount;
+namespace SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
 
 public sealed record GetAccountByCredentialsRequest(GetAccountByCredentialsDto Dto)
     : IRequest<AccountDto>;

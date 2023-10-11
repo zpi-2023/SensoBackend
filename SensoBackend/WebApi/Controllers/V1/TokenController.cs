@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
-using SensoBackend.Application.Modules.Accounts.ValidateAccount;
+using SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
 
 namespace SensoBackend.Controllers.V1;
 
@@ -28,7 +28,7 @@ public class TokenController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> CreateToken(GetAccountByCredentialsDto dto)
     {
