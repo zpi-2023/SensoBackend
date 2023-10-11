@@ -1,14 +1,16 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Users.Contracts;
 using SensoBackend.Application.Modules.Users.CreateUser;
 using SensoBackend.Application.Modules.Users.GetUsers;
 
-namespace SensoBackend.WebApi.Controllers;
+namespace SensoBackend.WebApi.Controllers.V1;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
 public sealed class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;

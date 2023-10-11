@@ -1,11 +1,18 @@
+using Asp.Versioning.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SensoBackend.WebApi.OptionsSetup;
 
-public class SwaggerGenOptionsSetup : IConfigureOptions<SwaggerGenOptions>
+public class SwaggerGenOptionsSetup : IConfigureNamedOptions<SwaggerGenOptions>
 {
+    private readonly IApiVersionDescriptionProvider _provider;
+
+    public SwaggerGenOptionsSetup(IApiVersionDescriptionProvider provider) => _provider = provider;
+
+    public void Configure(string? name, SwaggerGenOptions options) => Configure(options);
+
     public void Configure(SwaggerGenOptions options)
     {
         options.SupportNonNullableReferenceTypes();
@@ -34,9 +41,26 @@ public class SwaggerGenOptionsSetup : IConfigureOptions<SwaggerGenOptions>
                             Id = "Bearer"
                         }
                     },
-                    new string[] { }
+                    Array.Empty<string>()
                 }
             }
         );
+
+        foreach (var description in _provider.ApiVersionDescriptions)
+        {
+            options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
+        }
+    }
+
+    private OpenApiInfo CreateVersionInfo(ApiVersionDescription desc)
+    {
+        var info = new OpenApiInfo() { Title = "Senso", Version = desc.ApiVersion.ToString() };
+
+        if (desc.IsDeprecated)
+        {
+            info.Description += "This API version has been deprecated. Please use newer version.";
+        }
+
+        return info;
     }
 }

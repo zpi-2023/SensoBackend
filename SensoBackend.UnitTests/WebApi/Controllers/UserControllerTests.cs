@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using SensoBackend.Application.Modules.Users.Contracts;
 using SensoBackend.Application.Modules.Users.GetUsers;
 using SensoBackend.Tests.Utils;
-using SensoBackend.WebApi.Controllers;
+using SensoBackend.WebApi.Controllers.V1;
 
 namespace SensoBackend.Tests.WebApi.Controllers;
 
