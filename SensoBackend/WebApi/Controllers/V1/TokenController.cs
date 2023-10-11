@@ -1,13 +1,15 @@
-﻿namespace SensoBackend.Controllers;
-
+﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.ValidateAccount;
 
+namespace SensoBackend.Controllers.V1;
+
 [ApiController]
-[Route("[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
 public class TokenController : ControllerBase
 {
     private readonly ILogger<TokenController> _logger;

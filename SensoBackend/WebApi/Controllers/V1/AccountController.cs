@@ -1,12 +1,14 @@
-namespace SensoBackend.WebApi.Controllers;
-
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
 
+namespace SensoBackend.WebApi.Controllers.V1;
+
 [ApiController]
-[Route("[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
 public class AccountController : ControllerBase
 {
     private readonly ILogger<AccountController> _logger;

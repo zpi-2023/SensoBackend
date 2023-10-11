@@ -26,7 +26,7 @@ public class SwaggerGenOptionsSetup : IConfigureNamedOptions<SwaggerGenOptions>
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
                 Description =
-                    "JWT Authorization header using the Bearer scheme. \r\n\r\n Get token by request to /token endpoint. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+                    "JWT Authorization header using the Bearer scheme. \r\n\r\n Get token by request to api/v1/token endpoint. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
             }
         );
         options.AddSecurityRequirement(
