@@ -1,6 +1,6 @@
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Users.Contracts;
 using SensoBackend.Application.Modules.Users.CreateUser;

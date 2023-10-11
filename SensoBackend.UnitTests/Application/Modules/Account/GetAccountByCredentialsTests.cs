@@ -1,8 +1,8 @@
-using System.Security.Authentication;
 using Mapster;
 using SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.Tests.Utils;
+using System.Security.Authentication;
 
 namespace SensoBackend.Tests.Application.Modules.Accounts.GetAccountByCredentials;
 
@@ -38,13 +38,16 @@ public sealed class GetAccountByCredentialsTests : IDisposable
         );
 
         result.Should().NotBeNull();
-        result!.Email.Should().Be(expectedResult.Email);
-        result!.Password.Should().Be(expectedResult.Password);
-        result!.PhoneNumber.Should().Be(expectedResult.PhoneNumber);
-        result!.DisplayName.Should().Be(expectedResult.DisplayName);
-        result!.CreatedAt.Should().BeCloseTo(expectedResult.CreatedAt, TimeSpan.FromSeconds(1));
-        result!.LastLoginAt.Should().BeCloseTo(expectedResult.LastLoginAt, TimeSpan.FromSeconds(1));
-        result!.LastPasswordChangeAt
+        if (result == null)
+            return;
+
+        result.Email.Should().Be(expectedResult.Email);
+        result.Password.Should().Be(expectedResult.Password);
+        result.PhoneNumber.Should().Be(expectedResult.PhoneNumber);
+        result.DisplayName.Should().Be(expectedResult.DisplayName);
+        result.CreatedAt.Should().BeCloseTo(expectedResult.CreatedAt, TimeSpan.FromSeconds(1));
+        result.LastLoginAt.Should().BeCloseTo(expectedResult.LastLoginAt, TimeSpan.FromSeconds(1));
+        result.LastPasswordChangeAt
             .Should()
             .BeCloseTo(expectedResult.LastPasswordChangeAt, TimeSpan.FromSeconds(1));
     }

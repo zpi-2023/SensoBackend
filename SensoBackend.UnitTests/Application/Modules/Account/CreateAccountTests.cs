@@ -26,15 +26,18 @@ public sealed class CreateAccountHandlerTests : IDisposable
         _context.Accounts.Any(a => a.Email == dto.Email).Should().BeTrue();
 
         var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == dto.Email);
-        account.Should().NotBeNull();
 
-        BCrypt.Net.BCrypt.Verify(dto.Password, account!.Password).Should().BeTrue();
-        account!.PhoneNumber.Should().Be(dto.PhoneNumber);
-        account!.Active.Should().BeTrue();
-        account!.Verified.Should().BeFalse();
-        account!.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        account!.LastLoginAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        account!.LastPasswordChangeAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        account.Should().NotBeNull();
+        if (account == null)
+            return;
+
+        BCrypt.Net.BCrypt.Verify(dto.Password, account.Password).Should().BeTrue();
+        account.PhoneNumber.Should().Be(dto.PhoneNumber);
+        account.Active.Should().BeTrue();
+        account.Verified.Should().BeFalse();
+        account.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        account.LastLoginAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        account.LastPasswordChangeAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
     }
 
     [Fact]

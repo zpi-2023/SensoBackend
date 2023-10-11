@@ -1,5 +1,5 @@
-using System.Security.Authentication;
 using FluentValidation;
+using System.Security.Authentication;
 
 namespace SensoBackend.WebApi.Middlewares;
 

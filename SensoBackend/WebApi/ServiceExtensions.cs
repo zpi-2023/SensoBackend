@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.WebApi.Authenticaion;
 using SensoBackend.WebApi.OptionsSetup;
-using Asp.Versioning;
 
 namespace SensoBackend.WebApi;
 

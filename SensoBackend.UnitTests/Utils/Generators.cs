@@ -32,7 +32,7 @@ public static class Generators
         .RuleFor(u => u.Password, f => f.Internet.Password())
         .RuleFor(u => u.Active, _ => true)
         .RuleFor(u => u.Verified, _ => true)
-        .RuleFor(u => u.PhoneNumber, _ => "123456789")
+        .RuleFor(u => u.PhoneNumber, f => f.Random.ReplaceNumbers("#########"))
         .RuleFor(u => u.DisplayName, f => f.Name.FullName())
         .RuleFor(u => u.CreatedAt, f => f.Date.PastOffset())
         .RuleFor(u => u.LastLoginAt, f => f.Date.PastOffset())
@@ -46,5 +46,5 @@ public static class Generators
     public static readonly Faker<CreateAccountDto> CreateAccountDto = new Faker<CreateAccountDto>()
         .RuleFor(u => u.Email, f => f.Internet.Email())
         .RuleFor(u => u.Password, f => f.Internet.Password())
-        .RuleFor(u => u.PhoneNumber, _ => "123456789");
+        .RuleFor(u => u.PhoneNumber, f => f.Random.ReplaceNumbers("#########"));
 }

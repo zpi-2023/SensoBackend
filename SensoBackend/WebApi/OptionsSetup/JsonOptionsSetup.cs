@@ -1,6 +1,6 @@
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 namespace SensoBackend.WebApi.OptionsSetup;
 
