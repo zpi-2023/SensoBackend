@@ -8,16 +8,21 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Accounts.ValidateAccount;
 
-public sealed record ValidateAccountRequest(ValidateAccountDto Dto) : IRequest<AccountDto>;
+public sealed record GetAccountByCredentialsRequest(GetAccountByCredentialsDto Dto)
+    : IRequest<AccountDto>;
 
 [UsedImplicitly]
-public sealed class ValidateAccountHandler : IRequestHandler<ValidateAccountRequest, AccountDto>
+public sealed class GetAccountByCredentialsHandler
+    : IRequestHandler<GetAccountByCredentialsRequest, AccountDto>
 {
     private readonly AppDbContext _context;
 
-    public ValidateAccountHandler(AppDbContext context) => _context = context;
+    public GetAccountByCredentialsHandler(AppDbContext context) => _context = context;
 
-    public async Task<AccountDto> Handle(ValidateAccountRequest request, CancellationToken ct)
+    public async Task<AccountDto> Handle(
+        GetAccountByCredentialsRequest request,
+        CancellationToken ct
+    )
     {
         var account = await _context.Accounts.FirstOrDefaultAsync(
             a => a.Email == request.Dto.Email,

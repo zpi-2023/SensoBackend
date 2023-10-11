@@ -14,7 +14,12 @@ public sealed record CreateAccountRequest(CreateAccountDto Dto) : IRequest;
 [UsedImplicitly]
 public sealed class CreateAccountValidator : AbstractValidator<CreateAccountRequest>
 {
-    //TODO add validation rules
+    public CreateAccountValidator()
+    {
+        RuleFor(r => r.Dto.Email).NotEmpty().EmailAddress();
+        RuleFor(r => r.Dto.Password).NotEmpty().MinimumLength(8).MaximumLength(50);
+        RuleFor(r => r.Dto.PhoneNumber).Matches("^[0-9]{9}$");
+    }
 }
 
 [UsedImplicitly]

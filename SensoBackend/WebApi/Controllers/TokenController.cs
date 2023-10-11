@@ -28,10 +28,10 @@ public class TokenController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> CreateToken(ValidateAccountDto dto)
+    public async Task<IActionResult> CreateToken(GetAccountByCredentialsDto dto)
     {
         _logger.LogInformation("Creating new token for {Email}.", dto.Email);
-        var account = await _mediator.Send(new ValidateAccountRequest(dto));
+        var account = await _mediator.Send(new GetAccountByCredentialsRequest(dto));
         return Ok(_jwtProvider.GenerateToken(account));
     }
 }

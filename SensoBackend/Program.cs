@@ -14,3 +14,9 @@ app.UseWebApiLayer();
 app.AutoMigrateDatabase();
 
 app.Run();
+
+
+// walidacja
+// lepsze logowanie swagger
+// testy
+// zwracanie tokena jsonem
