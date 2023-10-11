@@ -1,7 +1,7 @@
-using System.Reflection;
 using FluentValidation;
 using MediatR;
 using SensoBackend.Application.Behaviors;
+using System.Reflection;
 
 namespace SensoBackend.Application;
 

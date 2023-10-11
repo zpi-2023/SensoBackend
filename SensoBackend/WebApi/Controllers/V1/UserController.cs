@@ -1,5 +1,6 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Users.Contracts;
 using SensoBackend.Application.Modules.Users.CreateUser;
@@ -21,6 +22,7 @@ public sealed class UserController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<UserDto>))]
     public async Task<IActionResult> GetAll()

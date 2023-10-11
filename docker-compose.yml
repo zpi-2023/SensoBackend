@@ -15,6 +15,9 @@ services:
       context: .
       dockerfile: SensoBackend/Dockerfile
     environment:
+      - JwtSettings__Issuer=SensoBackend
+      - JwtSettings__Audience=SensoBackend
+      - JwtSettings__SecretKey=SensoBackendSecretKey
       - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=sensobackend_database;Port=5432;Database=SensoBackendDb;IntegratedSecurity=true;Pooling=true
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development

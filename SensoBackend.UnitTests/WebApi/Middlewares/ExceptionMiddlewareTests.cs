@@ -1,9 +1,10 @@
-using FluentValidation;
 using FluentValidation.Results;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ExceptionExtensions;
 using SensoBackend.WebApi.Middlewares;
+using System.Security.Authentication;
 
 namespace SensoBackend.Tests.WebApi.Middlewares;
 
@@ -33,6 +34,7 @@ public sealed class ExceptionMiddlewareTests
 
         await _sut.Invoke(context);
 
+        context.Response.Should().NotBeNull();
         context.Response.StatusCode.Should().Be(400);
     }
 
@@ -44,6 +46,19 @@ public sealed class ExceptionMiddlewareTests
 
         await _sut.Invoke(context);
 
+        context.Response.Should().NotBeNull();
         context.Response.StatusCode.Should().Be(500);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetUnauthorizedStatusCode_WhenInvalidCredentialErrorOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new InvalidCredentialException());
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(401);
     }
 }

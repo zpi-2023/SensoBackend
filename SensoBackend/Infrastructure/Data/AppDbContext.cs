@@ -11,4 +11,5 @@ public class AppDbContext : DbContext
         : base(options) { }
 
     public virtual DbSet<User> Users => Set<User>();
+    public virtual DbSet<Account> Accounts => Set<Account>();
 }

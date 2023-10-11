@@ -1,5 +1,7 @@
-using Asp.Versioning;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SensoBackend.Application.Abstractions;
+using SensoBackend.WebApi.Authenticaion;
+using SensoBackend.WebApi.OptionsSetup;
 
 namespace SensoBackend.WebApi;
 
@@ -7,30 +9,23 @@ public static class ServiceExtensions
 {
     public static void AddWebApiLayer(this IServiceCollection services)
     {
-        services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-        services
-            .AddControllers()
-            .AddJsonOptions(
-                options =>
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-            );
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options => options.SupportNonNullableReferenceTypes());
-        
-        var apiVersioningBuilder = services.AddApiVersioning(opt =>
-        {
-            opt.DefaultApiVersion = new ApiVersion(1, 0);
-            opt.AssumeDefaultVersionWhenUnspecified = true;
-            opt.ReportApiVersions = true;
-            opt.ApiVersionReader = new UrlSegmentApiVersionReader();
-        });
-        
-        apiVersioningBuilder.AddApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
-        });
+        services.ConfigureOptions<RouteOptionsSetup>();
 
-        services.ConfigureOptions<ConfigureSwaggerOptions>();
+        services.AddControllers();
+        services.ConfigureOptions<JsonOptionsSetup>();
+
+        services.AddEndpointsApiExplorer();
+        services.AddApiVersioning().AddApiExplorer();
+        services.ConfigureOptions<ApiVersioningOptionsSetup>();
+        services.ConfigureOptions<ApiExplorerOptionsSetup>();
+
+        services.AddSwaggerGen();
+        services.ConfigureOptions<SwaggerGenOptionsSetup>();
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        services.ConfigureOptions<JwtOptionsSetup>();
+        services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+        services.AddTransient<IJwtProvider, JwtProvider>();
     }
 }

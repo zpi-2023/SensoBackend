@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using SensoBackend.Application.Modules.Healthcheck;
 using SensoBackend.Application.Modules.Healthcheck.Contracts;
+using SensoBackend.Application.Modules.Healthcheck;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Tests.Application.Modules.Healthcheck;

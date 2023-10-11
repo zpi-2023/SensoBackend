@@ -7,17 +7,22 @@ public static class AppExtensions
 {
     public static void UseWebApiLayer(this WebApplication app)
     {
-        var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+        var apiVersionDescriptionProvider =
+            app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse())
+                foreach (
+                    var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse()
+                )
                 {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                        description.GroupName);
+                    options.SwaggerEndpoint(
+                        $"/swagger/{description.GroupName}/swagger.json",
+                        description.GroupName
+                    );
                 }
             });
         }
@@ -26,7 +31,9 @@ public static class AppExtensions
             app.UseHttpsRedirection();
         }
 
+        app.UseAuthentication();
         app.UseAuthorization();
+
         app.MapControllers();
 
         app.UseMiddleware<ExceptionMiddleware>();

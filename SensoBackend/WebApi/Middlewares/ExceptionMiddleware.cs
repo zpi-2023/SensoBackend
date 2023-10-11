@@ -1,4 +1,5 @@
 using FluentValidation;
+using System.Security.Authentication;
 
 namespace SensoBackend.WebApi.Middlewares;
 
@@ -26,6 +27,7 @@ public sealed class ExceptionMiddleware
             context.Response.StatusCode = exception switch
             {
                 ValidationException => 400,
+                InvalidCredentialException => 401,
                 _ => 500
             };
         }
