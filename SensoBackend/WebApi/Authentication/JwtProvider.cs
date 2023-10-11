@@ -9,7 +9,7 @@ using System.Text;
 
 namespace SensoBackend.WebApi.Authenticaion;
 
-internal sealed class JwtProvider : IJwtProvider
+public sealed class JwtProvider : IJwtProvider
 {
     private readonly JwtOptions _options;
 
