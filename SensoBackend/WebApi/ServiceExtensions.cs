@@ -31,9 +31,6 @@ public static class ServiceExtensions
             options.SubstituteApiVersionInUrl = true;
         });
 
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-
         services.ConfigureOptions<ConfigureSwaggerOptions>();
     }
 }

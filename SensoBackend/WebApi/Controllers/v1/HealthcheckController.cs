@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Healthcheck;
 using SensoBackend.Application.Modules.Healthcheck.Contracts;
 
-namespace SensoBackend.WebApi.Controllers.v1;
+namespace SensoBackend.WebApi.Controllers.V1;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/healthz")]
@@ -15,7 +15,6 @@ public class HealthcheckController : ControllerBase
 
     public HealthcheckController(IMediator mediator) => _mediator = mediator;
 
-    [MapToApiVersion("1.0")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HealthcheckDto))]
     public async Task<IActionResult> Get() => Ok(await _mediator.Send(new GetHealthRequest()));

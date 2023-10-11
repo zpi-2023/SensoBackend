@@ -5,7 +5,7 @@ using SensoBackend.Application.Modules.Users.Contracts;
 using SensoBackend.Application.Modules.Users.CreateUser;
 using SensoBackend.Application.Modules.Users.GetUsers;
 
-namespace SensoBackend.WebApi.Controllers.v1;
+namespace SensoBackend.WebApi.Controllers.V1;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
@@ -21,7 +21,6 @@ public sealed class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    [MapToApiVersion("1.0")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IList<UserDto>))]
     public async Task<IActionResult> GetAll()
@@ -30,7 +29,6 @@ public sealed class UserController : ControllerBase
         return Ok(await _mediator.Send(new GetUsersRequest()));
     }
 
-    [MapToApiVersion("1.0")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

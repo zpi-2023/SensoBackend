@@ -38,7 +38,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
     {
         var info = new OpenApiInfo()
         {
-            Title = ".NET Core (.NET 6) Web API",
+            Title = "Senso",
             Version = desc.ApiVersion.ToString()
         };
 
