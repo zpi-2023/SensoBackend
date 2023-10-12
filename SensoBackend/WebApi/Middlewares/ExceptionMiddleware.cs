@@ -1,4 +1,6 @@
 using FluentValidation;
+using Mapster;
+using Microsoft.Extensions.Primitives;
 using System.Security.Authentication;
 
 namespace SensoBackend.WebApi.Middlewares;
@@ -24,6 +26,10 @@ public sealed class ExceptionMiddleware
         {
             _logger.LogError(exception, "Error during request processing.");
             context.Response.ContentType = "application/json";
+            var noControlCharsExceptionMessage = new string(
+                exception.Message.Where(c => !char.IsControl(c)).ToArray()
+            );
+            context.Response.Headers.Add("X-Error-Message", noControlCharsExceptionMessage);
             context.Response.StatusCode = exception switch
             {
                 ValidationException => 400,
