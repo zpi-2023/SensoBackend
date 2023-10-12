@@ -1,8 +1,13 @@
+using System.ComponentModel.DataAnnotations;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 
 namespace SensoBackend.Application.Abstractions;
 
-public sealed record TokenDto(string Token);
+public sealed record TokenDto
+{
+    [Required]
+    public required string Token { get; init; }
+}
 
 public interface IJwtProvider
 {

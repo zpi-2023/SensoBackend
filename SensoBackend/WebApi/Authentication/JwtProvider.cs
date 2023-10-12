@@ -39,6 +39,6 @@ public sealed class JwtProvider : IJwtProvider
 
         var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new TokenDto(tokenValue);
+        return new TokenDto { Token = tokenValue };
     }
 }
