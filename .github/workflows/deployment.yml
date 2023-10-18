@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: "dist"
-          path: "/dist"
+          path: "./dist"
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,6 +52,11 @@ jobs:
       - name: "Add known host"
         run: |
           ssh-keyscan -H ${{ secrets.DEPLOYMENT_HOST }} >> ~/.ssh/known_hosts
+
+      - name: "Download artifact from build"
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
 
       - name: "Rsync to server"
         run: |
