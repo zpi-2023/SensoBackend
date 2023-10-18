@@ -24,7 +24,7 @@ jobs:
 
       - name: "Build"
         run: |
-          dotnet build --configuration Release
+          dotnet build --configuration Release SensoBackend/SensoBackend.csproj
 
       - name: "Publish"
         run: |
