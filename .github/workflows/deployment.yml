@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: "dist"
-          path: "/dist"
+          path: "dist"
 
   deploy:
     runs-on: ubuntu-latest
@@ -64,4 +64,4 @@ jobs:
 
       - name: "Rsync to server"
         run: |
-          rsync -avz /dist/ ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:/srv/senso/
+          rsync -avz dist/ ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:/srv/senso/
