@@ -1,28 +1,20 @@
 name: Deployment
+# TODO: trigger when pushed to main
 on:
   pull_request:
     branches:
       - main
 
-env:
-  JwtSettings__Issuer: SensoBackend
-  JwtSettings__Audience: SensoBackend
-  JwtSettings__SecretKey: ${{ secrets.JWT_SECRET_KEY }}
-  ConnectionStrings__DefaultConnection: ${{ secrets.PSQL_DEPLOYMENT_CONNECTION_STRING }}
-  ASPNETCORE_URLS: https://+:8080
-  ASPNETCORE_ENVIRONMENT: Production
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: "Set up .NET"
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "7.x"
-          include-prerelease: true
 
       - name: "Build"
         run: |
@@ -33,7 +25,7 @@ jobs:
           dotnet publish --configuration Release SensoBackend --output dist
 
       - name: "Upload artifact"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: "dist"
           path: "dist"
@@ -54,7 +46,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.DEPLOYMENT_HOST }} >> ~/.ssh/known_hosts
 
       - name: "Download artifact from build"
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: dist
           path: ./dist
