@@ -57,11 +57,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: dist
+          path: ./dist
 
       - name: test
         run: |
           ls -la
+          echo "XD"
+          ls -la ./dist
 
       - name: "Rsync to server"
         run: |
-          rsync -avz dist/ ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:/srv/senso/
+          rsync -avz ./dist/ ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:/srv/senso/
