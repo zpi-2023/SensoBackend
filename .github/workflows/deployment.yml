@@ -59,12 +59,16 @@ jobs:
           name: dist
           path: ./dist
 
-      - name: test
+      - name: "Stop Senso service"
         run: |
-          ls -la
-          echo "XD"
-          ls -la ./dist
+          # ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "systemctl stop senso.service"
+          echo "TODO: Stop Senso service"
 
       - name: "Rsync to server"
         run: |
           rsync -avz ./dist/ ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:/srv/senso/
+
+      - name: "Start Senso service"
+        run: |
+          # ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "systemctl start senso.service"
+          echo "TODO: Start Senso service"
