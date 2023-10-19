@@ -77,11 +77,6 @@ Make sure you are using http instead of https.
 
 ```mermaid
 erDiagram
-    Users {
-        int Id 
-        string Name 
-    }
-
     Accounts {
         int Id
         string Email
@@ -93,5 +88,22 @@ erDiagram
         Date CreatedAt
         Date LastLoginAt
         Date LastPasswordChangeAt
+        int RoleId
     }
+
+    Roles {
+        int Id
+        string Name
+    }
+
+    Profiles {
+        int Id
+        int AccountId
+        int SeniorId
+        string Alias
+    }
+
+    Accounts }o--|| Roles : "RoleId"
+    Accounts ||--o{ Profiles : "AccountId"
+    Accounts ||--o{ Profiles : "SeniorId"
 ```
