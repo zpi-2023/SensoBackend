@@ -18,7 +18,7 @@ jobs:
 
       - name: "Build"
         run: |
-          dotnet build --configuration Release SensoBackend/SensoBackend.csproj
+          dotnet build --configuration Release SensoBackend
 
       - name: "Publish"
         run: |
@@ -53,8 +53,7 @@ jobs:
 
       - name: "Stop Senso service"
         run: |
-          # ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "systemctl stop senso.service"
-          echo "TODO: Stop Senso service"
+          ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "sudo systemctl stop senso.service"
 
       - name: "Rsync to server"
         run: |
@@ -62,5 +61,4 @@ jobs:
 
       - name: "Start Senso service"
         run: |
-          # ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "systemctl start senso.service"
-          echo "TODO: Start Senso service"
+          ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "sudo systemctl start senso.service"
