@@ -13,7 +13,10 @@ public class HasPermissionMiddleware
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<HasPermissionMiddleware> _logger; //may be useful later on
 
-    public HasPermissionMiddleware(RequestDelegate next, IServiceScopeFactory serviceScopeFactory, ILogger<HasPermissionMiddleware> logger)
+    public HasPermissionMiddleware(
+        RequestDelegate next,
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<HasPermissionMiddleware> logger)
     {
         _next = next;
         _serviceScopeFactory = serviceScopeFactory;

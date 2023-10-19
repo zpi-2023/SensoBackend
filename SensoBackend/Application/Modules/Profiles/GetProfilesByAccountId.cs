@@ -23,7 +23,7 @@ public sealed class GetProfilesByAccountIdHandler
         CancellationToken ct
     )
     {
-        var profiles= await _context.Profiles
+        var profiles = await _context.Profiles
             .Where(p => p.AccountId == request.Dto.AccountId)
             .ToListAsync(ct);
 

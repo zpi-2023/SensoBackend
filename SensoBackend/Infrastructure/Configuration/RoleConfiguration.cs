@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SensoBackend.Domain.Entities;
+
 namespace SensoBackend.Infrastructure.Configuration;
 
 internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>

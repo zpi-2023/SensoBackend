@@ -2,7 +2,7 @@
 
 public enum Permission //TODO: add some more permissions if needed
 {
-    // Admin only 
+    // Admin only
     AdminAccess = 1,
 
     // General permissions

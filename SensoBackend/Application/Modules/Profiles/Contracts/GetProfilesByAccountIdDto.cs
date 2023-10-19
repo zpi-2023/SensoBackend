@@ -5,5 +5,5 @@ namespace SensoBackend.Application.Modules.Profiles.Contracts;
 public sealed record GetProfilesByAccountIdDto
 {
     [Required]
-    public int AccountId { get; set;}
+    public int AccountId { get; set; }
 }

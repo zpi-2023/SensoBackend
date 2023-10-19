@@ -1,5 +1,4 @@
-﻿
-namespace SensoBackend.WebApi.Authorization.Data;
+﻿namespace SensoBackend.WebApi.Authorization.Data;
 
 public static class RolePermission
 {

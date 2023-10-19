@@ -1,5 +1,4 @@
-﻿
-using RoleEnum = SensoBackend.WebApi.Authorization.Data.Role;
+﻿using RoleEnum = SensoBackend.WebApi.Authorization.Data.Role;
 
 namespace SensoBackend.Domain.Entities;
 
@@ -16,5 +15,4 @@ public sealed class Role
         Id = id;
         Name = name;
     }
-
 }

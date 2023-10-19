@@ -18,7 +18,7 @@ public class AuthorizationService : IAuthorizationService
 
     public async Task<int> GetRoleIdAsync(int accountId)
     {
-        var dto = new GetAccountByIdDto { Id = accountId};
+        var dto = new GetAccountByIdDto { Id = accountId };
         var account = await _mediator.Send(new GetAccountByIdRequest(dto));
         return account.RoleId;
     }
