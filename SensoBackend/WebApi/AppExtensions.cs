@@ -36,6 +36,7 @@ public static class AppExtensions
 
         app.MapControllers();
 
+        app.UseMiddleware<HasPermissionMiddleware>();
         app.UseMiddleware<ExceptionMiddleware>();
     }
 }

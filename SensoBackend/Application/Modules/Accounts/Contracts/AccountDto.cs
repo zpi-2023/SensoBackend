@@ -29,4 +29,7 @@ public sealed record AccountDto
 
     [Required]
     public required DateTimeOffset LastPasswordChangeAt { get; set; }
+    
+    [Required]
+    public required int RoleId { get; set; }
 }

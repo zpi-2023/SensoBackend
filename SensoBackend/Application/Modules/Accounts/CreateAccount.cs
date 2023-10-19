@@ -55,6 +55,7 @@ public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
         account.LastPasswordChangeAt = DateTime.UtcNow;
         account.Verified = false;
         account.Active = true;
+        account.RoleId = Role.Member.Id;
 
         await _context.Accounts.AddAsync(account, ct);
         await _context.SaveChangesAsync(ct);

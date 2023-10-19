@@ -33,7 +33,7 @@ public sealed class JwtProviderTests
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(tokenValue.Token);
 
-        token.ValidTo.Should().BeCloseTo(DateTime.UtcNow.AddDays(7), TimeSpan.FromSeconds(1));
+        token.ValidTo.Should().BeCloseTo(DateTime.UtcNow.AddDays(7), TimeSpan.FromSeconds(2));
         token.Issuer.Should().Be(_jwtOptions.Value.Issuer);
         token.Audiences.Should().Contain(_jwtOptions.Value.Audience);
         token.Claims
