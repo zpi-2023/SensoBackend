@@ -1,9 +1,10 @@
 name: Deployment
-# TODO: trigger when pushed to main
+
 on:
-  pull_request:
+  push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -62,3 +63,8 @@ jobs:
       - name: "Start Senso service"
         run: |
           ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "sudo systemctl start senso.service"
+
+      # I'm not sure if this step is necessary, but I couldn't quickly find the answer online, so it stays for now.
+      - name: "Autostart Senso service"
+        run: |
+          ssh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "sudo systemctl enable senso.service"
