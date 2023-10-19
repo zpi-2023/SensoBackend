@@ -29,7 +29,6 @@ public class TokenController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenDto))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> CreateToken(GetAccountByCredentialsDto dto)
     {
         _logger.LogInformation("Creating new token for {Email}.", dto.Email);

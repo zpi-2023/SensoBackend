@@ -67,50 +67,6 @@ namespace SensoBackend.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Accounts", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Active = true,
-                            CreatedAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 72, DateTimeKind.Unspecified).AddTicks(6517), new TimeSpan(0, 0, 0, 0, 0)),
-                            DisplayName = "admin_senso",
-                            Email = "admin@senso.pl",
-                            LastLoginAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 72, DateTimeKind.Unspecified).AddTicks(6517), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastPasswordChangeAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 72, DateTimeKind.Unspecified).AddTicks(6517), new TimeSpan(0, 0, 0, 0, 0)),
-                            Password = "$2a$11$2U.MLkSys/NuC5JXy.Hsie.XSMlhamOammkHZBuWAqIR7cPbyCSVO",
-                            PhoneNumber = "123456789",
-                            RoleId = 1,
-                            Verified = true
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Active = true,
-                            CreatedAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 201, DateTimeKind.Unspecified).AddTicks(6130), new TimeSpan(0, 0, 0, 0, 0)),
-                            DisplayName = "senior_senso",
-                            Email = "senior@senso.pl",
-                            LastLoginAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 201, DateTimeKind.Unspecified).AddTicks(6130), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastPasswordChangeAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 201, DateTimeKind.Unspecified).AddTicks(6130), new TimeSpan(0, 0, 0, 0, 0)),
-                            Password = "$2a$11$ElheHSU35MNH438lzLMgge1d5LOiO2ByC6f6Mh74PTQXCeQHFrkOe",
-                            PhoneNumber = "123456789",
-                            RoleId = 2,
-                            Verified = true
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Active = true,
-                            CreatedAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 331, DateTimeKind.Unspecified).AddTicks(9750), new TimeSpan(0, 0, 0, 0, 0)),
-                            DisplayName = "caretaker_senso",
-                            Email = "caretaker@senso.pl",
-                            LastLoginAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 331, DateTimeKind.Unspecified).AddTicks(9750), new TimeSpan(0, 0, 0, 0, 0)),
-                            LastPasswordChangeAt = new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 331, DateTimeKind.Unspecified).AddTicks(9750), new TimeSpan(0, 0, 0, 0, 0)),
-                            Password = "$2a$11$qBumOFo2yqLQ5Sbap0SmpOvlZcTI7pHBno03B.U4XLlUkeR0iyFaS",
-                            PhoneNumber = "123456789",
-                            RoleId = 2,
-                            Verified = true
-                        });
                 });
 
             modelBuilder.Entity("SensoBackend.Domain.Entities.Profile", b =>
@@ -137,21 +93,6 @@ namespace SensoBackend.Migrations
                     b.HasIndex("SeniorId");
 
                     b.ToTable("Profiles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountId = 2,
-                            SeniorId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountId = 3,
-                            Alias = "Senior",
-                            SeniorId = 2
-                        });
                 });
 
             modelBuilder.Entity("SensoBackend.Domain.Entities.Role", b =>

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -70,25 +69,6 @@ namespace SensoBackend.Infrastructure.Migrations
                     { 2, "Member" }
                 });
 
-            migrationBuilder.InsertData(
-                table: "Accounts",
-                columns: new[] { "Id", "Active", "CreatedAt", "DisplayName", "Email", "LastLoginAt", "LastPasswordChangeAt", "Password", "PhoneNumber", "RoleId", "Verified" },
-                values: new object[,]
-                {
-                    { 1, true, new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 72, DateTimeKind.Unspecified).AddTicks(6517), new TimeSpan(0, 0, 0, 0, 0)), "admin_senso", "admin@senso.pl", new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 72, DateTimeKind.Unspecified).AddTicks(6517), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 72, DateTimeKind.Unspecified).AddTicks(6517), new TimeSpan(0, 0, 0, 0, 0)), "$2a$11$2U.MLkSys/NuC5JXy.Hsie.XSMlhamOammkHZBuWAqIR7cPbyCSVO", "123456789", 1, true },
-                    { 2, true, new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 201, DateTimeKind.Unspecified).AddTicks(6130), new TimeSpan(0, 0, 0, 0, 0)), "senior_senso", "senior@senso.pl", new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 201, DateTimeKind.Unspecified).AddTicks(6130), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 201, DateTimeKind.Unspecified).AddTicks(6130), new TimeSpan(0, 0, 0, 0, 0)), "$2a$11$ElheHSU35MNH438lzLMgge1d5LOiO2ByC6f6Mh74PTQXCeQHFrkOe", "123456789", 2, true },
-                    { 3, true, new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 331, DateTimeKind.Unspecified).AddTicks(9750), new TimeSpan(0, 0, 0, 0, 0)), "caretaker_senso", "caretaker@senso.pl", new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 331, DateTimeKind.Unspecified).AddTicks(9750), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2023, 10, 19, 18, 12, 21, 331, DateTimeKind.Unspecified).AddTicks(9750), new TimeSpan(0, 0, 0, 0, 0)), "$2a$11$qBumOFo2yqLQ5Sbap0SmpOvlZcTI7pHBno03B.U4XLlUkeR0iyFaS", "123456789", 2, true }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Profiles",
-                columns: new[] { "Id", "AccountId", "Alias", "SeniorId" },
-                values: new object[,]
-                {
-                    { 1, 2, null, 2 },
-                    { 2, 3, "Senior", 2 }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_RoleId",
                 table: "Accounts",
@@ -129,21 +109,6 @@ namespace SensoBackend.Infrastructure.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Accounts_RoleId",
                 table: "Accounts");
-
-            migrationBuilder.DeleteData(
-                table: "Accounts",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Accounts",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "Accounts",
-                keyColumn: "Id",
-                keyValue: 3);
 
             migrationBuilder.DropColumn(
                 name: "RoleId",

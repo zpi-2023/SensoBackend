@@ -18,13 +18,6 @@ public sealed class GetAccountByCredentialsTests : IDisposable
     [Fact]
     public async Task Handle_ShouldReturnAccount_WhenCredentialsAreValid()
     {
-        var accountsCount = _context.Accounts.Count();
-        for (var i = 0; i < accountsCount; i++)
-        {
-            //to increment IndexVariable that is responsible for accountId so there are no duplicate Ids
-            Generators.AccountDto.Generate();
-        }
-
         var expectedResult = Generators.AccountDto.Generate() with
         {
             Password = BCrypt.Net.BCrypt.HashPassword("test")
@@ -73,13 +66,6 @@ public sealed class GetAccountByCredentialsTests : IDisposable
     [Fact]
     public async Task Handle_ShouldThrowValidationException_WhenPasswordIsInvalid()
     {
-        var accountsCount = _context.Accounts.Count();
-        for (var i = 0; i < accountsCount; i++)
-        {
-            //to increment IndexVariable that is responsible for accountId so there are no duplicate Ids
-            Generators.AccountDto.Generate();
-        }
-
         var expectedResult = Generators.AccountDto.Generate() with
         {
             Password = BCrypt.Net.BCrypt.HashPassword("test")
