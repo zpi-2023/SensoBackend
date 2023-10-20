@@ -8,8 +8,8 @@ public sealed class Role
     public const int AdminId = 1;
     public const int MemberId = 2;
 
-    public int Id { get; set; }
-    public string Name { get; set; }
+    public int Id { get; init; }
+    public string Name { get; init; }
 
     private Role(int id, string name)
     {
