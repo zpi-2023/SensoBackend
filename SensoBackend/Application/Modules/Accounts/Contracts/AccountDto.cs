@@ -8,28 +8,28 @@ public sealed record AccountDto
     public required int Id { get; init; }
 
     [Required]
-    public required string Email { get; set; }
+    public required string Email { get; init; }
 
     [Required]
-    public required string Password { get; set; }
+    public required string Password { get; init; }
 
     [Required]
-    public required bool Active { get; set; }
+    public required bool Active { get; init; }
 
     [Required]
-    public required bool Verified { get; set; }
-    public string? PhoneNumber { get; set; }
-    public string? DisplayName { get; set; }
+    public required bool Verified { get; init; }
+    public string? PhoneNumber { get; init; }
+    public string? DisplayName { get; init; }
 
     [Required]
-    public required DateTimeOffset CreatedAt { get; set; }
+    public required DateTimeOffset CreatedAt { get; init; }
 
     [Required]
-    public required DateTimeOffset LastLoginAt { get; set; }
+    public required DateTimeOffset LastLoginAt { get; init; }
 
     [Required]
-    public required DateTimeOffset LastPasswordChangeAt { get; set; }
+    public required DateTimeOffset LastPasswordChangeAt { get; init; }
     
     [Required]
-    public required int RoleId { get; set; }
+    public required int RoleId { get; init; }
 }
