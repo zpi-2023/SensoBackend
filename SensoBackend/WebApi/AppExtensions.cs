@@ -10,23 +10,21 @@ public static class AppExtensions
         var apiVersionDescriptionProvider =
             app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 
-        if (app.Environment.IsDevelopment())
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
+            foreach (
+                var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse()
+            )
             {
-                foreach (
-                    var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse()
-                )
-                {
-                    options.SwaggerEndpoint(
-                        $"/swagger/{description.GroupName}/swagger.json",
-                        description.GroupName
-                    );
-                }
-            });
-        }
-        else
+                options.SwaggerEndpoint(
+                    $"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName
+                );
+            }
+        });
+
+        if (!app.Environment.IsDevelopment())
         {
             app.UseHttpsRedirection();
         }
