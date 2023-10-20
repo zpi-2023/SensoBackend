@@ -1,4 +1,6 @@
-﻿namespace SensoBackend.WebApi.Authorization.Data;
+﻿using SensoBackend.Domain.Entities;
+
+namespace SensoBackend.WebApi.Authorization.Data;
 
 public static class RolePermission
 {
@@ -12,10 +14,10 @@ public static class RolePermission
         => Enum.GetValues<Permission>().ToHashSet(); //admin can do anything
 
     public static HashSet<Permission> GetPermissions(this Role role)
-        => role switch
+        => role.Id switch
         {
-            Role.Admin => AdminPermissions,
-            Role.Member => MemberPermissions,
+            Role.AdminId => AdminPermissions,
+            Role.MemberId => MemberPermissions,
             _ => throw new InvalidDataException("Provided role does not exist")
         };
 

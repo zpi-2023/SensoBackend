@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using SensoBackend.Application.Abstractions;
+using SensoBackend.Domain.Entities;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 using System.Net;
@@ -11,7 +12,7 @@ public class HasPermissionMiddleware
 {
     private RequestDelegate _next;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly ILogger<HasPermissionMiddleware> _logger; //may be useful later on
+    private readonly ILogger<HasPermissionMiddleware> _logger;
 
     public HasPermissionMiddleware(
         RequestDelegate next,
@@ -48,7 +49,7 @@ public class HasPermissionMiddleware
             var roleId = await authorizationService.GetRoleIdAsync(accountId);
 
             //2. Check if admin
-            if (roleId == (int)Role.Admin)
+            if (roleId == Role.AdminId)
             {
                 await _next(context);
                 return;
@@ -56,7 +57,7 @@ public class HasPermissionMiddleware
 
             //2.5 Check permissions
             var requiredPermission = attribute.Permission;
-            if (roleId == (int)Role.Member)
+            if (roleId == Role.MemberId)
             {
                 var permissions = Role.Member.GetPermissions();
                 if (permissions.Contains(requiredPermission))

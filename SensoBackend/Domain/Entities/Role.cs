@@ -1,11 +1,12 @@
-﻿using RoleEnum = SensoBackend.WebApi.Authorization.Data.Role;
-
-namespace SensoBackend.Domain.Entities;
+﻿namespace SensoBackend.Domain.Entities;
 
 public sealed class Role
 {
-    public static readonly Role Admin = new((int)RoleEnum.Admin, RoleEnum.Admin.ToString());
-    public static readonly Role Member = new((int)RoleEnum.Member, RoleEnum.Member.ToString());
+    public static readonly Role Admin = new(AdminId, "Admin");
+    public static readonly Role Member = new(MemberId, "Member");
+
+    public const int AdminId = 1;
+    public const int MemberId = 2;
 
     public int Id { get; set; }
     public string Name { get; set; }
