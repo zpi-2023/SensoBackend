@@ -11,7 +11,7 @@ public static class RolePermission
         };
 
     private static HashSet<Permission> AdminPermissions
-        => Enum.GetValues<Permission>().ToHashSet(); //admin can do anything
+        => Enum.GetValues<Permission>().ToHashSet();
 
     public static HashSet<Permission> GetPermissions(this Role role)
         => role.Id switch

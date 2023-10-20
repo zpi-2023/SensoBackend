@@ -26,12 +26,10 @@ public class HasPermissionMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        //0. Check if attribute present
         var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
         var attribute = endpoint?.Metadata.GetMetadata<HasPermissionAttribute>();
         if (attribute != null)
         {
-            //1. Check JWT token
             var accountIdString = context.User.Claims
                 .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
                 ?.Value;
@@ -42,39 +40,33 @@ public class HasPermissionMiddleware
                 return;
             }
 
-            //1.5 Get the role
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
             IAuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
             var accountId = int.Parse(accountIdString!);
             var roleId = await authorizationService.GetRoleIdAsync(accountId);
 
-            //2. Check if admin
             if (roleId == Role.AdminId)
             {
                 await _next(context);
                 return;
             }
 
-            //2.5 Check permissions
             var requiredPermission = attribute.Permission;
             if (roleId == Role.MemberId)
             {
                 var permissions = Role.Member.GetPermissions();
                 if (permissions.Contains(requiredPermission))
                 {
-                    //3. Get profiles for accountId
                     var profiles = await authorizationService.GetProfilesByAccountId(accountId);
 
-                    //3.5 Validate seniorId from route values
-                    //check if seniorId was given in an endpoint
                     var seniorIdStr = context.Request.RouteValues["seniorId"]?.ToString();
 
-                    if (seniorIdStr == null) //not all endpoints that need permission have to use seniorId (?)
+                    if (seniorIdStr == null)
                     {
                         await _next(context);
                         return;
                     }
-                    //check if Id is an int
+                    
                     var isIdValidd = Int32.TryParse(seniorIdStr, out var seniorId);
                     if (!isIdValidd)
                     {
