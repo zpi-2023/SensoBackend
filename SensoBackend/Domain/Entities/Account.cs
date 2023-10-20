@@ -25,5 +25,5 @@ public sealed class Account
 
     public required int RoleId { get; set; }
 
-    public Role? Role { get; set; } //nullable so we do not have to create it in constructor every time
+    public Role? Role { get; set; }
 }

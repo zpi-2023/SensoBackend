@@ -1,11 +1,8 @@
 ﻿namespace SensoBackend.WebApi.Authorization.Data;
 
-public enum Permission //TODO: add some more permissions if needed
+public enum Permission
 {
-    // Admin only
-    AdminAccess = 1,
-
-    // General permissions
-    Write = 11,
-    Read = 12,
+    AdminAccess,
+    Write,
+    Read,
 }

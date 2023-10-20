@@ -9,7 +9,7 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
 {
     public void Configure(EntityTypeBuilder<Account> builder)
     {
-        builder.ToTable("Accounts"); //may want to change it later to some static value
+        builder.ToTable("Accounts");
 
         builder.HasKey(x => x.Id);
 
