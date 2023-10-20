@@ -21,7 +21,8 @@ public static class Generators
         .RuleFor(u => u.DisplayName, f => f.Name.FullName())
         .RuleFor(u => u.CreatedAt, f => f.Date.PastOffset())
         .RuleFor(u => u.LastLoginAt, f => f.Date.PastOffset())
-        .RuleFor(u => u.LastPasswordChangeAt, f => f.Date.PastOffset());
+        .RuleFor(u => u.LastPasswordChangeAt, f => f.Date.PastOffset())
+        .RuleFor(u => u.RoleId, _ => 1);
 
     public static readonly Faker<GetAccountByCredentialsDto> GetAccountByCredentialsDto =
         new Faker<GetAccountByCredentialsDto>()

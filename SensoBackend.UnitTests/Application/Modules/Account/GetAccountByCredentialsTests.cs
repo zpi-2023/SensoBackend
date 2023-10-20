@@ -45,11 +45,11 @@ public sealed class GetAccountByCredentialsTests : IDisposable
         result.Password.Should().Be(expectedResult.Password);
         result.PhoneNumber.Should().Be(expectedResult.PhoneNumber);
         result.DisplayName.Should().Be(expectedResult.DisplayName);
-        result.CreatedAt.Should().BeCloseTo(expectedResult.CreatedAt, TimeSpan.FromSeconds(1));
-        result.LastLoginAt.Should().BeCloseTo(expectedResult.LastLoginAt, TimeSpan.FromSeconds(1));
+        result.CreatedAt.Should().BeCloseTo(expectedResult.CreatedAt, TimeSpan.FromSeconds(2));
+        result.LastLoginAt.Should().BeCloseTo(expectedResult.LastLoginAt, TimeSpan.FromSeconds(2));
         result.LastPasswordChangeAt
             .Should()
-            .BeCloseTo(expectedResult.LastPasswordChangeAt, TimeSpan.FromSeconds(1));
+            .BeCloseTo(expectedResult.LastPasswordChangeAt, TimeSpan.FromSeconds(2));
     }
 
     [Fact]

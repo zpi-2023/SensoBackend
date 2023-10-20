@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.WebApi.Authenticaion;
+using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.OptionsSetup;
 
 namespace SensoBackend.WebApi;
@@ -25,6 +26,9 @@ public static class ServiceExtensions
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
         services.ConfigureOptions<JwtOptionsSetup>();
         services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+        services.AddAuthorization();
+        services.AddScoped<IAuthorizationService, AuthorizationService>();
 
         services.AddTransient<IJwtProvider, JwtProvider>();
     }

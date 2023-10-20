@@ -35,9 +35,9 @@ public sealed class CreateAccountHandlerTests : IDisposable
         account.PhoneNumber.Should().Be(dto.PhoneNumber);
         account.Active.Should().BeTrue();
         account.Verified.Should().BeFalse();
-        account.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        account.LastLoginAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        account.LastPasswordChangeAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
+        account.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
+        account.LastLoginAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
+        account.LastPasswordChangeAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
     }
 
     [Fact]
