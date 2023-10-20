@@ -28,70 +28,70 @@ public class HasPermissionMiddleware
     {
         var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
         var attribute = endpoint?.Metadata.GetMetadata<HasPermissionAttribute>();
-        if (attribute != null)
+        if (attribute == null)
         {
-            var accountIdString = context.User.Claims
+            await _next(context);
+            return;
+        }
+
+        var accountIdString = context.User.Claims
                 .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
                 ?.Value;
 
-            if (accountIdString == null)
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                return;
-            }
-
-            using IServiceScope scope = _serviceScopeFactory.CreateScope();
-            IAuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
-            var accountId = int.Parse(accountIdString!);
-            var roleId = await authorizationService.GetRoleIdAsync(accountId);
-
-            if (roleId == Role.AdminId)
-            {
-                await _next(context);
-                return;
-            }
-
-            var requiredPermission = attribute.Permission;
-            if (roleId == Role.MemberId)
-            {
-                var permissions = Role.Member.GetPermissions();
-                if (permissions.Contains(requiredPermission))
-                {
-                    var profiles = await authorizationService.GetProfilesByAccountId(accountId);
-
-                    var seniorIdStr = context.Request.RouteValues["seniorId"]?.ToString();
-
-                    if (seniorIdStr == null)
-                    {
-                        await _next(context);
-                        return;
-                    }
-                    
-                    var isIdValidd = Int32.TryParse(seniorIdStr, out var seniorId);
-                    if (!isIdValidd)
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        return;
-                    }
-
-                    var seniorExists = profiles
-                        .Where(p => p.SeniorId == seniorId)
-                        .Any();
-
-                    if (!seniorExists)
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return;
-                    }
-                }
-                else
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    return;
-                }
-            }
+        if (accountIdString == null)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            return;
         }
 
-        await _next(context);
+        using IServiceScope scope = _serviceScopeFactory.CreateScope();
+        IAuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
+        var accountId = int.Parse(accountIdString!);
+        var roleId = await authorizationService.GetRoleIdAsync(accountId);
+
+        if (roleId == Role.AdminId)
+        {
+            await _next(context);
+            return;
+        }
+
+        if(roleId != Role.MemberId)
+        {
+            throw new InvalidDataException($"The role with id {roleId} does not exist or is not supported");
+        }
+
+        var requiredPermission = attribute.Permission;
+        var permissions = Role.Member.GetPermissions();
+        if (!permissions.Contains(requiredPermission))
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            return;
+        }
+
+        var profiles = await authorizationService.GetProfilesByAccountId(accountId);
+        var seniorIdStr = context.Request.RouteValues["seniorId"]?.ToString();
+
+        if (seniorIdStr == null)
+        {
+            await _next(context);
+            return;
+        }
+
+        var isIdValidd = Int32.TryParse(seniorIdStr, out var seniorId);
+        if (!isIdValidd)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return;
+        }
+
+        var seniorExists = profiles
+            .Where(p => p.SeniorId == seniorId)
+            .Any();
+
+        if (!seniorExists)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            return;
+        }
     }
 }
