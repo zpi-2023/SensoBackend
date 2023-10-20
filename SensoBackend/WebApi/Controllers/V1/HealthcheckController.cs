@@ -17,6 +17,5 @@ public class HealthcheckController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HealthcheckDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Get() => Ok(await _mediator.Send(new GetHealthRequest()));
 }
