@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Accounts.GetAccountById;
+namespace SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 
 public sealed record GetProfilesByAccountIdRequest(GetProfilesByAccountIdDto Dto)
     : IRequest<List<ProfileDto>>;

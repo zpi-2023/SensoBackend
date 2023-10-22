@@ -2,8 +2,8 @@
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.GetAccountById;
+using SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 using SensoBackend.Application.Modules.Profiles.Contracts;
-using SensoBackend.Domain.Entities;
 
 namespace SensoBackend.WebApi.Authorization;
 
