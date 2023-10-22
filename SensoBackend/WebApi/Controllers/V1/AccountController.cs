@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
+using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 using SensoBackend.WebApi.Authorization;
@@ -45,5 +46,29 @@ public class AccountController : ControllerBase
 
         var profiles = await _mediator.Send(new GetProfilesByAccountIdRequest(dto));
         return Ok(profiles);
+    }
+
+    [HasPermission(Permission.AccessProfiles)]
+    [HttpPost("profiles/senior")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> CreateSeniorProfile()
+    {
+        var accountId = this.GetAccountId();
+
+        var existingProfilesDto = new GetProfilesByAccountIdDto { AccountId = accountId };
+
+        var profiles = await _mediator.Send(new GetProfilesByAccountIdRequest(existingProfilesDto));
+        var seniorProfile = profiles.FirstOrDefault(p => p.AccountId == p.SeniorId);
+        if(seniorProfile != null)
+        {
+            return Conflict("Account already has a senior profile");
+        }
+
+        var dto = new CreateSeniorProfileDto { AccountId = accountId };
+        await _mediator.Send(new CreateSeniorProfileRequest(dto));
+
+        return NoContent();
     }
 }

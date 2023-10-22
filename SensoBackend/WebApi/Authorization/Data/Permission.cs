@@ -3,5 +3,6 @@
 public enum Permission
 {
     AccessProfiles,
-    AdminAccess
+    AdminAccess,
+    CreateProfile
 }
