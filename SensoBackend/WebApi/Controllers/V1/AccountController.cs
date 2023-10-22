@@ -97,7 +97,7 @@ public class AccountController : ControllerBase
 
         var encodedSeniorId = await _encryptionService.EncryptAsync(accountId.ToString(), dziadEncryptionKey);
 
-        return Ok(encodedSeniorId);
+        return Ok(new EncodedSeniorIdDto { EncodedSeniorId = encodedSeniorId });
     }
 
     [HasPermission(Permission.CreateProfile)]
