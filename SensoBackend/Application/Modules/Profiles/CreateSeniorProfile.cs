@@ -7,7 +7,7 @@ using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles;
+namespace SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
 
 public sealed record CreateSeniorProfileRequest(CreateSeniorProfileDto Dto) : IRequest;
 
@@ -39,7 +39,7 @@ public sealed class CreateSeniorProfileHandler : IRequestHandler<CreateSeniorPro
         var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.Dto.AccountId, ct);
         if (account == null)
         {
-            throw new ValidationException($"An account with this given Id {request.Dto.AccountId} does not exist");
+            throw new ValidationException($"An account with the given Id ({request.Dto.AccountId}) does not exist");
         }
 
         var displayName = account.DisplayName;

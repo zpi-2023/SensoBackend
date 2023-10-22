@@ -8,17 +8,17 @@ using SensoBackend.Infrastructure.Data;
 namespace SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 
 public sealed record GetProfilesByAccountIdRequest(GetProfilesByAccountIdDto Dto)
-    : IRequest<List<ProfileDto>>;
+    : IRequest<ProfilesDto>;
 
 [UsedImplicitly]
 public sealed class GetProfilesByAccountIdHandler
-    : IRequestHandler<GetProfilesByAccountIdRequest, List<ProfileDto>>
+    : IRequestHandler<GetProfilesByAccountIdRequest, ProfilesDto>
 {
     private readonly AppDbContext _context;
 
     public GetProfilesByAccountIdHandler(AppDbContext context) => _context = context;
 
-    public async Task<List<ProfileDto>> Handle(
+    public async Task<ProfilesDto> Handle(
         GetProfilesByAccountIdRequest request,
         CancellationToken ct
     )
@@ -26,7 +26,8 @@ public sealed class GetProfilesByAccountIdHandler
         var profiles = await _context.Profiles
             .Where(p => p.AccountId == request.Dto.AccountId)
             .ToListAsync(ct);
+        var adaptedProfiles = new ProfilesDto(profiles.Adapt<List<ProfileDto>>());
 
-        return profiles.Adapt<List<ProfileDto>>();
+        return adaptedProfiles;
     }
 }

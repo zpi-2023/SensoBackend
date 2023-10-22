@@ -3,11 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
-using SensoBackend.Application.Modules.Profiles;
+using SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
 using SensoBackend.Application.Modules.Profiles.Contracts;
+using SensoBackend.Application.Modules.Profiles.GetListOfProfilesByAccountId;
 using SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
+using SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
 
 namespace SensoBackend.WebApi.Controllers.V1;
 
@@ -16,6 +18,9 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiVersion("1.0")]
 public class AccountController : ControllerBase
 {
+    private const string dziadEncryptionKey = "SuperSecureSeniorSensoKey";
+    private EncryptionService _encryptionService = new EncryptionService();
+
     private readonly ILogger<AccountController> _logger;
     private readonly IMediator _mediator;
 
@@ -48,7 +53,7 @@ public class AccountController : ControllerBase
         return Ok(profiles);
     }
 
-    [HasPermission(Permission.AccessProfiles)]
+    [HasPermission(Permission.CreateProfile)]
     [HttpPost("profiles/senior")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -59,7 +64,7 @@ public class AccountController : ControllerBase
 
         var existingProfilesDto = new GetProfilesByAccountIdDto { AccountId = accountId };
 
-        var profiles = await _mediator.Send(new GetProfilesByAccountIdRequest(existingProfilesDto));
+        var profiles = await _mediator.Send(new GetListOfProfilesByAccountIdRequest(existingProfilesDto));
         var seniorProfile = profiles.FirstOrDefault(p => p.AccountId == p.SeniorId);
         if(seniorProfile != null)
         {
@@ -69,6 +74,56 @@ public class AccountController : ControllerBase
         var dto = new CreateSeniorProfileDto { AccountId = accountId };
         await _mediator.Send(new CreateSeniorProfileRequest(dto));
 
+        return NoContent();
+    }
+
+    [HasPermission(Permission.AccessProfiles)]
+    [HttpGet("profiles/senior")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetSeniorProfile()
+    {
+        var accountId = this.GetAccountId();
+        var dto = new GetProfilesByAccountIdDto { AccountId = accountId };
+
+        var profiles = await _mediator.Send(new GetListOfProfilesByAccountIdRequest(dto));
+        var isSenior = profiles.Any(p => p.AccountId == p.SeniorId);
+
+        if (!isSenior)
+        {
+            return NotFound();
+        }
+
+        var encodedSeniorId = await _encryptionService.EncryptAsync(accountId.ToString(), dziadEncryptionKey);
+
+        return Ok(encodedSeniorId);
+    }
+
+    [HasPermission(Permission.CreateProfile)]
+    [HttpPost("profiles/caretaker")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> CreateCaretakerProfile(CreateCaretakerProfileDto dto)
+    {
+        var accountId = this.GetAccountId();
+
+        var seniorIdStr = await _encryptionService.DecryptAsync(dto.EncodedSeniorId, dziadEncryptionKey);
+        var isString = Int32.TryParse(seniorIdStr, out var seniorId);
+
+        if (!isString)
+        {
+            return Forbid();
+        }
+
+        var internalDto = new CreateCaretakerProfileInternalDto
+        {
+            AccountId = accountId,
+            SeniorId = seniorId,
+            SeniorAlias = dto.SeniorAlias
+        };
+        await _mediator.Send(new CreateCaretakerProfileRequest(internalDto));
         return NoContent();
     }
 }
