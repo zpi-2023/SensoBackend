@@ -6,8 +6,7 @@ public static class RolePermission
 {
     private static HashSet<Permission> MemberPermissions
         => new HashSet<Permission> {
-            Permission.AccessProfiles,
-            Permission.CreateProfile
+            Permission.ProfileAccess
         };
 
     private static HashSet<Permission> AdminPermissions

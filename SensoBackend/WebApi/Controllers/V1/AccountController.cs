@@ -40,7 +40,7 @@ public class AccountController : ControllerBase
         return NoContent();
     }
 
-    [HasPermission(Permission.AccessProfiles)]
+    [HasPermission(Permission.ProfileAccess)]
     [HttpGet("profiles")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -53,7 +53,7 @@ public class AccountController : ControllerBase
         return Ok(profiles);
     }
 
-    [HasPermission(Permission.CreateProfile)]
+    [HasPermission(Permission.ProfileAccess)]
     [HttpPost("profiles/senior")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -77,7 +77,7 @@ public class AccountController : ControllerBase
         return NoContent();
     }
 
-    [HasPermission(Permission.AccessProfiles)]
+    [HasPermission(Permission.ProfileAccess)]
     [HttpGet("profiles/senior")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -100,7 +100,7 @@ public class AccountController : ControllerBase
         return Ok(new EncodedSeniorIdDto { EncodedSeniorId = encodedSeniorId });
     }
 
-    [HasPermission(Permission.CreateProfile)]
+    [HasPermission(Permission.ProfileAccess)]
     [HttpPost("profiles/caretaker")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
