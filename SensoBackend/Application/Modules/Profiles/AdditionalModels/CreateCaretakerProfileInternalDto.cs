@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SensoBackend.Application.Modules.Profiles.Contracts;
+namespace SensoBackend.Application.Modules.Profiles.AdditionalModels;
 
 public class CreateCaretakerProfileInternalDto
 {
@@ -8,7 +8,7 @@ public class CreateCaretakerProfileInternalDto
     public required int AccountId { get; init; }
 
     [Required]
-    public required int SeniorId { get; init; }
+    public required int EncodedSeniorId { get; init; }
 
     [Required]
     public required string SeniorAlias { get; init; }

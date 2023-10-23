@@ -1,5 +1,5 @@
 using FluentValidation;
-using Microsoft.Extensions.Primitives;
+using SensoBackend.Application.Exceptions;
 using System.Security.Authentication;
 
 namespace SensoBackend.WebApi.Middlewares;
@@ -33,6 +33,10 @@ public sealed class ExceptionMiddleware
             {
                 ValidationException => 400,
                 InvalidCredentialException => 401,
+                AccountNotFoundException => 404,
+                SeniorNotFoundException => 404,
+                CaretakerProfileAlreadyExistsException => 409,
+                SeniorProfileAlreadyExistsException => 409,
                 _ => 500
             };
         }

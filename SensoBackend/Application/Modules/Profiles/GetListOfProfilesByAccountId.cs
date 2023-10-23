@@ -2,7 +2,7 @@
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.Contracts;
+using SensoBackend.Application.Modules.Profiles.AdditionalModels;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.GetListOfProfilesByAccountId;

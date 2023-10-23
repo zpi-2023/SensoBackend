@@ -1,4 +1,4 @@
-﻿using SensoBackend.Application.Modules.Profiles.Contracts;
+﻿using SensoBackend.Application.Modules.Profiles.AdditionalModels;
 
 namespace SensoBackend.Application.Abstractions;
 

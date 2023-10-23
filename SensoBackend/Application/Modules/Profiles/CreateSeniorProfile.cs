@@ -3,9 +3,12 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.Contracts;
+using SensoBackend.Application.Exceptions;
+using SensoBackend.Application.Modules.Profiles.AdditionalModels;
+using SensoBackend.Application.Modules.Profiles.GetListOfProfilesByAccountId;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Infrastructure.Data;
+using SensoBackend.Infrastructure.Migrations;
 
 namespace SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
 
@@ -39,7 +42,7 @@ public sealed class CreateSeniorProfileHandler : IRequestHandler<CreateSeniorPro
         var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.Dto.AccountId, ct);
         if (account == null)
         {
-            throw new ValidationException($"An account with the given Id ({request.Dto.AccountId}) does not exist");
+            throw new AccountNotFoundException($"An account with the given Id ({request.Dto.AccountId}) does not exist");
         }
 
         var displayName = account.DisplayName;

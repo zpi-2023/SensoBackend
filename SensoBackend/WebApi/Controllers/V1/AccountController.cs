@@ -5,11 +5,12 @@ using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
 using SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
 using SensoBackend.Application.Modules.Profiles.Contracts;
-using SensoBackend.Application.Modules.Profiles.GetListOfProfilesByAccountId;
 using SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 using SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
+using SensoBackend.Application.Modules.Profiles.AdditionalModels;
+using SensoBackend.Application.Modules.Profiles.GetEncodedSeniorId;
 
 namespace SensoBackend.WebApi.Controllers.V1;
 
@@ -18,9 +19,6 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiVersion("1.0")]
 public class AccountController : ControllerBase
 {
-    private const string dziadEncryptionKey = "SuperSecureSeniorSensoKey";
-    private EncryptionService _encryptionService = new EncryptionService();
-
     private readonly ILogger<AccountController> _logger;
     private readonly IMediator _mediator;
 
@@ -61,16 +59,6 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> CreateSeniorProfile()
     {
         var accountId = this.GetAccountId();
-
-        var existingProfilesDto = new GetProfilesByAccountIdDto { AccountId = accountId };
-
-        var profiles = await _mediator.Send(new GetListOfProfilesByAccountIdRequest(existingProfilesDto));
-        var seniorProfile = profiles.FirstOrDefault(p => p.AccountId == p.SeniorId);
-        if(seniorProfile != null)
-        {
-            return Conflict("Account already has a senior profile");
-        }
-
         var dto = new CreateSeniorProfileDto { AccountId = accountId };
         await _mediator.Send(new CreateSeniorProfileRequest(dto));
 
@@ -85,19 +73,9 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> GetSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        var dto = new GetProfilesByAccountIdDto { AccountId = accountId };
-
-        var profiles = await _mediator.Send(new GetListOfProfilesByAccountIdRequest(dto));
-        var isSenior = profiles.Any(p => p.AccountId == p.SeniorId);
-
-        if (!isSenior)
-        {
-            return NotFound();
-        }
-
-        var encodedSeniorId = await _encryptionService.EncryptAsync(accountId.ToString(), dziadEncryptionKey);
-
-        return Ok(new EncodedSeniorIdDto { EncodedSeniorId = encodedSeniorId });
+        var dto = new GetEncodedSeniorIdDto { AccountId = accountId };
+        var encodedData = await _mediator.Send(new GetEncodedSeniorIdRequest(dto));
+        return Ok(encodedData);
     }
 
     [HasPermission(Permission.ProfileAccess)]
@@ -109,18 +87,10 @@ public class AccountController : ControllerBase
     {
         var accountId = this.GetAccountId();
 
-        var seniorIdStr = await _encryptionService.DecryptAsync(dto.EncodedSeniorId, dziadEncryptionKey);
-        var isString = Int32.TryParse(seniorIdStr, out var seniorId);
-
-        if (!isString)
-        {
-            return Forbid();
-        }
-
         var internalDto = new CreateCaretakerProfileInternalDto
         {
             AccountId = accountId,
-            SeniorId = seniorId,
+            EncodedSeniorId = dto.EncodedSeniorId,
             SeniorAlias = dto.SeniorAlias
         };
         await _mediator.Send(new CreateCaretakerProfileRequest(internalDto));

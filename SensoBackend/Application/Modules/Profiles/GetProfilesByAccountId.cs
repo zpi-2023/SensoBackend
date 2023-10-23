@@ -2,7 +2,9 @@
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Modules.Profiles.AdditionalModels;
 using SensoBackend.Application.Modules.Profiles.Contracts;
+using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
@@ -26,7 +28,8 @@ public sealed class GetProfilesByAccountIdHandler
         var profiles = await _context.Profiles
             .Where(p => p.AccountId == request.Dto.AccountId)
             .ToListAsync(ct);
-        var adaptedProfiles = new ProfilesDto(profiles.Adapt<List<ProfileDto>>());
+
+        var adaptedProfiles = DtoMapper.ToProfilesDto(profiles);
 
         return adaptedProfiles;
     }

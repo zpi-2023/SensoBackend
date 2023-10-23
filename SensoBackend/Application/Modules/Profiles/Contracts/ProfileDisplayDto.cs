@@ -1,23 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SensoBackend.Application.Modules.Profiles.Utils;
 
 namespace SensoBackend.Application.Modules.Profiles.Contracts;
 
 public class ProfileDisplayDto
 {
     [Required]
-    public string Type { get; set; }
+    public required string Type { get; init; }
 
     [Required]
-    public int SeniorId { get; set; }
+    public required int SeniorId { get; init; }
 
-    public string? SeniorAlias { get; set; }
-
-    internal ProfileDisplayDto(ProfileDto profile)
-    {
-        Type = profile.AccountId == profile.SeniorId
-            ? "senior"
-            : "caretaker";
-        SeniorId = profile.SeniorId;
-        SeniorAlias = profile.Alias;
-    }
+    [Required]
+    public required string SeniorAlias { get; init; }
 }
