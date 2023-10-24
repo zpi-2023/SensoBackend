@@ -3,9 +3,9 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Exceptions;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;

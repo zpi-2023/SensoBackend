@@ -6,7 +6,7 @@ namespace SensoBackend.WebApi.Controllers;
 public static class ControllerExtensions
 {
     /// <summary> Retrieves accountId from claims </summary>
-    /// <remarks> 
+    /// <remarks>
     /// Assumes controller uses HasPermissionAttribute -
     /// checks for unauthorized users are not done and will result in error
     /// </remarks>

@@ -1,4 +1,4 @@
-﻿namespace SensoBackend.Application.Exceptions;
+﻿namespace SensoBackend.Domain.Exceptions;
 
 public class SeniorProfileAlreadyExistsException : Exception
 {

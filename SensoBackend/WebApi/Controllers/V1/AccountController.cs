@@ -82,12 +82,13 @@ public class AccountController : ControllerBase
     {
         var accountId = this.GetAccountId();
 
-        await _mediator.Send(new CreateCaretakerProfileRequest
-        {
-            AccountId = accountId,
-            EncodedSeniorId = dto.EncodedSeniorId,
-            SeniorAlias = dto.SeniorAlias
-        });
+        await _mediator.Send(
+            new CreateCaretakerProfileRequest
+            {
+                AccountId = accountId,
+                EncodedSeniorId = dto.EncodedSeniorId,
+                SeniorAlias = dto.SeniorAlias
+            });
 
         return NoContent();
     }

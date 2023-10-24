@@ -1,5 +1,5 @@
 using FluentValidation;
-using SensoBackend.Application.Exceptions;
+using SensoBackend.Domain.Exceptions;
 using System.Security.Authentication;
 
 namespace SensoBackend.WebApi.Middlewares;

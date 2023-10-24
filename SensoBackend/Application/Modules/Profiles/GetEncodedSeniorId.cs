@@ -1,9 +1,9 @@
 ﻿using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Exceptions;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Application.Modules.Profiles.Utils;
+using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.GetEncodedSeniorId;
@@ -47,7 +47,7 @@ public sealed class GetEncodedSeniorIdHandler
         var validTo = DateTime.Now.AddMinutes(_tokenValidForMinutes);
         var seniorData = new SeniorDataToEncode
         {
-            SeniorDisplayName = account.DisplayName ?? String.Empty,
+            SeniorDisplayName = account.DisplayName,
             SeniorId = account.Id,
             ValidTo = validTo
         };

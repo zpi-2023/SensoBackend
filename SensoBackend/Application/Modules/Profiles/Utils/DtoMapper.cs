@@ -8,7 +8,7 @@ public static class DtoMapper
     public static ProfilesDto ToProfilesDto(List<Profile> profiles)
     {
         List<ProfileDisplayDto> displayProfiles = new List<ProfileDisplayDto>();
-        foreach(var profile in profiles)
+        foreach (var profile in profiles)
         {
             displayProfiles.Add(new ProfileDisplayDto
             { 

@@ -2,7 +2,7 @@
 
 public static class SeniorIdRepo
 {
-    private static readonly Dictionary<int, SeniorDataToEncode> Seniors = new Dictionary<int, SeniorDataToEncode>();
+    private static readonly Dictionary<int, SeniorDataToEncode> Seniors = new();
 
     public static SeniorDataToEncode? Get(int hash)
     {
