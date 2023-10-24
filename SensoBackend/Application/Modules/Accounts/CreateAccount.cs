@@ -31,6 +31,9 @@ public sealed class CreateAccountValidator : AbstractValidator<CreateAccountRequ
         RuleFor(r => r.Dto.PhoneNumber)
             .Matches("^[0-9]{9}$")
             .WithMessage("Phone number is invalid.");
+        RuleFor(r => r.Dto.DisplayName)
+            .NotEmpty()
+            .WithMessage("DisplayName is empty.");
     }
 }
 
@@ -55,6 +58,7 @@ public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
         account.LastPasswordChangeAt = DateTime.UtcNow;
         account.Verified = false;
         account.Active = true;
+        account.DisplayName = request.Dto.DisplayName;
         account.RoleId = Role.Member.Id;
 
         await _context.Accounts.AddAsync(account, ct);

@@ -2,7 +2,5 @@
 
 public enum Permission
 {
-    AdminAccess,
-    Write,
-    Read,
+    ProfileAccess
 }

@@ -19,7 +19,7 @@ public sealed record AccountDto
     [Required]
     public required bool Verified { get; init; }
     public string? PhoneNumber { get; init; }
-    public string? DisplayName { get; init; }
+    public required string DisplayName { get; init; }
 
     [Required]
     public required DateTimeOffset CreatedAt { get; init; }
@@ -29,7 +29,7 @@ public sealed record AccountDto
 
     [Required]
     public required DateTimeOffset LastPasswordChangeAt { get; init; }
-    
+
     [Required]
     public required int RoleId { get; init; }
 }

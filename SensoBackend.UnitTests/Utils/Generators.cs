@@ -32,5 +32,6 @@ public static class Generators
     public static readonly Faker<CreateAccountDto> CreateAccountDto = new Faker<CreateAccountDto>()
         .RuleFor(u => u.Email, f => f.Internet.Email())
         .RuleFor(u => u.Password, f => f.Internet.Password())
-        .RuleFor(u => u.PhoneNumber, f => f.Random.ReplaceNumbers("#########"));
+        .RuleFor(u => u.PhoneNumber, f => f.Random.ReplaceNumbers("#########"))
+        .RuleFor(u => u.DisplayName, f => f.Random.Word());
 }

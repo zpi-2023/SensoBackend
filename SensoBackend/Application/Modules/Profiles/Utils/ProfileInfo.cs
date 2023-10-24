@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SensoBackend.Application.Modules.Profiles.Contracts;
+namespace SensoBackend.Application.Modules.Profiles.Utils;
 
-public class ProfileDto
+public class ProfileInfo
 {
     [Required]
     public required int Id { get; init; }
@@ -13,5 +13,6 @@ public class ProfileDto
     [Required]
     public required int SeniorId { get; init; }
 
-    public string? Alias { get; init; }
+    [Required]
+    public required string Alias { get; init; }
 }

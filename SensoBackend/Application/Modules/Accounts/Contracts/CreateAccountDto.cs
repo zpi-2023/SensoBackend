@@ -9,5 +9,9 @@ public sealed record CreateAccountDto
 
     [Required]
     public required string Password { get; init; }
+
     public string? PhoneNumber { get; init; }
+
+    [Required]
+    public required string DisplayName { get; init; }
 }

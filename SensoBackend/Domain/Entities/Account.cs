@@ -12,7 +12,7 @@ public sealed class Account
     public required bool Active { get; set; }
     public required bool Verified { get; set; }
     public string? PhoneNumber { get; set; }
-    public string? DisplayName { get; set; }
+    public required string DisplayName { get; set; }
 
     [DataType(DataType.DateTime)]
     public required DateTimeOffset CreatedAt { get; set; }
