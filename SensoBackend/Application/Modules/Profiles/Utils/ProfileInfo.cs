@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SensoBackend.Application.Modules.Profiles.AdditionalModels;
+namespace SensoBackend.Application.Modules.Profiles.Utils;
 
-public class ProfileDto
+public class ProfileInfo
 {
     [Required]
     public required int Id { get; init; }

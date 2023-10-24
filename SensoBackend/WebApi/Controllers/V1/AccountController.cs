@@ -9,7 +9,6 @@ using SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 using SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
-using SensoBackend.Application.Modules.Profiles.AdditionalModels;
 using SensoBackend.Application.Modules.Profiles.GetEncodedSeniorId;
 
 namespace SensoBackend.WebApi.Controllers.V1;
@@ -40,14 +39,12 @@ public class AccountController : ControllerBase
 
     [HasPermission(Permission.ProfileAccess)]
     [HttpGet("profiles")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfilesDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetProfiles()
     {
         var accountId = this.GetAccountId();
-        var dto = new GetProfilesByAccountIdDto { AccountId = accountId };
-
-        var profiles = await _mediator.Send(new GetProfilesByAccountIdRequest(dto));
+        var profiles = await _mediator.Send(new GetProfilesByAccountIdRequest(accountId));
         return Ok(profiles);
     }
 
@@ -59,22 +56,20 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> CreateSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        var dto = new CreateSeniorProfileDto { AccountId = accountId };
-        await _mediator.Send(new CreateSeniorProfileRequest(dto));
+        await _mediator.Send(new CreateSeniorProfileRequest(accountId));
 
         return NoContent();
     }
 
     [HasPermission(Permission.ProfileAccess)]
     [HttpGet("profiles/senior")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncodedSeniorDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        var dto = new GetEncodedSeniorIdDto { AccountId = accountId };
-        var encodedData = await _mediator.Send(new GetEncodedSeniorIdRequest(dto));
+        var encodedData = await _mediator.Send(new GetEncodedSeniorIdRequest(accountId));
         return Ok(encodedData);
     }
 
@@ -87,13 +82,13 @@ public class AccountController : ControllerBase
     {
         var accountId = this.GetAccountId();
 
-        var internalDto = new CreateCaretakerProfileInternalDto
+        await _mediator.Send(new CreateCaretakerProfileRequest
         {
             AccountId = accountId,
             EncodedSeniorId = dto.EncodedSeniorId,
             SeniorAlias = dto.SeniorAlias
-        };
-        await _mediator.Send(new CreateCaretakerProfileRequest(internalDto));
+        });
+
         return NoContent();
     }
 }

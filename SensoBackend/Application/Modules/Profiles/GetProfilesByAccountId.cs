@@ -1,16 +1,13 @@
 ﻿using JetBrains.Annotations;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.AdditionalModels;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 
-public sealed record GetProfilesByAccountIdRequest(GetProfilesByAccountIdDto Dto)
-    : IRequest<ProfilesDto>;
+public sealed record GetProfilesByAccountIdRequest(int AccountId) : IRequest<ProfilesDto>;
 
 [UsedImplicitly]
 public sealed class GetProfilesByAccountIdHandler
@@ -26,7 +23,7 @@ public sealed class GetProfilesByAccountIdHandler
     )
     {
         var profiles = await _context.Profiles
-            .Where(p => p.AccountId == request.Dto.AccountId)
+            .Where(p => p.AccountId == request.AccountId)
             .ToListAsync(ct);
 
         var adaptedProfiles = DtoMapper.ToProfilesDto(profiles);

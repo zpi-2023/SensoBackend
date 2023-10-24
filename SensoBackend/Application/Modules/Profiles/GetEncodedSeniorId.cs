@@ -2,15 +2,13 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Exceptions;
-using SensoBackend.Application.Modules.Profiles.AdditionalModels;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.GetEncodedSeniorId;
 
-public sealed record GetEncodedSeniorIdRequest(GetEncodedSeniorIdDto Dto)
-    : IRequest<EncodedSeniorDto>;
+public sealed record GetEncodedSeniorIdRequest(int AccountId) : IRequest<EncodedSeniorDto>;
 
 [UsedImplicitly]
 public sealed class GetEncodedSeniorIdHandler
@@ -28,7 +26,7 @@ public sealed class GetEncodedSeniorIdHandler
     )
     {
         var profiles = await _context.Profiles
-            .Where(p => p.AccountId == request.Dto.AccountId
+            .Where(p => p.AccountId == request.AccountId
                 && p.AccountId == p.SeniorId)
             .ToListAsync(ct);
 
@@ -38,7 +36,7 @@ public sealed class GetEncodedSeniorIdHandler
         }
 
         var account = await _context.Accounts
-            .Where(a => a.Id == request.Dto.AccountId)
+            .Where(a => a.Id == request.AccountId)
             .FirstOrDefaultAsync(ct);
 
         if(account == null)

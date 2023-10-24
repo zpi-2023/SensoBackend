@@ -1,6 +1,4 @@
-﻿using SensoBackend.Application.Modules.Profiles.AdditionalModels;
-
-namespace SensoBackend.Application.Modules.Profiles.Utils;
+﻿namespace SensoBackend.Application.Modules.Profiles.Utils;
 
 public static class SeniorIdRepo
 {
@@ -15,7 +13,7 @@ public static class SeniorIdRepo
         }
         Seniors.Remove(hash);
 
-        return DateTime.Compare(seniorData.ValidTo, DateTime.Now) >= 0
+        return seniorData.ValidTo >= DateTime.Now
             ? seniorData
             : null;
     }
@@ -32,7 +30,7 @@ public static class SeniorIdRepo
     private static void RemoveOldRecords()
     {
         Seniors
-            .Where(r => DateTime.Compare(r.Value.ValidTo, DateTime.Now) < 0)
+            .Where(r => r.Value.ValidTo < DateTime.Now)
             .Select(r => r.Key)
             .ToList()
             .ForEach(r => Seniors.Remove(r));
