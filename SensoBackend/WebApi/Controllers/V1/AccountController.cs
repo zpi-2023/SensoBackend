@@ -75,7 +75,7 @@ public class AccountController : ControllerBase
 
     [HasPermission(Permission.ProfileAccess)]
     [HttpPost("profiles/caretaker")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SeniorIdDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateCaretakerProfile(CreateCaretakerProfileDto dto)
