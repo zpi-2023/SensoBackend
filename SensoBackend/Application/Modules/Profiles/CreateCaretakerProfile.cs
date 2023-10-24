@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
@@ -10,11 +11,11 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
 
-public sealed record CreateCaretakerProfileRequest : IRequest
+public sealed record CreateCaretakerProfileRequest : IRequest<SeniorIdDto>
 {
     public required int AccountId { get; init; }
 
-    public required int EncodedSeniorId { get; init; }
+    public required int Hash { get; init; }
 
     public required string SeniorAlias { get; init; }
 }
@@ -27,22 +28,22 @@ public sealed class CreateCaretakerProfileValidator : AbstractValidator<CreateCa
         RuleFor(r => r.AccountId)
             .NotEmpty()
             .WithMessage("AccountId is empty.");
-        RuleFor(r => r.EncodedSeniorId)
+        RuleFor(r => r.Hash)
             .NotEmpty()
-            .WithMessage("EncodedSeniorId is empty.");
+            .WithMessage("Hash is empty.");
     }
 }
 
 [UsedImplicitly]
-public sealed class CreateCaretakerProfileHandler : IRequestHandler<CreateCaretakerProfileRequest>
+public sealed class CreateCaretakerProfileHandler : IRequestHandler<CreateCaretakerProfileRequest, SeniorIdDto>
 {
     private readonly AppDbContext _context;
 
     public CreateCaretakerProfileHandler(AppDbContext context) => _context = context;
 
-    public async Task Handle(CreateCaretakerProfileRequest request, CancellationToken ct)
+    public async Task<SeniorIdDto> Handle(CreateCaretakerProfileRequest request, CancellationToken ct)
     {
-        var seniorData = SeniorIdRepo.Get(request.EncodedSeniorId);
+        var seniorData = SeniorIdRepo.Get(request.Hash);
 
         if (seniorData == null)
         {
@@ -80,5 +81,7 @@ public sealed class CreateCaretakerProfileHandler : IRequestHandler<CreateCareta
 
         await _context.Profiles.AddAsync(profile, ct);
         await _context.SaveChangesAsync(ct);
+
+        return new SeniorIdDto { SeniorId = profile.SeniorId };
     }
 }

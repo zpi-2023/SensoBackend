@@ -75,21 +75,21 @@ public class AccountController : ControllerBase
 
     [HasPermission(Permission.ProfileAccess)]
     [HttpPost("profiles/caretaker")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateCaretakerProfile(CreateCaretakerProfileDto dto)
     {
         var accountId = this.GetAccountId();
 
-        await _mediator.Send(
+        var seniorId = await _mediator.Send(
             new CreateCaretakerProfileRequest
             {
                 AccountId = accountId,
-                EncodedSeniorId = dto.EncodedSeniorId,
+                Hash = dto.Hash,
                 SeniorAlias = dto.SeniorAlias
             });
 
-        return NoContent();
+        return Ok(seniorId);
     }
 }

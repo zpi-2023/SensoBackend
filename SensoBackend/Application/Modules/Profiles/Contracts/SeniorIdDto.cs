@@ -2,14 +2,8 @@
 
 namespace SensoBackend.Application.Modules.Profiles.Contracts;
 
-public class ProfileDisplayDto
+public class SeniorIdDto
 {
     [Required]
-    public required string Type { get; init; }
-
-    [Required]
     public required int SeniorId { get; init; }
-
-    [Required]
-    public required string SeniorAlias { get; init; }
 }
