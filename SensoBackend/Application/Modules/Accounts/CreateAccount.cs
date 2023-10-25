@@ -31,9 +31,7 @@ public sealed class CreateAccountValidator : AbstractValidator<CreateAccountRequ
         RuleFor(r => r.Dto.PhoneNumber)
             .Matches("^[0-9]{9}$")
             .WithMessage("Phone number is invalid.");
-        RuleFor(r => r.Dto.DisplayName)
-            .NotEmpty()
-            .WithMessage("DisplayName is empty.");
+        RuleFor(r => r.Dto.DisplayName).NotEmpty().WithMessage("DisplayName is empty.");
     }
 }
 

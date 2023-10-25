@@ -12,12 +12,8 @@ internal sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
 
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.Account)
-            .WithMany()
-            .HasForeignKey(x => x.AccountId);
+        builder.HasOne(x => x.Account).WithMany().HasForeignKey(x => x.AccountId);
 
-        builder.HasOne(x => x.Senior)
-            .WithMany()
-            .HasForeignKey(x => x.SeniorId);
+        builder.HasOne(x => x.Senior).WithMany().HasForeignKey(x => x.SeniorId);
     }
 }

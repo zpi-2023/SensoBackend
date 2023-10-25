@@ -13,8 +13,6 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
 
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.Role)
-            .WithMany()
-            .HasForeignKey(x => x.RoleId);
+        builder.HasOne(x => x.Role).WithMany().HasForeignKey(x => x.RoleId);
     }
 }
