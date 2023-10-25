@@ -8,26 +8,18 @@ using System.Security.Authentication;
 
 namespace SensoBackend.Application.Modules.Accounts.GetAccountById;
 
-public sealed record GetAccountByIdRequest(GetAccountByIdDto Dto)
-    : IRequest<AccountDto>;
+public sealed record GetAccountByIdRequest(GetAccountByIdDto Dto) : IRequest<AccountDto>;
 
 [UsedImplicitly]
-public sealed class GetAccountByIdHandler
-    : IRequestHandler<GetAccountByIdRequest, AccountDto>
+public sealed class GetAccountByIdHandler : IRequestHandler<GetAccountByIdRequest, AccountDto>
 {
     private readonly AppDbContext _context;
 
     public GetAccountByIdHandler(AppDbContext context) => _context = context;
 
-    public async Task<AccountDto> Handle(
-        GetAccountByIdRequest request,
-        CancellationToken ct
-    )
+    public async Task<AccountDto> Handle(GetAccountByIdRequest request, CancellationToken ct)
     {
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == request.Dto.Id,
-            ct
-        );
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.Dto.Id, ct);
 
         if (account == null)
         {

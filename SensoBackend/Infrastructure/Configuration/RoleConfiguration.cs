@@ -12,8 +12,6 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
 
         builder.HasKey(x => x.Id);
 
-        builder.HasData(
-            Role.Admin,
-            Role.Member);
+        builder.HasData(Role.Admin, Role.Member);
     }
 }

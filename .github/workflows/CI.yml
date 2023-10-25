@@ -24,7 +24,7 @@ jobs:
         run: dotnet tool restore
         
       - name: Check code format
-        run: dotnet csharpier --check
+        run: dotnet csharpier . --check
   
   
   unit-tests:

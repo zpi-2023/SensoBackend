@@ -26,11 +26,10 @@ public sealed class GetEncodedSeniorIdHandler
     )
     {
         var profiles = await _context.Profiles
-            .Where(p => p.AccountId == request.AccountId
-                && p.AccountId == p.SeniorId)
+            .Where(p => p.AccountId == request.AccountId && p.AccountId == p.SeniorId)
             .ToListAsync(ct);
 
-        if(profiles.Count == 0)
+        if (profiles.Count == 0)
         {
             throw new SeniorNotFoundException("Given account does not have a senior profile");
         }
@@ -39,7 +38,7 @@ public sealed class GetEncodedSeniorIdHandler
             .Where(a => a.Id == request.AccountId)
             .FirstOrDefaultAsync(ct);
 
-        if(account == null)
+        if (account == null)
         {
             throw new AccountNotFoundException("Given account was not found");
         }

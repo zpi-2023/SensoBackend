@@ -88,7 +88,8 @@ public class AccountController : ControllerBase
                 AccountId = accountId,
                 Hash = dto.Hash,
                 SeniorAlias = dto.SeniorAlias
-            });
+            }
+        );
 
         return Ok(seniorId);
     }

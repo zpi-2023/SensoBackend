@@ -17,7 +17,8 @@ public class HasPermissionMiddleware
     public HasPermissionMiddleware(
         RequestDelegate next,
         IServiceScopeFactory serviceScopeFactory,
-        ILogger<HasPermissionMiddleware> logger)
+        ILogger<HasPermissionMiddleware> logger
+    )
     {
         _next = next;
         _serviceScopeFactory = serviceScopeFactory;
@@ -35,8 +36,8 @@ public class HasPermissionMiddleware
         }
 
         var accountIdString = context.User.Claims
-                .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
-                ?.Value;
+            .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
+            ?.Value;
 
         if (accountIdString == null)
         {
@@ -45,7 +46,8 @@ public class HasPermissionMiddleware
         }
 
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        IAuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
+        IAuthorizationService authorizationService =
+            scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
         var accountId = int.Parse(accountIdString!);
         var roleId = await authorizationService.GetRoleIdAsync(accountId);
 
@@ -55,9 +57,11 @@ public class HasPermissionMiddleware
             return;
         }
 
-        if(roleId != Role.MemberId)
+        if (roleId != Role.MemberId)
         {
-            throw new InvalidDataException($"The role with id {roleId} does not exist or is not supported");
+            throw new InvalidDataException(
+                $"The role with id {roleId} does not exist or is not supported"
+            );
         }
 
         var requiredPermission = attribute.Permission;
@@ -84,9 +88,7 @@ public class HasPermissionMiddleware
             return;
         }
 
-        var seniorExists = profiles
-            .Where(p => p.SeniorId == seniorId)
-            .Any();
+        var seniorExists = profiles.Where(p => p.SeniorId == seniorId).Any();
 
         if (!seniorExists)
         {

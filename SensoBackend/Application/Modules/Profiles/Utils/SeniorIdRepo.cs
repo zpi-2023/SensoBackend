@@ -7,15 +7,13 @@ public static class SeniorIdRepo
     public static SeniorDataToEncode? Get(int hash)
     {
         Seniors.TryGetValue(hash, out var seniorData);
-        if(seniorData is null)
+        if (seniorData is null)
         {
             return null;
         }
         Seniors.Remove(hash);
 
-        return seniorData.ValidTo >= DateTime.Now
-            ? seniorData
-            : null;
+        return seniorData.ValidTo >= DateTime.Now ? seniorData : null;
     }
 
     public static void Add(int hash, SeniorDataToEncode seniorData)
@@ -23,9 +21,8 @@ public static class SeniorIdRepo
         Seniors[hash] = seniorData;
         RemoveOldRecords();
     }
-    
-    public static int Hash(SeniorDataToEncode seniorData)
-        => seniorData.GetHashCode();
+
+    public static int Hash(SeniorDataToEncode seniorData) => seniorData.GetHashCode();
 
     private static void RemoveOldRecords()
     {
