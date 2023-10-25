@@ -10,7 +10,7 @@ namespace SensoBackend.WebApi.Middlewares;
 
 public class HasPermissionMiddleware
 {
-    private RequestDelegate _next;
+    private readonly RequestDelegate _next;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<HasPermissionMiddleware> _logger;
 
@@ -81,8 +81,8 @@ public class HasPermissionMiddleware
             return;
         }
 
-        var isIdValidd = Int32.TryParse(seniorIdStr, out var seniorId);
-        if (!isIdValidd)
+        var isIdValid = int.TryParse(seniorIdStr, out var seniorId);
+        if (!isIdValid)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return;
@@ -95,5 +95,7 @@ public class HasPermissionMiddleware
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return;
         }
+
+        await _next(context);
     }
 }

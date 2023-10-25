@@ -2,5 +2,6 @@
 
 public enum Permission
 {
-    ProfileAccess
+    ProfileAccess,
+    ManageDashboard,
 }

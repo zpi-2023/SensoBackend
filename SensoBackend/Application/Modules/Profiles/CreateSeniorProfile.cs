@@ -4,6 +4,8 @@ using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Profiles.Contracts;
+using SensoBackend.Application.Modules.Dashboard;
+using SensoBackend.Application.Modules.Dashboard.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
@@ -26,8 +28,13 @@ public sealed class CreateSeniorProfileHandler
     : IRequestHandler<CreateSeniorProfileRequest, ProfileDisplayDto>
 {
     private readonly AppDbContext _context;
+    private readonly IMediator _mediator;
 
-    public CreateSeniorProfileHandler(AppDbContext context) => _context = context;
+    public CreateSeniorProfileHandler(AppDbContext context, IMediator mediator)
+    {
+        _context = context;
+        _mediator = mediator;
+    }
 
     public async Task<ProfileDisplayDto> Handle(
         CreateSeniorProfileRequest request,
@@ -39,16 +46,11 @@ public sealed class CreateSeniorProfileHandler
             throw new ValidationException("This account already has a senior profile");
         }
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == request.AccountId,
-            ct
-        );
-        if (account == null)
-        {
-            throw new AccountNotFoundException(
+        var account =
+            await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.AccountId, ct)
+            ?? throw new AccountNotFoundException(
                 $"An account with the given Id ({request.AccountId}) does not exist"
             );
-        }
 
         var displayName = account.DisplayName;
 
@@ -58,6 +60,23 @@ public sealed class CreateSeniorProfileHandler
 
         await _context.Profiles.AddAsync(profile, ct);
         await _context.SaveChangesAsync(ct);
+
+        await _mediator.Send(
+            new UpdateDashboardRequest(
+                account.Id,
+                new DashboardDto
+                {
+                    Gadgets = new()
+                    {
+                        "trackMedication",
+                        "manageNotes",
+                        "playGames",
+                        "editDashboard"
+                    }
+                }
+            ),
+            ct
+        );
 
         return new ProfileDisplayDto
         {
