@@ -5,7 +5,8 @@ using SensoBackend.WebApi;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructureLayer(builder.Configuration);
-builder.Services.AddApplicationLayer();
+builder.Services
+  .AddApplicationLayer();
 builder.Services.AddWebApiLayer();
 
 var app = builder.Build();
