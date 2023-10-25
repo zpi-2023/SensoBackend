@@ -50,15 +50,15 @@ public class AccountController : ControllerBase
 
     [HasPermission(Permission.ProfileAccess)]
     [HttpPost("profiles/senior")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfileDisplayDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        await _mediator.Send(new CreateSeniorProfileRequest(accountId));
+        var profile = await _mediator.Send(new CreateSeniorProfileRequest(accountId));
 
-        return NoContent();
+        return Ok(profile);
     }
 
     [HasPermission(Permission.ProfileAccess)]
