@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SensoBackend.Application.Modules.Profiles.Utils;
 
 namespace SensoBackend.Application.Modules.Profiles.Contracts;
 
