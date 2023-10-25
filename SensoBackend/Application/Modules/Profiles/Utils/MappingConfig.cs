@@ -9,20 +9,15 @@ public sealed class MappingConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config
+            .ForType<Profile, ProfileDisplayDto>()
+            .Map(dst => dst.Type, src => src.SeniorId == src.AccountId ? "senior" : "caretaker")
+            .Map(dst => dst.SeniorAlias, src => src.Alias);
+
+        config
             .ForType<List<Profile>, ProfilesDto>()
             .Map(
-                dest => dest.Profiles,
-                src =>
-                    src.Select(
-                            p =>
-                                new ProfileDisplayDto
-                                {
-                                    Type = p.SeniorId == p.AccountId ? "senior" : "caretaker",
-                                    SeniorId = p.SeniorId,
-                                    SeniorAlias = p.Alias
-                                }
-                        )
-                        .ToList()
+                dst => dst.Profiles,
+                src => src.Select(p => p.Adapt<ProfileDisplayDto>()).ToList()
             );
     }
 }
