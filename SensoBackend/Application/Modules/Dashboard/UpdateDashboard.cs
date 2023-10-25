@@ -40,9 +40,11 @@ public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequ
 
         using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
-        await _context.DashboardItems
+        var oldItems = await _context.DashboardItems
             .Where(di => di.AccountId == request.SeniorId)
-            .ExecuteDeleteAsync(ct);
+            .ToListAsync(ct);
+
+        _context.DashboardItems.RemoveRange(oldItems);
 
         foreach (var (gadgetId, position) in gadgetIds)
         {
