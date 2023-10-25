@@ -3,13 +3,14 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
 
-public sealed record CreateSeniorProfileRequest(int AccountId) : IRequest;
+public sealed record CreateSeniorProfileRequest(int AccountId) : IRequest<ProfileDisplayDto>;
 
 [UsedImplicitly]
 public sealed class CreateSeniorProfileValidator : AbstractValidator<CreateSeniorProfileRequest>
@@ -21,13 +22,17 @@ public sealed class CreateSeniorProfileValidator : AbstractValidator<CreateSenio
 }
 
 [UsedImplicitly]
-public sealed class CreateSeniorProfileHandler : IRequestHandler<CreateSeniorProfileRequest>
+public sealed class CreateSeniorProfileHandler
+    : IRequestHandler<CreateSeniorProfileRequest, ProfileDisplayDto>
 {
     private readonly AppDbContext _context;
 
     public CreateSeniorProfileHandler(AppDbContext context) => _context = context;
 
-    public async Task Handle(CreateSeniorProfileRequest request, CancellationToken ct)
+    public async Task<ProfileDisplayDto> Handle(
+        CreateSeniorProfileRequest request,
+        CancellationToken ct
+    )
     {
         if (await _context.Profiles.AnyAsync(p => p.SeniorId == request.AccountId, ct))
         {
@@ -53,5 +58,12 @@ public sealed class CreateSeniorProfileHandler : IRequestHandler<CreateSeniorPro
 
         await _context.Profiles.AddAsync(profile, ct);
         await _context.SaveChangesAsync(ct);
+
+        return new ProfileDisplayDto
+        {
+            Type = "senior",
+            SeniorId = profile.SeniorId,
+            SeniorAlias = profile.Alias
+        };
     }
 }
