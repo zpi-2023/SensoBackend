@@ -16,9 +16,7 @@ public sealed class CreateSeniorProfileValidator : AbstractValidator<CreateSenio
 {
     public CreateSeniorProfileValidator()
     {
-        RuleFor(r => r.AccountId)
-            .NotEmpty()
-            .WithMessage("Id is empty.");
+        RuleFor(r => r.AccountId).NotEmpty().WithMessage("Id is empty.");
     }
 }
 
@@ -36,10 +34,15 @@ public sealed class CreateSeniorProfileHandler : IRequestHandler<CreateSeniorPro
             throw new ValidationException("This account already has a senior profile");
         }
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.AccountId, ct);
+        var account = await _context.Accounts.FirstOrDefaultAsync(
+            a => a.Id == request.AccountId,
+            ct
+        );
         if (account == null)
         {
-            throw new AccountNotFoundException($"An account with the given Id ({request.AccountId}) does not exist");
+            throw new AccountNotFoundException(
+                $"An account with the given Id ({request.AccountId}) does not exist"
+            );
         }
 
         var displayName = account.DisplayName;

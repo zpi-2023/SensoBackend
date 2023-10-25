@@ -10,14 +10,14 @@ public static class DtoMapper
         List<ProfileDisplayDto> displayProfiles = new List<ProfileDisplayDto>();
         foreach (var profile in profiles)
         {
-            displayProfiles.Add(new ProfileDisplayDto
-            { 
-                Type = profile.SeniorId == profile.AccountId
-                    ? "senior"
-                    : "caretaker",
-                SeniorId = profile.SeniorId,
-                SeniorAlias = profile.Alias
-            });
+            displayProfiles.Add(
+                new ProfileDisplayDto
+                {
+                    Type = profile.SeniorId == profile.AccountId ? "senior" : "caretaker",
+                    SeniorId = profile.SeniorId,
+                    SeniorAlias = profile.Alias
+                }
+            );
         }
 
         return new ProfilesDto { Profiles = displayProfiles };
