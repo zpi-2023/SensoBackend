@@ -11,7 +11,7 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
 
-public sealed record CreateCaretakerProfileRequest : IRequest<SeniorIdDto>
+public sealed record CreateCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 {
     public required int AccountId { get; init; }
 
@@ -33,13 +33,13 @@ public sealed class CreateCaretakerProfileValidator
 
 [UsedImplicitly]
 public sealed class CreateCaretakerProfileHandler
-    : IRequestHandler<CreateCaretakerProfileRequest, SeniorIdDto>
+    : IRequestHandler<CreateCaretakerProfileRequest, ProfileDisplayDto>
 {
     private readonly AppDbContext _context;
 
     public CreateCaretakerProfileHandler(AppDbContext context) => _context = context;
 
-    public async Task<SeniorIdDto> Handle(
+    public async Task<ProfileDisplayDto> Handle(
         CreateCaretakerProfileRequest request,
         CancellationToken ct
     )
@@ -96,6 +96,11 @@ public sealed class CreateCaretakerProfileHandler
         await _context.Profiles.AddAsync(profile, ct);
         await _context.SaveChangesAsync(ct);
 
-        return new SeniorIdDto { SeniorId = profile.SeniorId };
+        return new ProfileDisplayDto
+        {
+            Type = "caretaker",
+            SeniorId = profile.SeniorId,
+            SeniorAlias = profile.Alias
+        };
     }
 }
