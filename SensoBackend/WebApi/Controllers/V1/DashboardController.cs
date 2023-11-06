@@ -9,9 +9,9 @@ using SensoBackend.WebApi.Authorization.Data;
 namespace SensoBackend.WebApi.Controllers.V1;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/dashboard")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class DashboardController : ControllerBase
+public sealed class DashboardController : ControllerBase
 {
     private readonly IMediator _mediator;
 

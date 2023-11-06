@@ -9,7 +9,7 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/healthz")]
 [ApiVersion("1.0")]
-public class HealthcheckController : ControllerBase
+public sealed class HealthcheckController : ControllerBase
 {
     private readonly IMediator _mediator;
 

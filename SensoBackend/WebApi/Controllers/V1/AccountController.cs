@@ -16,7 +16,7 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class AccountController : ControllerBase
+public sealed class AccountController : ControllerBase
 {
     private readonly ILogger<AccountController> _logger;
     private readonly IMediator _mediator;

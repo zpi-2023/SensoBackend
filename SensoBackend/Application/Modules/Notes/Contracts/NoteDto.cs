@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SensoBackend.Application.Modules.Notes.Contracts;
 
-public sealed record NoteDetailsDto
+public sealed record NoteDto
 {
     [Required]
     public required int Id { get; init; }

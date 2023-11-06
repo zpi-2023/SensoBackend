@@ -5,5 +5,5 @@ namespace SensoBackend.Application.Modules.Notes.Contracts;
 public sealed record NoteListDto
 {
     [Required]
-    public required List<NoteDetailsDto> Notes { get; init; }
+    public required List<NoteDto> Notes { get; init; }
 }
