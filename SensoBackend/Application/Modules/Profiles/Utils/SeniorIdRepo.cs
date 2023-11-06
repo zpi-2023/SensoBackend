@@ -1,5 +1,6 @@
 ﻿namespace SensoBackend.Application.Modules.Profiles.Utils;
 
+// TODO: This class is pretty much untestable. Consider refactoring to use a singleton service, and inject ITimerProvider.
 public static class SeniorIdRepo
 {
     private static readonly Dictionary<int, SeniorDataToEncode> Seniors = new();

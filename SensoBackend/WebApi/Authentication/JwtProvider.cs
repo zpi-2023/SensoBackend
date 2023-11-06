@@ -12,8 +12,13 @@ namespace SensoBackend.WebApi.Authenticaion;
 public sealed class JwtProvider : IJwtProvider
 {
     private readonly JwtOptions _options;
+    private readonly ITimeProvider _timeProvider;
 
-    public JwtProvider(IOptions<JwtOptions> options) => _options = options.Value;
+    public JwtProvider(IOptions<JwtOptions> options, ITimeProvider timeProvider)
+    {
+        _options = options.Value;
+        _timeProvider = timeProvider;
+    }
 
     public TokenDto GenerateToken(AccountDto account)
     {
@@ -33,7 +38,7 @@ public sealed class JwtProvider : IJwtProvider
             _options.Audience,
             claims,
             null,
-            DateTime.UtcNow.AddDays(7),
+            _timeProvider.Now.UtcDateTime.AddDays(7),
             signingCredentials
         );
 

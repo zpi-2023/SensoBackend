@@ -1,9 +1,11 @@
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SensoBackend.Domain.Entities;
 
 namespace SensoBackend.Infrastructure.Configuration;
 
+[UsedImplicitly]
 internal sealed class DashboardItemConfiguration : IEntityTypeConfiguration<DashboardItem>
 {
     public void Configure(EntityTypeBuilder<DashboardItem> builder)
