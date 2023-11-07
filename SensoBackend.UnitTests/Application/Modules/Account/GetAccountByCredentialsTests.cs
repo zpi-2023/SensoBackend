@@ -1,7 +1,7 @@
 using Mapster;
 using SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
 using SensoBackend.Infrastructure.Data;
-using SensoBackend.Tests.Utils;
+using SensoBackend.UnitTests.Utils;
 using System.Security.Authentication;
 
 namespace SensoBackend.Tests.Application.Modules.Accounts.GetAccountByCredentials;

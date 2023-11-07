@@ -4,7 +4,5 @@ namespace SensoBackend.UnitTests.Utils;
 
 public class MockTimeProvider : ITimeProvider
 {
-    public DateTimeOffset Now { get; }
-
-    public MockTimeProvider(DateTimeOffset mockNow) => Now = mockNow;
+    public DateTimeOffset Now { get; set; }
 }

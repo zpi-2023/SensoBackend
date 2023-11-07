@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Tests.Utils;
+namespace SensoBackend.UnitTests.Utils;
 
 public static class Database
 {

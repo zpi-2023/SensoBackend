@@ -3,7 +3,7 @@ using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
 using SensoBackend.Domain.Entities;
 
-namespace SensoBackend.Tests.Utils;
+namespace SensoBackend.UnitTests.Utils;
 
 public static class Generators
 {
@@ -27,7 +27,7 @@ public static class Generators
         .RuleFor(u => u.RoleId, _ => 1);
 
     public static readonly Faker<Account> Account = new Faker<Account>()
-        .RuleFor(u => u.Id, _ => 0)
+        .RuleFor(u => u.Id, _ => default)
         .RuleFor(u => u.Email, f => f.Internet.Email())
         .RuleFor(u => u.Password, f => f.Random.String(72))
         .RuleFor(u => u.Active, _ => true)

@@ -3,7 +3,7 @@ using SensoBackend.Application.Modules.Dashboard;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Infrastructure.Data;
-using SensoBackend.Tests.Utils;
+using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Dashboard;
 

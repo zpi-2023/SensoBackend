@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Options;
-using SensoBackend.Tests.Utils;
 using SensoBackend.UnitTests.Utils;
 using SensoBackend.WebApi.Authenticaion;
 using SensoBackend.WebApi.Authentication;
@@ -22,7 +21,8 @@ public sealed class JwtProviderTests
 
     private readonly JwtProvider _sut;
 
-    public JwtProviderTests() => _sut = new JwtProvider(_jwtOptions, new MockTimeProvider(Now));
+    public JwtProviderTests() =>
+        _sut = new JwtProvider(_jwtOptions, new MockTimeProvider { Now = Now });
 
     [Fact]
     public void GenerateToken_ShouldReturnToken()
