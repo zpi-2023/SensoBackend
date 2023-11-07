@@ -3,16 +3,19 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
 using SensoBackend.Infrastructure.Data;
-using SensoBackend.Tests.Utils;
+using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Accounts.CreateAccount;
 
 public sealed class CreateAccountHandlerTests : IDisposable
 {
+    private static readonly DateTimeOffset Now = new(2023, 9, 1, 0, 0, 0, TimeSpan.Zero);
+
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly CreateAccountHandler _sut;
 
-    public CreateAccountHandlerTests() => _sut = new CreateAccountHandler(_context);
+    public CreateAccountHandlerTests() =>
+        _sut = new CreateAccountHandler(_context, new MockTimeProvider { Now = Now });
 
     public void Dispose() => _context.Dispose();
 
@@ -35,9 +38,9 @@ public sealed class CreateAccountHandlerTests : IDisposable
         account.PhoneNumber.Should().Be(dto.PhoneNumber);
         account.Active.Should().BeTrue();
         account.Verified.Should().BeFalse();
-        account.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
-        account.LastLoginAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
-        account.LastPasswordChangeAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(2));
+        account.CreatedAt.Should().Be(Now);
+        account.LastLoginAt.Should().Be(Now);
+        account.LastPasswordChangeAt.Should().Be(Now);
     }
 
     [Fact]

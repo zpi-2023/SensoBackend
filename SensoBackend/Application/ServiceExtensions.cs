@@ -1,6 +1,7 @@
 using FluentValidation;
 using Mapster;
 using MediatR;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Behaviors;
 using System.Reflection;
 
@@ -17,6 +18,8 @@ public static class ServiceExtensions
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
+        services.AddSingleton<ITimeProvider, TimeProvider>();
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly);
     }

@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Profile = SensoBackend.Domain.Entities.Profile;
+using SensoBackend.Domain.Entities;
 
 namespace SensoBackend.Infrastructure.Configuration;
 
+[UsedImplicitly]
 internal sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
 {
     public void Configure(EntityTypeBuilder<Profile> builder)

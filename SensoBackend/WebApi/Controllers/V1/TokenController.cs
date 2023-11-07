@@ -10,7 +10,7 @@ namespace SensoBackend.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class TokenController : ControllerBase
+public sealed class TokenController : ControllerBase
 {
     private readonly ILogger<TokenController> _logger;
     private readonly IMediator _mediator;

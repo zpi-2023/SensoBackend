@@ -16,7 +16,7 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class AccountController : ControllerBase
+public sealed class AccountController : ControllerBase
 {
     private readonly ILogger<AccountController> _logger;
     private readonly IMediator _mediator;
@@ -37,7 +37,7 @@ public class AccountController : ControllerBase
         return NoContent();
     }
 
-    [HasPermission(Permission.ProfileAccess)]
+    [HasPermission(Permission.ManageProfiles)]
     [HttpGet("profiles")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfilesDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -48,7 +48,7 @@ public class AccountController : ControllerBase
         return Ok(profiles);
     }
 
-    [HasPermission(Permission.ProfileAccess)]
+    [HasPermission(Permission.ManageProfiles)]
     [HttpPost("profiles/senior")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfileDisplayDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -61,7 +61,7 @@ public class AccountController : ControllerBase
         return Ok(profile);
     }
 
-    [HasPermission(Permission.ProfileAccess)]
+    [HasPermission(Permission.ManageProfiles)]
     [HttpGet("profiles/senior")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncodedSeniorDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -73,7 +73,7 @@ public class AccountController : ControllerBase
         return Ok(encodedData);
     }
 
-    [HasPermission(Permission.ProfileAccess)]
+    [HasPermission(Permission.ManageProfiles)]
     [HttpPost("profiles/caretaker")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfileDisplayDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

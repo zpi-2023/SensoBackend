@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SensoBackend.Domain.Entities;
-using Account = SensoBackend.Domain.Entities.Account;
 
 namespace SensoBackend.Infrastructure.Configuration;
 
+[UsedImplicitly]
 internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
 {
     public void Configure(EntityTypeBuilder<Account> builder)

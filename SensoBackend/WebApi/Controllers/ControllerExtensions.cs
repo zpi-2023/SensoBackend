@@ -15,7 +15,7 @@ public static class ControllerExtensions
         var identity = controller.HttpContext.User.Identity as ClaimsIdentity;
         IEnumerable<Claim> claims = identity!.Claims;
         var accountIdStr = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)!.Value;
-        var accountId = Int32.Parse(accountIdStr);
+        var accountId = int.Parse(accountIdStr);
         return accountId;
     }
 }

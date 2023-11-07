@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using SensoBackend.Tests.Utils;
+using SensoBackend.UnitTests.Utils;
 using SensoBackend.WebApi.Authenticaion;
 using SensoBackend.WebApi.Authentication;
 
@@ -9,6 +8,8 @@ namespace SensoBackend.UnitTests.WebApi.Authentication;
 
 public sealed class JwtProviderTests
 {
+    private static readonly DateTimeOffset Now = new(2020, 5, 10, 20, 30, 0, TimeSpan.Zero);
+
     private readonly IOptions<JwtOptions> _jwtOptions = Options.Create(
         new JwtOptions
         {
@@ -20,7 +21,8 @@ public sealed class JwtProviderTests
 
     private readonly JwtProvider _sut;
 
-    public JwtProviderTests() => _sut = new JwtProvider(_jwtOptions);
+    public JwtProviderTests() =>
+        _sut = new JwtProvider(_jwtOptions, new MockTimeProvider { Now = Now });
 
     [Fact]
     public void GenerateToken_ShouldReturnToken()
@@ -33,7 +35,7 @@ public sealed class JwtProviderTests
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(tokenValue.Token);
 
-        token.ValidTo.Should().BeCloseTo(DateTime.UtcNow.AddDays(7), TimeSpan.FromSeconds(2));
+        token.ValidTo.Should().Be(Now.UtcDateTime.AddDays(7));
         token.Issuer.Should().Be(_jwtOptions.Value.Issuer);
         token.Audiences.Should().Contain(_jwtOptions.Value.Audience);
         token.Claims

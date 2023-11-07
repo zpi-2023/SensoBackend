@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SensoBackend.Domain.Entities;
-using SensoBackend.Infrastructure.Configuration;
 
 namespace SensoBackend.Infrastructure.Data;
 
@@ -16,13 +15,8 @@ public class AppDbContext : DbContext
     public virtual DbSet<Profile> Profiles => Set<Profile>();
     public virtual DbSet<Gadget> Gadgets => Set<Gadget>();
     public virtual DbSet<DashboardItem> DashboardItems => Set<DashboardItem>();
+    public virtual DbSet<Note> Notes => Set<Note>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfiguration(new AccountConfiguration());
-        modelBuilder.ApplyConfiguration(new RoleConfiguration());
-        modelBuilder.ApplyConfiguration(new ProfileConfiguration());
-        modelBuilder.ApplyConfiguration(new GadgetConfiguration());
-        modelBuilder.ApplyConfiguration(new DashboardItemConfiguration());
-    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 }
