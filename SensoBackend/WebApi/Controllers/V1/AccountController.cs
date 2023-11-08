@@ -74,6 +74,14 @@ public sealed class AccountController : ControllerBase
     }
 
     [HasPermission(Permission.ManageProfiles)]
+    [HttpDelete("profiles/senior")]
+    public async Task<IActionResult> DeleteSeniorProfile()
+    {
+        var accountId = this.GetAccountId();
+        throw new NotImplementedException();
+    }
+
+    [HasPermission(Permission.ManageProfiles)]
     [HttpPost("profiles/caretaker")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfileDisplayDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -92,5 +100,21 @@ public sealed class AccountController : ControllerBase
         );
 
         return Ok(profile);
+    }
+
+    [HasPermission(Permission.ManageProfiles)]
+    [HttpDelete("profiles/caretaker/{seniorId}")]
+    public async Task<IActionResult> DeleteCaretakerProfile(int seniorId)
+    {
+        var accountId = this.GetAccountId();
+        throw new NotImplementedException();
+    }
+
+    [HasPermission(Permission.ManageProfiles)]
+    [HttpPut("profiles/caretaker/{seniorId}")]
+    public async Task<IActionResult> EditCaretakerProfile(int seniorId)
+    {
+        var accountId = this.GetAccountId();
+        throw new NotImplementedException();
     }
 }
