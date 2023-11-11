@@ -31,7 +31,7 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
                         {
                             Id = 0,
                             AccountId = account.Id,
-                            Gadget = Enum.GetValues<Gadget>()[idx],
+                            Gadget = (Gadget)idx,
                             Position = idx
                         }
                 )
@@ -52,9 +52,9 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
         var account = Generators.Account.Generate();
         var gadgets = new List<string>
         {
-            Enum.GetValues<Gadget>()[3].ToString("f"),
-            Enum.GetValues<Gadget>()[3].ToString("f"),
-            Enum.GetValues<Gadget>()[0].ToString("f")
+            ((Gadget)3).ToString("f"),
+            ((Gadget)3).ToString("f"),
+            ((Gadget)0).ToString("f")
         };
         await _context.Accounts.AddAsync(account);
         await _context.DashboardItems.AddRangeAsync(
@@ -66,7 +66,7 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
                         {
                             Id = 0,
                             AccountId = account.Id,
-                            Gadget = Enum.GetValues<Gadget>()[idx],
+                            Gadget = (Gadget)idx,
                             Position = idx
                         }
                 )
@@ -110,11 +110,7 @@ public sealed class UpdateDashboardValidatorTests
             0,
             new()
             {
-                Gadgets = new()
-                {
-                    Enum.GetValues<Gadget>()[0].ToString("f"),
-                    Enum.GetValues<Gadget>()[0].ToString("f")
-                }
+                Gadgets = new() { ((Gadget)0).ToString("f"), ((Gadget)0).ToString("f") }
             }
         );
 
@@ -128,10 +124,7 @@ public sealed class UpdateDashboardValidatorTests
             0,
             new()
             {
-                Gadgets = Enumerable
-                    .Range(0, 7)
-                    .Select(_ => Enum.GetValues<Gadget>()[0].ToString("f"))
-                    .ToList()
+                Gadgets = Enumerable.Range(0, 7).Select(_ => ((Gadget)0).ToString("f")).ToList()
             }
         );
 

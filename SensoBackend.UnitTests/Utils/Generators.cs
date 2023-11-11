@@ -56,12 +56,7 @@ public static class Generators
         f =>
             Enumerable
                 .Range(0, f.Random.Int(0, 6))
-                .Select(
-                    _ =>
-                        Enum.GetValues<Gadget>()[
-                            f.Random.Int(0, Enum.GetValues<Gadget>().Length - 1)
-                        ].ToString("f")
-                )
+                .Select(_ => f.PickRandom<Gadget>().ToString("f"))
                 .ToList()
     );
 }

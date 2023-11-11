@@ -41,7 +41,7 @@ public sealed class GetDashboardHandlerTests : IDisposable
                         {
                             Id = 0,
                             AccountId = account.Id,
-                            Gadget = Enum.GetValues<Gadget>()[idx],
+                            Gadget = (Gadget)idx,
                             Position = idx
                         }
                 )
