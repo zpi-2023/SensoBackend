@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Dashboard;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
 
@@ -30,7 +31,7 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
                         {
                             Id = 0,
                             AccountId = account.Id,
-                            GadgetId = Gadget.List[idx].Id,
+                            Gadget = Enum.GetValues<Gadget>()[idx],
                             Position = idx
                         }
                 )
@@ -51,9 +52,9 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
         var account = Generators.Account.Generate();
         var gadgets = new List<string>
         {
-            Gadget.List[3].Name,
-            Gadget.List[3].Name,
-            Gadget.List[0].Name
+            Enum.GetValues<Gadget>()[3].ToString("f"),
+            Enum.GetValues<Gadget>()[3].ToString("f"),
+            Enum.GetValues<Gadget>()[0].ToString("f")
         };
         await _context.Accounts.AddAsync(account);
         await _context.DashboardItems.AddRangeAsync(
@@ -65,7 +66,7 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
                         {
                             Id = 0,
                             AccountId = account.Id,
-                            GadgetId = Gadget.List[idx].Id,
+                            Gadget = Enum.GetValues<Gadget>()[idx],
                             Position = idx
                         }
                 )
@@ -76,8 +77,7 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
 
         _context.DashboardItems
             .OrderBy(d => d.Position)
-            .Include(d => d.Gadget)
-            .Select(d => d.Gadget!.Name)
+            .Select(d => d.Gadget!.ToString("f"))
             .Should()
             .BeEquivalentTo(gadgets);
     }
@@ -110,7 +110,11 @@ public sealed class UpdateDashboardValidatorTests
             0,
             new()
             {
-                Gadgets = new() { Gadget.List[0].Name, Gadget.List[0].Name }
+                Gadgets = new()
+                {
+                    Enum.GetValues<Gadget>()[0].ToString("f"),
+                    Enum.GetValues<Gadget>()[0].ToString("f")
+                }
             }
         );
 
@@ -122,7 +126,13 @@ public sealed class UpdateDashboardValidatorTests
     {
         var request = new UpdateDashboardRequest(
             0,
-            new() { Gadgets = Enumerable.Range(0, 7).Select(_ => Gadget.List[0].Name).ToList() }
+            new()
+            {
+                Gadgets = Enumerable
+                    .Range(0, 7)
+                    .Select(_ => Enum.GetValues<Gadget>()[0].ToString("f"))
+                    .ToList()
+            }
         );
 
         _sut.Validate(request).IsValid.Should().BeFalse();

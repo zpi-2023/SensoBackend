@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SensoBackend.Domain.Enums;
 
 namespace SensoBackend.Domain.Entities;
 
@@ -8,10 +9,17 @@ public sealed class Account
 
     [DataType(DataType.EmailAddress)]
     public required string Email { get; set; }
+
     public required string Password { get; set; }
+
     public required bool Active { get; set; }
+
     public required bool Verified { get; set; }
+
+    public required Role Role { get; set; }
+
     public string? PhoneNumber { get; set; }
+
     public required string DisplayName { get; set; }
 
     [DataType(DataType.DateTime)]
@@ -22,8 +30,4 @@ public sealed class Account
 
     [DataType(DataType.DateTime)]
     public required DateTimeOffset LastPasswordChangeAt { get; set; }
-
-    public required int RoleId { get; set; }
-
-    public Role? Role { get; set; }
 }

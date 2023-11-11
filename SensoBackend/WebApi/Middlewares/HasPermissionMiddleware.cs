@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using SensoBackend.Application.Abstractions;
-using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 using System.Net;
@@ -51,13 +51,13 @@ public class HasPermissionMiddleware
         var accountId = int.Parse(accountIdString!);
         var roleId = await authorizationService.GetRoleIdAsync(accountId);
 
-        if (roleId == Role.AdminId)
+        if (roleId == (int)Role.Admin)
         {
             await _next(context);
             return;
         }
 
-        if (roleId != Role.MemberId)
+        if (roleId != (int)Role.Member)
         {
             throw new InvalidDataException(
                 $"The role with id {roleId} does not exist or is not supported"

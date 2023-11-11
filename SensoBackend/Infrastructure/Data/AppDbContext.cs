@@ -11,11 +11,14 @@ public class AppDbContext : DbContext
         : base(options) { }
 
     public virtual DbSet<Account> Accounts => Set<Account>();
-    public virtual DbSet<Role> Roles => Set<Role>();
     public virtual DbSet<Profile> Profiles => Set<Profile>();
-    public virtual DbSet<Gadget> Gadgets => Set<Gadget>();
     public virtual DbSet<DashboardItem> DashboardItems => Set<DashboardItem>();
     public virtual DbSet<Note> Notes => Set<Note>();
+    public virtual DbSet<Medication> Medications => Set<Medication>();
+    public virtual DbSet<Reminder> Reinders => Set<Reminder>();
+    public virtual DbSet<IntakeRecord> IntakeRecords => Set<IntakeRecord>();
+    public virtual DbSet<LeaderboardEntry> LeaderboardEntries => Set<LeaderboardEntry>();
+    public virtual DbSet<Alert> Alerts => Set<Alert>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

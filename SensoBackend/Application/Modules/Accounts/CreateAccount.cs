@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Accounts.CreateAccount;
@@ -65,7 +66,7 @@ public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
         account.Verified = false;
         account.Active = true;
         account.DisplayName = request.Dto.DisplayName;
-        account.RoleId = Role.Member.Id;
+        account.Role = Role.Member;
 
         await _context.Accounts.AddAsync(account, ct);
         await _context.SaveChangesAsync(ct);

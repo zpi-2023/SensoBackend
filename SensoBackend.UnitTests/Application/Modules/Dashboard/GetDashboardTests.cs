@@ -1,5 +1,6 @@
 using SensoBackend.Application.Modules.Dashboard;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
 
@@ -40,7 +41,7 @@ public sealed class GetDashboardHandlerTests : IDisposable
                         {
                             Id = 0,
                             AccountId = account.Id,
-                            GadgetId = Gadget.List[idx].Id,
+                            Gadget = Enum.GetValues<Gadget>()[idx],
                             Position = idx
                         }
                 )
@@ -49,6 +50,8 @@ public sealed class GetDashboardHandlerTests : IDisposable
 
         var result = await _sut.Handle(new GetDashboardRequest(account.Id), CancellationToken.None);
 
-        result.Gadgets.Should().BeEquivalentTo(Gadget.List.Take(3).Select(g => g.Name));
+        result.Gadgets
+            .Should()
+            .BeEquivalentTo(Enum.GetValues<Gadget>().Take(3).Select(g => g.ToString("f")));
     }
 }
