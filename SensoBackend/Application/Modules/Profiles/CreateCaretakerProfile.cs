@@ -3,8 +3,8 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Profiles.Contracts;
-using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
@@ -36,20 +36,22 @@ public sealed class CreateCaretakerProfileHandler
     : IRequestHandler<CreateCaretakerProfileRequest, ProfileDisplayDto>
 {
     private readonly AppDbContext _context;
+    private readonly ISeniorIdRepo _seniorIdRepo;
 
-    public CreateCaretakerProfileHandler(AppDbContext context) => _context = context;
+    public CreateCaretakerProfileHandler(AppDbContext context, ISeniorIdRepo seniorIdRepo)
+    {
+        _context = context;
+        _seniorIdRepo = seniorIdRepo;
+    }
 
     public async Task<ProfileDisplayDto> Handle(
         CreateCaretakerProfileRequest request,
         CancellationToken ct
     )
     {
-        var seniorData = SeniorIdRepo.Get(request.Hash);
-
-        if (seniorData == null)
-        {
-            throw new SeniorNotFoundException("Provided hash was not found in the database");
-        }
+        var seniorData =
+            _seniorIdRepo.Get(request.Hash)
+            ?? throw new SeniorNotFoundException("Provided hash was not found in the database");
 
         if (seniorData.SeniorId == request.AccountId)
         {

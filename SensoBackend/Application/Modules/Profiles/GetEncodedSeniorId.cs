@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Exceptions;
@@ -17,8 +18,13 @@ public sealed class GetEncodedSeniorIdHandler
     private const int TokenValidForMinutes = 20;
 
     private readonly AppDbContext _context;
+    private readonly ISeniorIdRepo _seniorIdRepo;
 
-    public GetEncodedSeniorIdHandler(AppDbContext context) => _context = context;
+    public GetEncodedSeniorIdHandler(AppDbContext context, ISeniorIdRepo seniorIdRepo)
+    {
+        _context = context;
+        _seniorIdRepo = seniorIdRepo;
+    }
 
     public async Task<EncodedSeniorDto> Handle(
         GetEncodedSeniorIdRequest request,
@@ -45,12 +51,10 @@ public sealed class GetEncodedSeniorIdHandler
             SeniorId = account.Id,
             ValidTo = validTo
         };
-        var hash = SeniorIdRepo.Hash(seniorData);
-        SeniorIdRepo.Add(hash, seniorData);
 
         return new EncodedSeniorDto
         {
-            Hash = hash,
+            Hash = _seniorIdRepo.AssignHash(seniorData),
             SeniorDisplayName = seniorData.SeniorDisplayName,
             ValidFor = (int)TimeSpan.FromMinutes(TokenValidForMinutes).TotalSeconds
         };

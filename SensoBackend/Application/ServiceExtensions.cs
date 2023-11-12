@@ -3,6 +3,7 @@ using Mapster;
 using MediatR;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Behaviors;
+using SensoBackend.Application.Modules.Profiles.Utils;
 using System.Reflection;
 
 namespace SensoBackend.Application;
@@ -20,6 +21,7 @@ public static class ServiceExtensions
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
         services.AddSingleton<ITimeProvider, TimeProvider>();
+        services.AddSingleton<ISeniorIdRepo, SeniorIdRepo>();
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly);
     }
