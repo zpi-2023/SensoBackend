@@ -58,6 +58,11 @@ public sealed class EditCaretakerProfileHandler
 
         profile.Alias = request.SeniorAlias;
         await _context.SaveChangesAsync(ct);
-        return profile.Adapt<ProfileDisplayDto>();
+        return new ProfileDisplayDto
+        {
+            Type = "caretaker",
+            SeniorId = profile.SeniorId,
+            SeniorAlias = profile.Alias,
+        };
     }
 }
