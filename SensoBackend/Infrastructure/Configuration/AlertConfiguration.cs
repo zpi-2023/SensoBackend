@@ -6,18 +6,14 @@ using SensoBackend.Domain.Entities;
 namespace SensoBackend.Infrastructure.Configuration;
 
 [UsedImplicitly]
-internal sealed class ProfileConfiguration : IEntityTypeConfiguration<Profile>
+internal sealed class AlertConfiguration : IEntityTypeConfiguration<Alert>
 {
-    public void Configure(EntityTypeBuilder<Profile> builder)
+    public void Configure(EntityTypeBuilder<Alert> builder)
     {
-        builder.ToTable("Profiles");
+        builder.ToTable("Alerts");
 
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.Account).WithMany().HasForeignKey(x => x.AccountId);
-
         builder.HasOne(x => x.Senior).WithMany().HasForeignKey(x => x.SeniorId);
-
-        builder.Property(x => x.Alias).HasMaxLength(255);
     }
 }

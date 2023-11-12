@@ -14,6 +14,12 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
 
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.Role).WithMany().HasForeignKey(x => x.RoleId);
+        builder.Property(x => x.Email).HasMaxLength(255);
+
+        builder.Property(x => x.Password).HasMaxLength(72);
+
+        builder.Property(x => x.DisplayName).HasMaxLength(255);
+
+        builder.Property(x => x.PhoneNumber).HasMaxLength(9);
     }
 }

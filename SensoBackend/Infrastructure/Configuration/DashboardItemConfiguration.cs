@@ -14,8 +14,6 @@ internal sealed class DashboardItemConfiguration : IEntityTypeConfiguration<Dash
 
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.Gadget).WithMany().HasForeignKey(x => x.GadgetId);
-
         builder.HasOne(x => x.Account).WithMany().HasForeignKey(x => x.AccountId);
     }
 }

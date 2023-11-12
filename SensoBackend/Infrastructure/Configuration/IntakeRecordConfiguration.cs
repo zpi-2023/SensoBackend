@@ -6,14 +6,14 @@ using SensoBackend.Domain.Entities;
 namespace SensoBackend.Infrastructure.Configuration;
 
 [UsedImplicitly]
-internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
+internal sealed class IntakeRecordConfiguration : IEntityTypeConfiguration<IntakeRecord>
 {
-    public void Configure(EntityTypeBuilder<Role> builder)
+    public void Configure(EntityTypeBuilder<IntakeRecord> builder)
     {
-        builder.ToTable("Roles");
+        builder.ToTable("IntakeRecords");
 
         builder.HasKey(x => x.Id);
 
-        builder.HasData(Role.Admin, Role.Member);
+        builder.HasOne(x => x.Reminder).WithMany().HasForeignKey(x => x.ReminderId);
     }
 }

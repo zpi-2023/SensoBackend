@@ -20,8 +20,7 @@ public sealed class GetDashboardHandler : IRequestHandler<GetDashboardRequest, D
         var gadgets = await _context.DashboardItems
             .Where(di => di.AccountId == request.SeniorId)
             .OrderBy(di => di.Position)
-            .Include(di => di.Gadget)
-            .Select(di => di.Gadget!.Name)
+            .Select(di => di.Gadget!.ToString("f"))
             .ToListAsync(ct);
 
         return new DashboardDto { Gadgets = gadgets };
