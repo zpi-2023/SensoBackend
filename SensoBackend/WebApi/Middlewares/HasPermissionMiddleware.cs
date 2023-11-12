@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Http.Features;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Domain.Enums;
 using SensoBackend.WebApi.Authorization;
@@ -11,21 +11,15 @@ namespace SensoBackend.WebApi.Middlewares;
 public class HasPermissionMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<HasPermissionMiddleware> _logger;
 
-    public HasPermissionMiddleware(
-        RequestDelegate next,
-        IServiceScopeFactory serviceScopeFactory,
-        ILogger<HasPermissionMiddleware> logger
-    )
+    public HasPermissionMiddleware(RequestDelegate next, ILogger<HasPermissionMiddleware> logger)
     {
         _next = next;
-        _serviceScopeFactory = serviceScopeFactory;
         _logger = logger;
     }
 
-    public async Task Invoke(HttpContext context)
+    public async Task Invoke(HttpContext context, IAuthorizationService authorizationService)
     {
         var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
         var attribute = endpoint?.Metadata.GetMetadata<HasPermissionAttribute>();
@@ -34,6 +28,11 @@ public class HasPermissionMiddleware
             await _next(context);
             return;
         }
+
+        _logger.LogInformation(
+            "HasPermissionAttribute found, validating permission {Permission}...",
+            attribute.Permission
+        );
 
         var accountIdString = context.User.Claims
             .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
@@ -45,28 +44,24 @@ public class HasPermissionMiddleware
             return;
         }
 
-        using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        IAuthorizationService authorizationService =
-            scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
-        var accountId = int.Parse(accountIdString!);
-        var roleId = await authorizationService.GetRoleIdAsync(accountId);
+        var accountId = int.Parse(accountIdString);
+        var role = await authorizationService.GetRoleAsync(accountId);
 
-        if (roleId == (int)Role.Admin)
+        _logger.LogInformation("Extracted account: {Role} with id {AccountId}", role, accountId);
+
+        if (role == Role.Admin)
         {
             await _next(context);
             return;
         }
 
-        if (roleId != (int)Role.Member)
+        if (role != Role.Member)
         {
-            throw new InvalidDataException(
-                $"The role with id {roleId} does not exist or is not supported"
-            );
+            throw new InvalidDataException($"The role {role} not supported");
         }
 
-        var requiredPermission = attribute.Permission;
         var permissions = Role.Member.GetPermissions();
-        if (!permissions.Contains(requiredPermission))
+        if (!permissions.Contains(attribute.Permission))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return;
@@ -80,6 +75,8 @@ public class HasPermissionMiddleware
             await _next(context);
             return;
         }
+
+        _logger.LogInformation("Path contains the seniorId param, looking for a valid profile...");
 
         var isIdValid = int.TryParse(seniorIdStr, out var seniorId);
         if (!isIdValid)

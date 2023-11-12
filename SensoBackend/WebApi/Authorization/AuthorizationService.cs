@@ -4,6 +4,7 @@ using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.GetAccountById;
 using SensoBackend.Application.Modules.Profiles.GetListOfProfilesByAccountId;
 using SensoBackend.Application.Modules.Profiles.Utils;
+using SensoBackend.Domain.Enums;
 
 namespace SensoBackend.WebApi.Authorization;
 
@@ -16,11 +17,11 @@ public class AuthorizationService : IAuthorizationService
         _mediator = mediator;
     }
 
-    public async Task<int> GetRoleIdAsync(int accountId)
+    public async Task<Role> GetRoleAsync(int accountId)
     {
         var dto = new GetAccountByIdDto { Id = accountId };
         var account = await _mediator.Send(new GetAccountByIdRequest(dto));
-        return account.RoleId;
+        return account.Role;
     }
 
     public async Task<List<ProfileInfo>> GetProfilesByAccountId(int accountId)
