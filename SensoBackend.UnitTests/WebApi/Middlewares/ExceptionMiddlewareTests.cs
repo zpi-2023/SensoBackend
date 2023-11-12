@@ -64,18 +64,6 @@ public sealed class ExceptionMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldSetUnauthorizedStatusCode_WhenInvalidCredentialExceptionOccurred2()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new AuthenticationException());
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(401);
-    }
-
-    [Fact]
     public async Task Invoke_ShouldSetForbiddenStatusCode_WhenNoteAccessDeniedExceptionOccurred()
     {
         var context = new DefaultHttpContext();

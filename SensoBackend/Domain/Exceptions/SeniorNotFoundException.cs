@@ -2,6 +2,8 @@
 
 public class SeniorNotFoundException : Exception
 {
+    public SeniorNotFoundException() { }
+
     public SeniorNotFoundException(string message)
         : base(message) { }
 }
