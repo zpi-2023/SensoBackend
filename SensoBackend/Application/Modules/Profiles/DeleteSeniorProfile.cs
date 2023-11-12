@@ -1,11 +1,7 @@
 using FluentValidation;
 using JetBrains.Annotations;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.Contracts;
-using SensoBackend.Application.Modules.Profiles.Utils;
-using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
@@ -40,11 +36,12 @@ public sealed class DeleteSeniorProfileHandler : IRequestHandler<DeleteSeniorPro
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.AccountId} was not found"
             );
 
-        var caretakerProfiles = await _context.Profiles
-            .Where(p => p.SeniorId == request.AccountId && p.AccountId != request.AccountId)
-            .ToListAsync(ct);
+        var hasCaretakerProfiles = await _context.Profiles.AnyAsync(
+            p => p.SeniorId == request.AccountId && p.AccountId != request.AccountId,
+            ct
+        );
 
-        if (caretakerProfiles.Any())
+        if (hasCaretakerProfiles)
         {
             throw new RemoveSeniorProfileDeniedException(
                 "This senior profile has caretaker profiles associated with it"
