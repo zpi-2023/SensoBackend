@@ -43,6 +43,11 @@ public sealed class DeleteCaretakerProfileHandler : IRequestHandler<DeleteCareta
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
             );
 
+        if (profile.AccountId == profile.SeniorId)
+        {
+            throw new ValidationException("You cannot be your own caretaker");
+        }
+
         _context.Profiles.Remove(profile);
         await _context.SaveChangesAsync(ct);
     }

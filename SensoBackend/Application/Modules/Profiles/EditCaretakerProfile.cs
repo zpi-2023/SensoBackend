@@ -51,6 +51,11 @@ public sealed class EditCaretakerProfileHandler
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
             );
 
+        if (profile.AccountId == profile.SeniorId)
+        {
+            throw new ValidationException("You cannot be your own caretaker");
+        }
+
         profile.Alias = request.SeniorAlias;
         await _context.SaveChangesAsync(ct);
         return profile.Adapt<ProfileDisplayDto>();
