@@ -11,5 +11,6 @@ public enum Gadget
     toggleLanguage,
     trackMedication,
     playGames,
-    manageNotes
+    manageNotes,
+    quickCreateNote
 }
