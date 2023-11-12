@@ -14,7 +14,7 @@ public static class SeniorIdRepo
         }
         Seniors.Remove(hash);
 
-        return seniorData.ValidTo >= DateTime.Now ? seniorData : null;
+        return seniorData.ValidTo >= DateTimeOffset.UtcNow ? seniorData : null;
     }
 
     public static void Add(int hash, SeniorDataToEncode seniorData)
@@ -28,7 +28,7 @@ public static class SeniorIdRepo
     private static void RemoveOldRecords()
     {
         Seniors
-            .Where(r => r.Value.ValidTo < DateTime.Now)
+            .Where(r => r.Value.ValidTo < DateTimeOffset.UtcNow)
             .Select(r => r.Key)
             .ToList()
             .ForEach(r => Seniors.Remove(r));

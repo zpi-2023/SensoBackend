@@ -14,7 +14,7 @@ public sealed record GetEncodedSeniorIdRequest(int AccountId) : IRequest<Encoded
 public sealed class GetEncodedSeniorIdHandler
     : IRequestHandler<GetEncodedSeniorIdRequest, EncodedSeniorDto>
 {
-    private static readonly int _tokenValidForMinutes = 20;
+    private const int TokenValidForMinutes = 20;
 
     private readonly AppDbContext _context;
 
@@ -34,16 +34,11 @@ public sealed class GetEncodedSeniorIdHandler
             throw new SeniorNotFoundException("Given account does not have a senior profile");
         }
 
-        var account = await _context.Accounts
-            .Where(a => a.Id == request.AccountId)
-            .FirstOrDefaultAsync(ct);
+        var account =
+            await _context.Accounts.Where(a => a.Id == request.AccountId).FirstOrDefaultAsync(ct)
+            ?? throw new AccountNotFoundException("Given account was not found");
 
-        if (account == null)
-        {
-            throw new AccountNotFoundException("Given account was not found");
-        }
-
-        var validTo = DateTime.Now.AddMinutes(_tokenValidForMinutes);
+        var validTo = DateTimeOffset.UtcNow.AddMinutes(TokenValidForMinutes);
         var seniorData = new SeniorDataToEncode
         {
             SeniorDisplayName = account.DisplayName,
@@ -57,7 +52,7 @@ public sealed class GetEncodedSeniorIdHandler
         {
             Hash = hash,
             SeniorDisplayName = seniorData.SeniorDisplayName,
-            ValidFor = (int)Math.Floor((seniorData.ValidTo - DateTime.Now).TotalSeconds)
+            ValidFor = (int)TimeSpan.FromMinutes(TokenValidForMinutes).TotalSeconds
         };
     }
 }
