@@ -31,6 +31,7 @@ public sealed class SeniorIdRepo : ISeniorIdRepo
 
     private void RemoveOldRecords()
     {
+        // A bit ugly, but it avoids unnecessary memory allocations
         foreach (
             var key in _seniors.Where(r => r.Value.ValidTo < _timeProvider.Now).Select(r => r.Key)
         )
