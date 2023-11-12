@@ -10,7 +10,7 @@ using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record CreateSeniorProfileRequest(int AccountId) : IRequest<ProfileDisplayDto>;
 
@@ -39,16 +39,13 @@ public sealed class CreateSeniorProfileHandler
             );
         }
 
-        var account =
-            await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.AccountId, ct)
-            ?? throw new AccountNotFoundException(
-                $"An account with the given Id ({request.AccountId}) does not exist"
-            );
-
-        var displayName = account.DisplayName;
+        var account = await _context.Accounts.FirstOrDefaultAsync(
+            a => a.Id == request.AccountId,
+            ct
+        );
 
         var profile = request.Adapt<Profile>();
-        profile.Alias = displayName;
+        profile.Alias = account!.DisplayName;
         profile.SeniorId = request.AccountId;
 
         await _context.Profiles.AddAsync(profile, ct);

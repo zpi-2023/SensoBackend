@@ -2,7 +2,7 @@
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.GetAccountById;
-using SensoBackend.Application.Modules.Profiles.GetListOfProfilesByAccountId;
+using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Enums;
 

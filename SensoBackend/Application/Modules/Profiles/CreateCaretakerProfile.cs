@@ -9,7 +9,7 @@ using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record CreateCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 {
@@ -59,17 +59,9 @@ public sealed class CreateCaretakerProfileHandler
             );
         }
 
-        var account =
-            await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.AccountId, ct)
-            ?? throw new AccountNotFoundException(
-                $"An account with the given Id ({request.AccountId}) does not exist"
-            );
+        var account = await _context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
 
-        var senior =
-            await _context.Accounts.FirstOrDefaultAsync(a => a.Id == seniorData.SeniorId, ct)
-            ?? throw new SeniorNotFoundException(
-                $"A senior with the given Id ({seniorData.SeniorId}) does not exist"
-            );
+        var senior = await _context.Accounts.FirstAsync(a => a.Id == seniorData.SeniorId, ct);
 
         var profile = request.Adapt<Profile>();
         profile.SeniorId = seniorData.SeniorId;

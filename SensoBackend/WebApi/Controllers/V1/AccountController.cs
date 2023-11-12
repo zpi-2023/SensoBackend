@@ -3,13 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
-using SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
+using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Application.Modules.Profiles.Contracts;
-using SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
-using SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
-using SensoBackend.Application.Modules.Profiles.GetEncodedSeniorId;
 
 namespace SensoBackend.WebApi.Controllers.V1;
 

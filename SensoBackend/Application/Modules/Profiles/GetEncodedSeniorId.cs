@@ -7,7 +7,7 @@ using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.GetEncodedSeniorId;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record GetEncodedSeniorIdRequest(int AccountId) : IRequest<EncodedSeniorDto>;
 
@@ -31,18 +31,19 @@ public sealed class GetEncodedSeniorIdHandler
         CancellationToken ct
     )
     {
-        var profiles = await _context.Profiles
-            .Where(p => p.AccountId == request.AccountId && p.AccountId == p.SeniorId)
-            .ToListAsync(ct);
-
-        if (profiles.Count == 0)
+        if (
+            !(
+                await _context.Profiles.AnyAsync(
+                    p => p.AccountId == request.AccountId && p.AccountId == p.SeniorId,
+                    ct
+                )
+            )
+        )
         {
             throw new SeniorNotFoundException("Given account does not have a senior profile");
         }
 
-        var account =
-            await _context.Accounts.Where(a => a.Id == request.AccountId).FirstOrDefaultAsync(ct)
-            ?? throw new AccountNotFoundException("Given account was not found");
+        var account = await _context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
 
         var validTo = DateTimeOffset.UtcNow.AddMinutes(TokenValidForMinutes);
         var seniorData = new SeniorDataToEncode
