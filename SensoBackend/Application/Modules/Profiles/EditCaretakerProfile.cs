@@ -4,14 +4,12 @@ using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Profiles.Contracts;
-using SensoBackend.Application.Modules.Profiles.Utils;
-using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles.EditCaretakerProfile;
 
-public sealed record EditCaretakerProfileRequest : IRequest
+public sealed record EditCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 {
     public required int AccountId { get; init; }
 
@@ -32,14 +30,29 @@ public sealed class EditCaretakerProfileValidator : AbstractValidator<EditCareta
 }
 
 [UsedImplicitly]
-public sealed class EditCaretakerProfileHandler : IRequestHandler<EditCaretakerProfileRequest>
+public sealed class EditCaretakerProfileHandler
+    : IRequestHandler<EditCaretakerProfileRequest, ProfileDisplayDto>
 {
     private readonly AppDbContext _context;
 
     public EditCaretakerProfileHandler(AppDbContext context) => _context = context;
 
-    public async Task Handle(EditCaretakerProfileRequest request, CancellationToken ct)
+    public async Task<ProfileDisplayDto> Handle(
+        EditCaretakerProfileRequest request,
+        CancellationToken ct
+    )
     {
-        throw new NotImplementedException();
+        var profile =
+            await _context.Profiles.FirstOrDefaultAsync(
+                p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
+                ct
+            )
+            ?? throw new ProfileNotFoundException(
+                $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
+            );
+
+        profile.Alias = request.SeniorAlias;
+        await _context.SaveChangesAsync(ct);
+        return profile.Adapt<ProfileDisplayDto>();
     }
 }

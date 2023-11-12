@@ -31,6 +31,27 @@ public sealed class DeleteSeniorProfileHandler : IRequestHandler<DeleteSeniorPro
 
     public async Task Handle(DeleteSeniorProfileRequest request, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var profile =
+            await _context.Profiles.FirstOrDefaultAsync(
+                p => p.AccountId == request.AccountId && p.SeniorId == request.AccountId,
+                ct
+            )
+            ?? throw new ProfileNotFoundException(
+                $"Profile with AccountId {request.AccountId} and SeniorId {request.AccountId} was not found"
+            );
+
+        var caretakerProfiles = await _context.Profiles
+            .Where(p => p.SeniorId == request.AccountId && p.AccountId != request.AccountId)
+            .ToListAsync(ct);
+
+        if (caretakerProfiles.Any())
+        {
+            throw new RemoveSeniorProfileDeniedException(
+                "This senior profile has caretaker profiles associated with it"
+            );
+        }
+
+        _context.Profiles.Remove(profile);
+        await _context.SaveChangesAsync(ct);
     }
 }
