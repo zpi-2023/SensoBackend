@@ -2,6 +2,7 @@ using Bogus;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 
 namespace SensoBackend.UnitTests.Utils;
 
@@ -37,8 +38,7 @@ public static class Generators
         .RuleFor(u => u.CreatedAt, f => f.Date.PastOffset())
         .RuleFor(u => u.LastLoginAt, f => f.Date.PastOffset())
         .RuleFor(u => u.LastPasswordChangeAt, f => f.Date.PastOffset())
-        .RuleFor(u => u.RoleId, _ => Role.Member.Id)
-        .RuleFor(u => u.Role, _ => null);
+        .RuleFor(u => u.Role, _ => Role.Member);
 
     public static readonly Faker<GetAccountByCredentialsDto> GetAccountByCredentialsDto =
         new Faker<GetAccountByCredentialsDto>()
@@ -56,7 +56,7 @@ public static class Generators
         f =>
             Enumerable
                 .Range(0, f.Random.Int(0, 6))
-                .Select(_ => Gadget.List[f.Random.Int(0, Gadget.List.Count - 1)].Name)
+                .Select(_ => f.PickRandom<Gadget>().ToString("f"))
                 .ToList()
     );
 }

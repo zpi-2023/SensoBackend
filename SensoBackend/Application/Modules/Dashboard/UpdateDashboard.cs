@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Dashboard;
@@ -20,7 +21,7 @@ public sealed class UpdateDashboardValidator : AbstractValidator<UpdateDashboard
             .WithMessage("Gadget list is too long.");
 
         RuleForEach(r => r.Dto.Gadgets)
-            .Must(name => Gadget.List.Any(g => name == g.Name))
+            .Must(name => Enum.GetValues<Gadget>().Any(g => name == g.ToString("f")))
             .WithMessage("Gadget type is invalid.");
     }
 }
@@ -35,7 +36,8 @@ public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequ
     public async Task Handle(UpdateDashboardRequest request, CancellationToken ct)
     {
         var gadgetIds = request.Dto.Gadgets.Select(
-            (name, position) => (Gadget.List.First(g => g.Name == name).Id, position)
+            (name, position) =>
+                (Enum.GetValues<Gadget>().First(g => g.ToString("f") == name), position)
         );
 
         using var transaction = await _context.Database.BeginTransactionAsync(ct);
@@ -46,14 +48,14 @@ public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequ
 
         _context.DashboardItems.RemoveRange(oldItems);
 
-        foreach (var (gadgetId, position) in gadgetIds)
+        foreach (var (gadget, position) in gadgetIds)
         {
             await _context.DashboardItems.AddAsync(
                 new DashboardItem
                 {
                     Id = default,
                     AccountId = request.SeniorId,
-                    GadgetId = gadgetId,
+                    Gadget = gadget,
                     Position = position
                 },
                 ct
