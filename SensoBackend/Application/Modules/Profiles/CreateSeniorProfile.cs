@@ -15,15 +15,6 @@ namespace SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
 public sealed record CreateSeniorProfileRequest(int AccountId) : IRequest<ProfileDisplayDto>;
 
 [UsedImplicitly]
-public sealed class CreateSeniorProfileValidator : AbstractValidator<CreateSeniorProfileRequest>
-{
-    public CreateSeniorProfileValidator()
-    {
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("Id is empty.");
-    }
-}
-
-[UsedImplicitly]
 public sealed class CreateSeniorProfileHandler
     : IRequestHandler<CreateSeniorProfileRequest, ProfileDisplayDto>
 {
@@ -43,7 +34,9 @@ public sealed class CreateSeniorProfileHandler
     {
         if (await _context.Profiles.AnyAsync(p => p.SeniorId == request.AccountId, ct))
         {
-            throw new ValidationException("This account already has a senior profile");
+            throw new SeniorProfileAlreadyExistsException(
+                "This account already has a senior profile"
+            );
         }
 
         var account =

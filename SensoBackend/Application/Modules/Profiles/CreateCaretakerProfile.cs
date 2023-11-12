@@ -21,17 +21,6 @@ public sealed record CreateCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 }
 
 [UsedImplicitly]
-public sealed class CreateCaretakerProfileValidator
-    : AbstractValidator<CreateCaretakerProfileRequest>
-{
-    public CreateCaretakerProfileValidator()
-    {
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId is empty.");
-        RuleFor(r => r.Hash).NotEmpty().WithMessage("Hash is empty.");
-    }
-}
-
-[UsedImplicitly]
 public sealed class CreateCaretakerProfileHandler
     : IRequestHandler<CreateCaretakerProfileRequest, ProfileDisplayDto>
 {
@@ -70,26 +59,17 @@ public sealed class CreateCaretakerProfileHandler
             );
         }
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == request.AccountId,
-            ct
-        );
-        if (account == null)
-        {
-            throw new AccountNotFoundException(
+        var account =
+            await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.AccountId, ct)
+            ?? throw new AccountNotFoundException(
                 $"An account with the given Id ({request.AccountId}) does not exist"
             );
-        }
-        var senior = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == seniorData.SeniorId,
-            ct
-        );
-        if (senior == null)
-        {
-            throw new SeniorNotFoundException(
+
+        var senior =
+            await _context.Accounts.FirstOrDefaultAsync(a => a.Id == seniorData.SeniorId, ct)
+            ?? throw new SeniorNotFoundException(
                 $"A senior with the given Id ({seniorData.SeniorId}) does not exist"
             );
-        }
 
         var profile = request.Adapt<Profile>();
         profile.SeniorId = seniorData.SeniorId;
