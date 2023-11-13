@@ -43,7 +43,9 @@ public sealed class CreateSeniorProfileHandler
     {
         if (await _context.Profiles.AnyAsync(p => p.SeniorId == request.AccountId, ct))
         {
-            throw new ValidationException("This account already has a senior profile");
+            throw new SeniorProfileAlreadyExistsException(
+                "This account already has a senior profile"
+            );
         }
 
         var account =
