@@ -10,9 +10,7 @@ using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 using SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
 using SensoBackend.Application.Modules.Profiles.GetEncodedSeniorId;
-using SensoBackend.Application.Modules.Profiles.DeleteSeniorProfile;
-using SensoBackend.Application.Modules.Profiles.DeleteCaretakerProfile;
-using SensoBackend.Application.Modules.Profiles.EditCaretakerProfile;
+using SensoBackend.Application.Modules.Profiles;
 
 namespace SensoBackend.WebApi.Controllers.V1;
 
@@ -79,9 +77,9 @@ public sealed class AccountController : ControllerBase
     [HasPermission(Permission.ManageProfiles)]
     [HttpDelete("profiles/senior")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSeniorProfile()
     {
         var accountId = this.GetAccountId();
@@ -115,6 +113,7 @@ public sealed class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteCaretakerProfile(int seniorId)
     {
         var accountId = this.GetAccountId();
@@ -129,6 +128,7 @@ public sealed class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfileDisplayDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> EditCaretakerProfile(int seniorId, EditCaretakerProfileDto dto)
     {
         var accountId = this.GetAccountId();

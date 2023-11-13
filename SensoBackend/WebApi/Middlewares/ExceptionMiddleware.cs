@@ -31,13 +31,13 @@ public sealed class ExceptionMiddleware
             context.Response.Headers.Add("X-Error-Message", noControlCharsExceptionMessage);
             context.Response.StatusCode = exception switch
             {
-                ProfileNotFoundException => 400,
                 ValidationException => 400,
                 InvalidCredentialException => 401,
                 NoteAccessDeniedException => 403,
                 RemoveSeniorProfileDeniedException => 403,
                 AccountNotFoundException => 404,
                 NoteNotFoundException => 404,
+                ProfileNotFoundException => 404,
                 SeniorNotFoundException => 404,
                 CaretakerProfileAlreadyExistsException => 409,
                 SeniorProfileAlreadyExistsException => 409,

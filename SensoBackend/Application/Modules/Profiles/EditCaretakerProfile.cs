@@ -7,7 +7,7 @@ using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.EditCaretakerProfile;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record EditCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 {
@@ -26,6 +26,9 @@ public sealed class EditCaretakerProfileValidator : AbstractValidator<EditCareta
         RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId is empty.");
         RuleFor(r => r.SeniorId).NotEmpty().WithMessage("SeniorId is empty.");
         RuleFor(r => r.SeniorAlias).NotEmpty().WithMessage("Hash is empty.");
+        RuleFor(r => r.AccountId)
+            .NotEqual(r => r.SeniorId)
+            .WithMessage("You cannot be your own caretaker.");
     }
 }
 
@@ -50,11 +53,6 @@ public sealed class EditCaretakerProfileHandler
             ?? throw new ProfileNotFoundException(
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
             );
-
-        if (profile.AccountId == profile.SeniorId)
-        {
-            throw new ValidationException("You cannot be your own caretaker");
-        }
 
         profile.Alias = request.SeniorAlias;
         await _context.SaveChangesAsync(ct);

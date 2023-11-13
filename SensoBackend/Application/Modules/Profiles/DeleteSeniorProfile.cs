@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.DeleteSeniorProfile;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record DeleteSeniorProfileRequest(int AccountId) : IRequest;
 

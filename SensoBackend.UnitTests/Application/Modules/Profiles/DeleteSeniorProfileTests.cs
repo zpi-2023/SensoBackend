@@ -1,7 +1,5 @@
-using FluentValidation;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.DeleteSeniorProfile;
+using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;

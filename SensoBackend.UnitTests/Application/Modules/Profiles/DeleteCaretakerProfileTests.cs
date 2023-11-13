@@ -1,6 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.DeleteCaretakerProfile;
+using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
@@ -55,24 +55,19 @@ public sealed class DeleteCaretakerProfileHandlerTests : IDisposable
 
         await act.Should().ThrowAsync<ProfileNotFoundException>();
     }
+}
+
+public sealed class DeleteCaretakerProfileValidatorTests
+{
+    private readonly DeleteCaretakerProfileValidator _sut = new();
 
     [Fact]
-    public async Task Handle_ShouldThrowValidationException_WhenProfileIsSelf()
+    public void Validate_ShouldThrowValidationException_WhenAccountIdIsEqualSeniorId()
     {
-        var profile = Generators.SeniorProfile.Generate();
-        await _context.Profiles.AddAsync(profile);
-        await _context.SaveChangesAsync();
+        var request = new DeleteCaretakerProfileRequest { AccountId = 1, SeniorId = 1 };
 
-        var act = async () =>
-            await _sut.Handle(
-                new DeleteCaretakerProfileRequest
-                {
-                    AccountId = profile.AccountId,
-                    SeniorId = profile.SeniorId
-                },
-                CancellationToken.None
-            );
+        var act = () => _sut.ValidateAndThrow(request);
 
-        await act.Should().ThrowAsync<ValidationException>();
+        act.Should().Throw<ValidationException>();
     }
 }

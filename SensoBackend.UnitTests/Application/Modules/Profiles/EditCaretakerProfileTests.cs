@@ -1,6 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.EditCaretakerProfile;
+using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
@@ -62,27 +62,6 @@ public sealed class EditCaretakerProfileHandlerTests : IDisposable
 
         await act.Should().ThrowAsync<ProfileNotFoundException>();
     }
-
-    [Fact]
-    public async Task Handle_ShouldThrownValidationException_WhenProfileIsSelf()
-    {
-        var profile = Generators.SeniorProfile.Generate();
-        await _context.Profiles.AddAsync(profile);
-        await _context.SaveChangesAsync();
-
-        var act = async () =>
-            await _sut.Handle(
-                new EditCaretakerProfileRequest
-                {
-                    AccountId = profile.AccountId,
-                    SeniorId = profile.AccountId,
-                    SeniorAlias = profile.Alias
-                },
-                CancellationToken.None
-            );
-
-        await act.Should().ThrowAsync<ValidationException>();
-    }
 }
 
 public sealed class EditCaretakerProfileValidatorTests
@@ -103,6 +82,21 @@ public sealed class EditCaretakerProfileValidatorTests
                     SeniorAlias = string.Empty
                 }
             );
+
+        act.Should().Throw<ValidationException>();
+    }
+
+    [Fact]
+    public void Validate_ShouldThrowValidationException_WhenAccountIdIsEqualSeniorId()
+    {
+        var request = new EditCaretakerProfileRequest
+        {
+            AccountId = 1,
+            SeniorId = 1,
+            SeniorAlias = ""
+        };
+
+        var act = () => _sut.ValidateAndThrow(request);
 
         act.Should().Throw<ValidationException>();
     }

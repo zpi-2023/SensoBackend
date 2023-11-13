@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.DeleteCaretakerProfile;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record DeleteCaretakerProfileRequest : IRequest
 {
@@ -22,6 +22,9 @@ public sealed class DeleteCaretakerProfileValidator
     {
         RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId is empty.");
         RuleFor(r => r.SeniorId).NotEmpty().WithMessage("SeniorId is empty.");
+        RuleFor(r => r.AccountId)
+            .NotEqual(r => r.SeniorId)
+            .WithMessage("You cannot be your own caretaker.");
     }
 }
 
@@ -42,11 +45,6 @@ public sealed class DeleteCaretakerProfileHandler : IRequestHandler<DeleteCareta
             ?? throw new ProfileNotFoundException(
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
             );
-
-        if (profile.AccountId == profile.SeniorId)
-        {
-            throw new ValidationException("You cannot be your own caretaker");
-        }
 
         _context.Profiles.Remove(profile);
         await _context.SaveChangesAsync(ct);
