@@ -41,7 +41,12 @@ public sealed class RemindersController : ControllerBase
     public async Task<IActionResult> UpdateReminderById(int reminderId, UpdateReminderDto dto)
     {
         var accountId = this.GetAccountId();
-        var request = new UpdateReminderByIdRequest { AccountId = accountId, ReminderId = reminderId, Dto = dto };
+        var request = new UpdateReminderByIdRequest
+        {
+            AccountId = accountId,
+            ReminderId = reminderId,
+            Dto = dto
+        };
         return Ok(await _mediator.Send(request));
     }
 
@@ -54,7 +59,11 @@ public sealed class RemindersController : ControllerBase
     public async Task<IActionResult> GetAllIntakesForReminder(int reminderId)
     {
         var accountId = this.GetAccountId();
-        var request = new GetAllIntakesForReminderRequest { AccountId = accountId, ReminderId = reminderId };
+        var request = new GetAllIntakesForReminderRequest
+        {
+            AccountId = accountId,
+            ReminderId = reminderId
+        };
         return Ok(await _mediator.Send(request));
     }
 
@@ -83,11 +92,20 @@ public sealed class RemindersController : ControllerBase
     public async Task<IActionResult> CreateIntakeRecord(int reminderId, CreateIntakeDto dto)
     {
         var accountId = this.GetAccountId();
-        var request = new CreateIntakeRequest { AccountId = accountId, Dto = dto , ReminderId = reminderId};
+        var request = new CreateIntakeRequest
+        {
+            AccountId = accountId,
+            Dto = dto,
+            ReminderId = reminderId
+        };
 
         var intakeDto = await _mediator.Send(request);
 
-        return CreatedAtAction(nameof(GetIntakeRecordById), new { intakeId = intakeDto.Id }, intakeDto);
+        return CreatedAtAction(
+            nameof(GetIntakeRecordById),
+            new { intakeId = intakeDto.Id },
+            intakeDto
+        );
     }
 
     [HasPermission(Permission.ManageReminders)]
@@ -128,14 +146,20 @@ public sealed class RemindersController : ControllerBase
     {
         var accountId = this.GetAccountId();
 
-        var reminderDto = await _mediator.Send(new CreateReminderRequest
-        {
-            AccountId = accountId,
-            SeniorId = seniorId,
-            Dto = dto
-        });
-        
-        return CreatedAtAction(nameof(GetReminderById), new { reminderId = reminderDto.Id }, reminderDto);
+        var reminderDto = await _mediator.Send(
+            new CreateReminderRequest
+            {
+                AccountId = accountId,
+                SeniorId = seniorId,
+                Dto = dto
+            }
+        );
+
+        return CreatedAtAction(
+            nameof(GetReminderById),
+            new { reminderId = reminderDto.Id },
+            reminderDto
+        );
     }
 
     [HasPermission(Permission.ManageReminders)]
@@ -146,7 +170,11 @@ public sealed class RemindersController : ControllerBase
     public async Task<IActionResult> GetSeniorIntakes(int seniorId)
     {
         var accountId = this.GetAccountId();
-        var request = new GetAllIntakesForSeniorRequest { AccountId = accountId, SeniorId = seniorId };
+        var request = new GetAllIntakesForSeniorRequest
+        {
+            AccountId = accountId,
+            SeniorId = seniorId
+        };
         return Ok(await _mediator.Send(request));
     }
 

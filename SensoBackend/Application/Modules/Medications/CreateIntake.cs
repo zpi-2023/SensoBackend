@@ -2,9 +2,11 @@
 using JetBrains.Annotations;
 using Mapster;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Medications;
@@ -51,12 +53,13 @@ public sealed class CreateIntakeHandler : IRequestHandler<CreateIntakeRequest, I
 
     public async Task<IntakeDto> Handle(CreateIntakeRequest request, CancellationToken ct)
     {
-        ReminderUtils.CheckReminderAndProfile(
-            context: _context,
-            accountId: request.AccountId,
-            reminderId: request.ReminderId,
-            ct: ct
-        );
+        var reminder =
+            await _context.Reminders.FindAsync(request.ReminderId, ct)
+            ?? throw new ReminderNotFoundException(request.ReminderId);
+
+        var neededProfile =
+            await _context.Profiles.FirstOrDefaultAsync(p => p.SeniorId == request.AccountId)
+            ?? throw new ReminderAccessDeniedException(request.ReminderId);
 
         var intakeRecord = request.Dto.Adapt<IntakeRecord>();
         intakeRecord.ReminderId = request.ReminderId;

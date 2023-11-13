@@ -12,7 +12,7 @@ namespace SensoBackend.Application.Modules.Medications;
 public sealed record GetReminderByIdRequest : IRequest<ReminderDto>
 {
     public required int ReminderId { get; init; }
-    
+
     public required int AccountId { get; init; }
 }
 
@@ -25,15 +25,13 @@ public sealed class GetReminderByIdHandler : IRequestHandler<GetReminderByIdRequ
 
     public async Task<ReminderDto> Handle(GetReminderByIdRequest request, CancellationToken ct)
     {
-        var reminder = await _context.Reminders.FindAsync(request.ReminderId, ct)
+        var reminder =
+            await _context.Reminders.FindAsync(request.ReminderId, ct)
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
-        var neededProfile = await _context.Profiles
-            .FirstOrDefaultAsync(
-                p =>
-                    p.AccountId == request.AccountId
-                    && p.SeniorId == reminder.SeniorId
-            );
+        var neededProfile = await _context.Profiles.FirstOrDefaultAsync(
+            p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId
+        );
 
         return neededProfile is null
             ? throw new ReminderAccessDeniedException(request.ReminderId)

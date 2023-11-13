@@ -18,7 +18,8 @@ public sealed record GetAllIntakesForReminderRequest : IRequest<IntakeListDto>
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForReminderValidator : AbstractValidator<GetAllIntakesForReminderRequest>
+public sealed class GetAllIntakesForReminderValidator
+    : AbstractValidator<GetAllIntakesForReminderRequest>
 {
     public GetAllIntakesForReminderValidator()
     {
@@ -36,15 +37,19 @@ public sealed class GetAllIntakesForReminderValidator : AbstractValidator<GetAll
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForReminderHandler : IRequestHandler<GetAllIntakesForReminderRequest, IntakeListDto>
+public sealed class GetAllIntakesForReminderHandler
+    : IRequestHandler<GetAllIntakesForReminderRequest, IntakeListDto>
 {
     private readonly AppDbContext _context;
 
     public GetAllIntakesForReminderHandler(AppDbContext context) => _context = context;
 
-    public async Task<IntakeListDto> Handle(GetAllIntakesForReminderRequest request, CancellationToken ct)
+    public async Task<IntakeListDto> Handle(
+        GetAllIntakesForReminderRequest request,
+        CancellationToken ct
+    )
     {
-        ReminderUtils.CheckReminderAndProfile(
+        await ReminderUtils.CheckReminderAndProfile(
             context: _context,
             accountId: request.AccountId,
             reminderId: request.ReminderId,

@@ -17,6 +17,7 @@ public sealed class MedicationController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MedicationListDto))]
-    public async Task<IActionResult> GetMedicationList([FromQuery(Name = "search")] string search)
-        => Ok(await _mediator.Send(new GetMedicationListRequest { SearchTerm = search }));
+    public async Task<IActionResult> GetMedicationList(
+        [FromQuery(Name = "search")] string search
+    ) => Ok(await _mediator.Send(new GetMedicationListRequest { SearchTerm = search }));
 }

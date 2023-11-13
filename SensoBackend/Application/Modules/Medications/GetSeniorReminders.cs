@@ -37,19 +37,21 @@ public sealed class GetSeniorRemindersValidator : AbstractValidator<GetSeniorRem
 }
 
 [UsedImplicitly]
-public sealed class GetSeniorRemindersHandler : IRequestHandler<GetSeniorRemindersRequest, ReminderListDto>
+public sealed class GetSeniorRemindersHandler
+    : IRequestHandler<GetSeniorRemindersRequest, ReminderListDto>
 {
     private readonly AppDbContext _context;
 
     public GetSeniorRemindersHandler(AppDbContext context) => _context = context;
 
-    public async Task<ReminderListDto> Handle(GetSeniorRemindersRequest request, CancellationToken ct)
+    public async Task<ReminderListDto> Handle(
+        GetSeniorRemindersRequest request,
+        CancellationToken ct
+    )
     {
-        var neededProfile = await _context.Profiles
-            .FirstOrDefaultAsync(
-                p =>
-                    p.AccountId == request.AccountId
-                    && p.SeniorId == request.SeniorId
+        var neededProfile =
+            await _context.Profiles.FirstOrDefaultAsync(
+                p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
             ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
 
         var reminders = await _context.Reminders

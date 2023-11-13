@@ -43,14 +43,13 @@ public sealed class DeleteReminderHandler : IRequestHandler<DeleteReminderReques
 
     public async Task Handle(DeleteReminderRequest request, CancellationToken ct)
     {
-        var reminder = await _context.Reminders.FindAsync(request.ReminderId, ct)
+        var reminder =
+            await _context.Reminders.FindAsync(request.ReminderId, ct)
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
-        var neededProfile = await _context.Profiles
-            .FirstOrDefaultAsync(
-                p =>
-                    p.AccountId == request.AccountId
-                    && p.SeniorId == reminder.SeniorId
+        var neededProfile =
+            await _context.Profiles.FirstOrDefaultAsync(
+                p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId
             ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
 
         reminder.IsActive = false;

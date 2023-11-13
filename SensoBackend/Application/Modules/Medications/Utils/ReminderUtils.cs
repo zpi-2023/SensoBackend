@@ -20,16 +20,20 @@ public static class ReminderUtils
     /// <exception cref="ReminderAccessDeniedException">
     /// When account with a given Id does not have a profile required to manage reminder - 403
     /// </exception>
-    public static async Task CheckReminderAndProfile(AppDbContext context, int accountId, int reminderId, CancellationToken ct)
+    public static async Task CheckReminderAndProfile(
+        AppDbContext context,
+        int accountId,
+        int reminderId,
+        CancellationToken ct
+    )
     {
-        var reminder = await context.Reminders.FindAsync(reminderId, ct)
+        var reminder =
+            await context.Reminders.FindAsync(reminderId, ct)
             ?? throw new ReminderNotFoundException(reminderId);
 
-        var neededProfile = await context.Profiles
-            .FirstOrDefaultAsync(
-                p =>
-                    p.AccountId == accountId
-                    && p.SeniorId == reminder.SeniorId
+        var neededProfile =
+            await context.Profiles.FirstOrDefaultAsync(
+                p => p.AccountId == accountId && p.SeniorId == reminder.SeniorId
             ) ?? throw new ReminderAccessDeniedException(reminderId);
     }
 

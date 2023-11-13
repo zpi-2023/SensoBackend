@@ -10,6 +10,6 @@ public sealed record UpdateReminderDto
     public float? AmountOwned { get; init; }
 
     public string? Cron { get; init; }
-    
+
     public string? Description { get; init; }
 }

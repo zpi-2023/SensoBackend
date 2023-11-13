@@ -18,7 +18,8 @@ public sealed record GetAllIntakesForSeniorRequest : IRequest<IntakeListDto>
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForSeniorValidator : AbstractValidator<GetAllIntakesForSeniorRequest>
+public sealed class GetAllIntakesForSeniorValidator
+    : AbstractValidator<GetAllIntakesForSeniorRequest>
 {
     public GetAllIntakesForSeniorValidator()
     {
@@ -36,19 +37,21 @@ public sealed class GetAllIntakesForSeniorValidator : AbstractValidator<GetAllIn
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForSeniorHandler : IRequestHandler<GetAllIntakesForSeniorRequest, IntakeListDto>
+public sealed class GetAllIntakesForSeniorHandler
+    : IRequestHandler<GetAllIntakesForSeniorRequest, IntakeListDto>
 {
     private readonly AppDbContext _context;
 
     public GetAllIntakesForSeniorHandler(AppDbContext context) => _context = context;
 
-    public async Task<IntakeListDto> Handle(GetAllIntakesForSeniorRequest request, CancellationToken ct)
+    public async Task<IntakeListDto> Handle(
+        GetAllIntakesForSeniorRequest request,
+        CancellationToken ct
+    )
     {
-        var neededProfile = await _context.Profiles
-            .FirstOrDefaultAsync(
-                p =>
-                    p.AccountId == request.AccountId
-                    && p.SeniorId == request.SeniorId
+        var neededProfile =
+            await _context.Profiles.FirstOrDefaultAsync(
+                p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
             ) ?? throw new ReminderAccessDeniedException(request.SeniorId);
 
         var intakes = await _context.IntakeRecords

@@ -13,7 +13,7 @@ public sealed record ReminderDto
     [Required]
     public required string MedicationName { get; init; }
 
-    public float? MedicationAmountInPackage {  get; init; }
+    public float? MedicationAmountInPackage { get; init; }
 
     [Required]
     public required bool IsActive { get; init; }

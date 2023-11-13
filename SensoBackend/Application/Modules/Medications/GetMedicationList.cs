@@ -15,7 +15,7 @@ public sealed record GetMedicationListRequest : IRequest<MedicationListDto>
 
 [UsedImplicitly]
 public sealed class GetMedicationListHanddler
-    :IRequestHandler<GetMedicationListRequest, MedicationListDto>
+    : IRequestHandler<GetMedicationListRequest, MedicationListDto>
 {
     private readonly AppDbContext _context;
 

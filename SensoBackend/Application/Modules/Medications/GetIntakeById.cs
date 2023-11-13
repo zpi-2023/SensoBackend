@@ -42,7 +42,8 @@ public sealed class GetIntakeByIdHandler : IRequestHandler<GetIntakeByIdRequest,
 
     public async Task<IntakeDto> Handle(GetIntakeByIdRequest request, CancellationToken ct)
     {
-        var intake = await _context.IntakeRecords.FindAsync(request.IntakeId)
+        var intake =
+            await _context.IntakeRecords.FindAsync(request.IntakeId)
             ?? throw new IntakeRecordNotFoundException(request.IntakeId);
 
         await ReminderUtils.CheckReminderAndProfile(

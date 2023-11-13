@@ -42,7 +42,8 @@ public sealed class UpdateReminderValidator : AbstractValidator<UpdateReminderBy
 }
 
 [UsedImplicitly]
-public sealed class UpdateReminderByIdHandler : IRequestHandler<UpdateReminderByIdRequest, ReminderDto>
+public sealed class UpdateReminderByIdHandler
+    : IRequestHandler<UpdateReminderByIdRequest, ReminderDto>
 {
     private readonly AppDbContext _context;
 
@@ -50,14 +51,13 @@ public sealed class UpdateReminderByIdHandler : IRequestHandler<UpdateReminderBy
 
     public async Task<ReminderDto> Handle(UpdateReminderByIdRequest request, CancellationToken ct)
     {
-        var reminder = await _context.Reminders.FindAsync(request.ReminderId, ct)
+        var reminder =
+            await _context.Reminders.FindAsync(request.ReminderId, ct)
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
-        var neededProfile = await _context.Profiles
-            .FirstOrDefaultAsync(
-                p =>
-                    p.AccountId == request.AccountId
-                    && p.SeniorId == reminder.SeniorId
+        var neededProfile =
+            await _context.Profiles.FirstOrDefaultAsync(
+                p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId
             ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
 
         reminder.AmountPerIntake = request.Dto.AmountPerIntake;

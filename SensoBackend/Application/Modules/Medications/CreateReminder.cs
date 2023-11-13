@@ -37,9 +37,15 @@ public sealed class CreateReminderValidator : AbstractValidator<CreateReminderRe
             .WithMessage("AccountId has to be greater than 0");
         RuleFor(r => r.Dto.MeicationName).NotEmpty().WithMessage("Medication name is empty");
         RuleFor(r => r.Dto.AmountPerIntake).NotEmpty().WithMessage("Amount per intake is empty");
-        RuleFor(r => r.Dto.MedicationAmountInPackage).GreaterThan(0).WithMessage("Medication amount in package is 0 or less");
-        RuleFor(r => r.Dto.AmountOwned).GreaterThanOrEqualTo(0).WithMessage("Medication amount owned is negative");
-        RuleFor(r => r.Dto.AmountPerIntake).GreaterThan(0).WithMessage("Medication amount per intake is 0 or less");
+        RuleFor(r => r.Dto.MedicationAmountInPackage)
+            .GreaterThan(0)
+            .WithMessage("Medication amount in package is 0 or less");
+        RuleFor(r => r.Dto.AmountOwned)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Medication amount owned is negative");
+        RuleFor(r => r.Dto.AmountPerIntake)
+            .GreaterThan(0)
+            .WithMessage("Medication amount per intake is 0 or less");
         //TODO: I suck at regex but might use one for cron
         //RuleFor(r => r.Dto.Cron).Matches(...).WithMessage("Cron expression is invalid");
     }
@@ -57,14 +63,13 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
         _logger = logger;
     }
 
-    public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken cancellationToken)
+    public async Task<ReminderDto> Handle(
+        CreateReminderRequest request,
+        CancellationToken cancellationToken
+    )
     {
         bool validProfileExists = await _context.Profiles
-            .Where(
-                p =>
-                    p.SeniorId == request.SeniorId
-                    && p.AccountId == request.AccountId
-            )
+            .Where(p => p.SeniorId == request.SeniorId && p.AccountId == request.AccountId)
             .AnyAsync();
 
         if (!validProfileExists)
@@ -83,7 +88,7 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
             )
             .ToListAsync();
 
-        if(!medicationsFromDb.Any())
+        if (!medicationsFromDb.Any())
         {
             _logger.LogInformation("-----> Creating new Medication");
 
