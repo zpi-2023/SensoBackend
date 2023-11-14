@@ -104,11 +104,11 @@ public sealed class CreateCaretakerProfileHandlerTests
     public async Task Handle_ShouldThrowSeniorNotFoundException_WhenSeniorWasDeleted()
     {
         var seniorAccount = await _context.SetUpAccount();
-        await _context.SetUpSeniorProfile(seniorAccount);
+        var seniorProfile = await _context.SetUpSeniorProfile(seniorAccount);
         var caretakerAccount = await _context.SetUpAccount();
         var hash = SetUpHash(seniorAccount);
 
-        _context.Accounts.Remove(seniorAccount);
+        _context.Profiles.Remove(seniorProfile);
         await _context.SaveChangesAsync();
 
         var action = async () =>
