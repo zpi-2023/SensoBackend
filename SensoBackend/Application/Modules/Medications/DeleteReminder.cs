@@ -49,10 +49,11 @@ public sealed class DeleteReminderHandler : IRequestHandler<DeleteReminderReques
 
         var neededProfile =
             await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId
+                p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId,
+                ct
             ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
 
         reminder.IsActive = false;
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(ct);
     }
 }

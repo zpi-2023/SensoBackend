@@ -63,14 +63,11 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
         _logger = logger;
     }
 
-    public async Task<ReminderDto> Handle(
-        CreateReminderRequest request,
-        CancellationToken cancellationToken
-    )
+    public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken ct)
     {
         bool validProfileExists = await _context.Profiles
             .Where(p => p.SeniorId == request.SeniorId && p.AccountId == request.AccountId)
-            .AnyAsync();
+            .AnyAsync(ct);
 
         if (!validProfileExists)
         {
@@ -86,7 +83,7 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
                     && m.AmountInPackage == request.Dto.MedicationAmountInPackage
                     && m.AmountUnit == request.Dto.AmountUnit
             )
-            .ToListAsync();
+            .ToListAsync(ct);
 
         if (!medicationsFromDb.Any())
         {
@@ -112,8 +109,8 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
         reminder.Medication = medication;
         reminder.IsActive = true;
 
-        await _context.Reminders.AddAsync(reminder);
-        await _context.SaveChangesAsync();
+        await _context.Reminders.AddAsync(reminder, ct);
+        await _context.SaveChangesAsync(ct);
 
         return ReminderUtils.AdaptToDto(_context, reminder).Result;
     }

@@ -5,17 +5,21 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
+using SensoBackend.Application.Modules.Pagination;
+using SensoBackend.Application.Modules.Pagination.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Medications;
 
-public sealed record GetSeniorRemindersRequest : IRequest<ReminderListDto>
+public sealed record GetSeniorRemindersRequest : IRequest<PaginatedDto<ReminderDto>>
 {
     public required int AccountId { get; init; }
 
     public required int SeniorId { get; init; }
+
+    public required PaginationQuery PaginationQuery { get; init; }
 }
 
 [UsedImplicitly]
@@ -38,13 +42,13 @@ public sealed class GetSeniorRemindersValidator : AbstractValidator<GetSeniorRem
 
 [UsedImplicitly]
 public sealed class GetSeniorRemindersHandler
-    : IRequestHandler<GetSeniorRemindersRequest, ReminderListDto>
+    : IRequestHandler<GetSeniorRemindersRequest, PaginatedDto<ReminderDto>>
 {
     private readonly AppDbContext _context;
 
     public GetSeniorRemindersHandler(AppDbContext context) => _context = context;
 
-    public async Task<ReminderListDto> Handle(
+    public async Task<PaginatedDto<ReminderDto>> Handle(
         GetSeniorRemindersRequest request,
         CancellationToken ct
     )
@@ -57,12 +61,17 @@ public sealed class GetSeniorRemindersHandler
         var reminders = await _context.Reminders
             .Where(r => r.SeniorId == request.SeniorId)
             .Include(r => r.Medication)
+            .Paged(request.PaginationQuery)
             .ToListAsync(ct);
 
         var adaptedReminders = reminders
             .Select(r => ReminderUtils.AdaptToDto(_context, r).Result)
             .ToList();
 
-        return new ReminderListDto { Reminders = adaptedReminders };
+        return new PaginatedDto<ReminderDto>
+        {
+            Items = adaptedReminders,
+            CurrentPage = request.PaginationQuery.Page
+        };
     }
 }

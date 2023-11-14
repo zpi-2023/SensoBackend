@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Medications;
 using SensoBackend.Application.Modules.Medications.Contracts;
+using SensoBackend.Application.Modules.Pagination;
+using SensoBackend.Application.Modules.Pagination.Contracts;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 
@@ -52,17 +54,21 @@ public sealed class RemindersController : ControllerBase
 
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("{reminderId}/intakes")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IntakeListDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<IntakeDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllIntakesForReminder(int reminderId)
+    public async Task<IActionResult> GetAllIntakesForReminder(
+        int reminderId,
+        [FromQuery] PaginationQuery query
+    )
     {
         var accountId = this.GetAccountId();
         var request = new GetAllIntakesForReminderRequest
         {
             AccountId = accountId,
-            ReminderId = reminderId
+            ReminderId = reminderId,
+            PaginationQuery = query
         };
         return Ok(await _mediator.Send(request));
     }
@@ -127,13 +133,21 @@ public sealed class RemindersController : ControllerBase
 
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("senior/{seniorId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReminderListDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<ReminderDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetSeniorReminders(int seniorId)
+    public async Task<IActionResult> GetSeniorReminders(
+        int seniorId,
+        [FromQuery] PaginationQuery query
+    )
     {
         var accountId = this.GetAccountId();
-        var request = new GetSeniorRemindersRequest { AccountId = accountId, SeniorId = seniorId };
+        var request = new GetSeniorRemindersRequest
+        {
+            AccountId = accountId,
+            SeniorId = seniorId,
+            PaginationQuery = query
+        };
         return Ok(await _mediator.Send(request));
     }
 
@@ -164,16 +178,20 @@ public sealed class RemindersController : ControllerBase
 
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("senior/{seniorId}/intakes")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IntakeListDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<IntakeDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetSeniorIntakes(int seniorId)
+    public async Task<IActionResult> GetSeniorIntakes(
+        int seniorId,
+        [FromQuery] PaginationQuery query
+    )
     {
         var accountId = this.GetAccountId();
         var request = new GetAllIntakesForSeniorRequest
         {
             AccountId = accountId,
-            SeniorId = seniorId
+            SeniorId = seniorId,
+            PaginationQuery = query
         };
         return Ok(await _mediator.Send(request));
     }

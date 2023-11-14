@@ -23,7 +23,7 @@ public sealed class GetMedicationListHanddler
 
     public async Task<MedicationListDto> Handle(
         GetMedicationListRequest request,
-        CancellationToken cancellationToken
+        CancellationToken ct
     )
     {
         var searchTermLowerCase = request.SearchTerm.ToLower();
@@ -31,7 +31,7 @@ public sealed class GetMedicationListHanddler
         var medicationList = await _context.Medications
             .Where(m => m.Name.ToLower().Contains(searchTermLowerCase))
             .Select(m => m.Adapt<MedicationDto>())
-            .ToListAsync();
+            .ToListAsync(ct);
 
         return new MedicationListDto { Medications = medicationList };
     }
