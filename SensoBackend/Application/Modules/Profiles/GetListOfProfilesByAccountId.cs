@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.GetListOfProfilesByAccountId;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record GetListOfProfilesByAccountIdRequest(int AccountId)
     : IRequest<List<ProfileInfo>>;

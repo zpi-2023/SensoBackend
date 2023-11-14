@@ -3,13 +3,13 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Profiles.Contracts;
-using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.CreateCaretakerProfile;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record CreateCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 {
@@ -21,35 +21,26 @@ public sealed record CreateCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 }
 
 [UsedImplicitly]
-public sealed class CreateCaretakerProfileValidator
-    : AbstractValidator<CreateCaretakerProfileRequest>
-{
-    public CreateCaretakerProfileValidator()
-    {
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId is empty.");
-        RuleFor(r => r.Hash).NotEmpty().WithMessage("Hash is empty.");
-    }
-}
-
-[UsedImplicitly]
 public sealed class CreateCaretakerProfileHandler
     : IRequestHandler<CreateCaretakerProfileRequest, ProfileDisplayDto>
 {
     private readonly AppDbContext _context;
+    private readonly ISeniorIdRepo _seniorIdRepo;
 
-    public CreateCaretakerProfileHandler(AppDbContext context) => _context = context;
+    public CreateCaretakerProfileHandler(AppDbContext context, ISeniorIdRepo seniorIdRepo)
+    {
+        _context = context;
+        _seniorIdRepo = seniorIdRepo;
+    }
 
     public async Task<ProfileDisplayDto> Handle(
         CreateCaretakerProfileRequest request,
         CancellationToken ct
     )
     {
-        var seniorData = SeniorIdRepo.Get(request.Hash);
-
-        if (seniorData == null)
-        {
-            throw new SeniorNotFoundException("Provided hash was not found in the database");
-        }
+        var seniorData =
+            _seniorIdRepo.Get(request.Hash)
+            ?? throw new SeniorNotFoundException("Provided hash was not found in the database");
 
         if (seniorData.SeniorId == request.AccountId)
         {
@@ -68,21 +59,13 @@ public sealed class CreateCaretakerProfileHandler
             );
         }
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == request.AccountId,
+        var account = await _context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
+
+        var seniorExists = await _context.Profiles.AnyAsync(
+            p => p.SeniorId == seniorData.SeniorId && p.AccountId == seniorData.SeniorId,
             ct
         );
-        if (account == null)
-        {
-            throw new AccountNotFoundException(
-                $"An account with the given Id ({request.AccountId}) does not exist"
-            );
-        }
-        var senior = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == seniorData.SeniorId,
-            ct
-        );
-        if (senior == null)
+        if (!seniorExists)
         {
             throw new SeniorNotFoundException(
                 $"A senior with the given Id ({seniorData.SeniorId}) does not exist"

@@ -10,18 +10,9 @@ using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.CreateSeniorProfile;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record CreateSeniorProfileRequest(int AccountId) : IRequest<ProfileDisplayDto>;
-
-[UsedImplicitly]
-public sealed class CreateSeniorProfileValidator : AbstractValidator<CreateSeniorProfileRequest>
-{
-    public CreateSeniorProfileValidator()
-    {
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("Id is empty.");
-    }
-}
 
 [UsedImplicitly]
 public sealed class CreateSeniorProfileHandler
@@ -43,19 +34,18 @@ public sealed class CreateSeniorProfileHandler
     {
         if (await _context.Profiles.AnyAsync(p => p.SeniorId == request.AccountId, ct))
         {
-            throw new ValidationException("This account already has a senior profile");
+            throw new SeniorProfileAlreadyExistsException(
+                "This account already has a senior profile"
+            );
         }
 
-        var account =
-            await _context.Accounts.FirstOrDefaultAsync(a => a.Id == request.AccountId, ct)
-            ?? throw new AccountNotFoundException(
-                $"An account with the given Id ({request.AccountId}) does not exist"
-            );
-
-        var displayName = account.DisplayName;
+        var account = await _context.Accounts.FirstOrDefaultAsync(
+            a => a.Id == request.AccountId,
+            ct
+        );
 
         var profile = request.Adapt<Profile>();
-        profile.Alias = displayName;
+        profile.Alias = account!.DisplayName;
         profile.SeniorId = request.AccountId;
 
         await _context.Profiles.AddAsync(profile, ct);

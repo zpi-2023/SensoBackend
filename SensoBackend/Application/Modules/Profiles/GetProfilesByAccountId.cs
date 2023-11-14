@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Infrastructure.Data;
 
-namespace SensoBackend.Application.Modules.Profiles.GetProfilesByAccountId;
+namespace SensoBackend.Application.Modules.Profiles;
 
 public sealed record GetProfilesByAccountIdRequest(int AccountId) : IRequest<ProfilesDto>;
 
@@ -26,8 +26,6 @@ public sealed class GetProfilesByAccountIdHandler
             .Where(p => p.AccountId == request.AccountId)
             .ToListAsync(ct);
 
-        var adaptedProfiles = profiles.Adapt<ProfilesDto>();
-
-        return adaptedProfiles;
+        return profiles.Adapt<ProfilesDto>();
     }
 }

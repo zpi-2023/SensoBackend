@@ -3,99 +3,127 @@ using SensoBackend.Application.Abstractions;
 using SensoBackend.Domain.Enums;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
+using System.Diagnostics;
 using System.Net;
 using System.Security.Claims;
 
 namespace SensoBackend.WebApi.Middlewares;
 
+public enum HasPermissionResult
+{
+    Next,
+    BlockWithUnauthorized,
+    BlockWithBadRequest
+}
+
 public class HasPermissionMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<HasPermissionMiddleware> _logger;
 
-    public HasPermissionMiddleware(
-        RequestDelegate next,
-        IServiceScopeFactory serviceScopeFactory,
-        ILogger<HasPermissionMiddleware> logger
-    )
+    public HasPermissionMiddleware(RequestDelegate next, ILogger<HasPermissionMiddleware> logger)
     {
         _next = next;
-        _serviceScopeFactory = serviceScopeFactory;
         _logger = logger;
     }
 
-    public async Task Invoke(HttpContext context)
+    public async Task<HasPermissionResult> ValidateAsync(
+        IAuthorizationService authorizationService,
+        HasPermissionAttribute? attribute,
+        string? seniorIdParam,
+        string? accountIdClaim
+    )
     {
-        var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
-        var attribute = endpoint?.Metadata.GetMetadata<HasPermissionAttribute>();
-        if (attribute == null)
+        if (attribute is null)
         {
-            await _next(context);
-            return;
+            return HasPermissionResult.Next;
         }
 
-        var accountIdString = context.User.Claims
-            .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
-            ?.Value;
+        _logger.LogInformation(
+            "HasPermissionAttribute found, validating permission {Permission}...",
+            attribute.Permission
+        );
 
-        if (accountIdString == null)
+        if (accountIdClaim is null || !int.TryParse(accountIdClaim, out var accountId))
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return;
+            return HasPermissionResult.BlockWithUnauthorized;
         }
 
-        using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        IAuthorizationService authorizationService =
-            scope.ServiceProvider.GetRequiredService<IAuthorizationService>();
-        var accountId = int.Parse(accountIdString!);
-        var roleId = await authorizationService.GetRoleIdAsync(accountId);
+        var role = await authorizationService.GetRoleAsync(accountId);
 
-        if (roleId == (int)Role.Admin)
+        _logger.LogInformation("Extracted account: {Role} with id {AccountId}", role, accountId);
+
+        if (role == Role.Admin)
         {
-            await _next(context);
-            return;
+            return HasPermissionResult.Next;
         }
 
-        if (roleId != (int)Role.Member)
+        if (role != Role.Member)
         {
-            throw new InvalidDataException(
-                $"The role with id {roleId} does not exist or is not supported"
-            );
+            throw new InvalidDataException($"The role {role} not supported");
         }
 
-        var requiredPermission = attribute.Permission;
-        var permissions = Role.Member.GetPermissions();
-        if (!permissions.Contains(requiredPermission))
+        if (!role.GetPermissions().Contains(attribute.Permission))
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return;
+            return HasPermissionResult.BlockWithUnauthorized;
+        }
+
+        if (seniorIdParam is null)
+        {
+            return HasPermissionResult.Next;
+        }
+
+        _logger.LogInformation("Path contains the seniorId param, looking for a valid profile...");
+
+        if (!int.TryParse(seniorIdParam, out var seniorId))
+        {
+            return HasPermissionResult.BlockWithBadRequest;
         }
 
         var profiles = await authorizationService.GetProfilesByAccountId(accountId);
-        var seniorIdStr = context.Request.RouteValues["seniorId"]?.ToString();
-
-        if (seniorIdStr == null)
+        if (!profiles.Any(p => p.SeniorId == seniorId))
         {
-            await _next(context);
-            return;
+            return HasPermissionResult.BlockWithUnauthorized;
         }
 
-        var isIdValid = int.TryParse(seniorIdStr, out var seniorId);
-        if (!isIdValid)
+        return HasPermissionResult.Next;
+    }
+
+    public async Task Invoke(HttpContext context, IAuthorizationService authorizationService)
+    {
+        _logger.LogInformation("Processing the request through the HasPermissionMiddleware...");
+
+        var attribute = context.Features
+            .Get<IEndpointFeature>()
+            ?.Endpoint?.Metadata.GetMetadata<HasPermissionAttribute>();
+        var seniorIdParam = context.Request.RouteValues["seniorId"]?.ToString();
+        var accountIdClaim = context.User.Claims
+            .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
+            ?.Value;
+
+        var result = await ValidateAsync(
+            authorizationService,
+            attribute,
+            seniorIdParam,
+            accountIdClaim
+        );
+
+        switch (result)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return;
+            case HasPermissionResult.Next:
+                _logger.LogInformation("Permission granted, continuing!");
+                await _next(context);
+                return;
+            case HasPermissionResult.BlockWithUnauthorized:
+                _logger.LogInformation("Permission denied, blocking with 401 Unauthorized!");
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return;
+            case HasPermissionResult.BlockWithBadRequest:
+                _logger.LogInformation("Permission denied, blocking with 400 Bad Request!");
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return;
+            default:
+                throw new UnreachableException();
         }
-
-        var seniorExists = profiles.Where(p => p.SeniorId == seniorId).Any();
-
-        if (!seniorExists)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return;
-        }
-
-        await _next(context);
     }
 }

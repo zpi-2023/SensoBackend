@@ -1,36 +1,42 @@
-﻿namespace SensoBackend.Application.Modules.Profiles.Utils;
+﻿using SensoBackend.Application.Abstractions;
 
-// TODO: This class is pretty much untestable. Consider refactoring to use a singleton service, and inject ITimerProvider.
-public static class SeniorIdRepo
+namespace SensoBackend.Application.Modules.Profiles.Utils;
+
+public sealed class SeniorIdRepo : ISeniorIdRepo
 {
-    private static readonly Dictionary<int, SeniorDataToEncode> Seniors = new();
+    private readonly Dictionary<int, SeniorDataToEncode> _seniors = new();
+    private readonly ITimeProvider _timeProvider;
 
-    public static SeniorDataToEncode? Get(int hash)
+    public SeniorIdRepo(ITimeProvider timeProvider) => _timeProvider = timeProvider;
+
+    public SeniorDataToEncode? Get(int hash)
     {
-        Seniors.TryGetValue(hash, out var seniorData);
-        if (seniorData is null)
+        if (!_seniors.TryGetValue(hash, out var seniorData))
         {
             return null;
         }
-        Seniors.Remove(hash);
 
-        return seniorData.ValidTo >= DateTime.Now ? seniorData : null;
+        _seniors.Remove(hash);
+
+        return seniorData.ValidTo >= _timeProvider.Now ? seniorData : null;
     }
 
-    public static void Add(int hash, SeniorDataToEncode seniorData)
+    public int AssignHash(SeniorDataToEncode seniorData)
     {
-        Seniors[hash] = seniorData;
         RemoveOldRecords();
+        var hash = seniorData.GetHashCode();
+        _seniors[hash] = seniorData;
+        return hash;
     }
 
-    public static int Hash(SeniorDataToEncode seniorData) => seniorData.GetHashCode();
-
-    private static void RemoveOldRecords()
+    private void RemoveOldRecords()
     {
-        Seniors
-            .Where(r => r.Value.ValidTo < DateTime.Now)
-            .Select(r => r.Key)
-            .ToList()
-            .ForEach(r => Seniors.Remove(r));
+        // A bit ugly, but it avoids unnecessary memory allocations
+        foreach (
+            var key in _seniors.Where(r => r.Value.ValidTo < _timeProvider.Now).Select(r => r.Key)
+        )
+        {
+            _seniors.Remove(key);
+        }
     }
 }
