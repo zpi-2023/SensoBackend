@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute.ExceptionExtensions;
 using SensoBackend.WebApi.Middlewares;
 using System.Security.Authentication;
+using SensoBackend.Domain.Exceptions;
 
 namespace SensoBackend.Tests.WebApi.Middlewares;
 
@@ -27,7 +28,7 @@ public sealed class ExceptionMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldSetBadRequestStatusCode_WhenValidationErrorOccurred()
+    public async Task Invoke_ShouldSetBadRequestStatusCode_WhenValidationExceptionOccurred()
     {
         var context = new DefaultHttpContext();
         _next.Invoke(context).Throws(new ValidationException(new List<ValidationFailure>()));
@@ -39,19 +40,7 @@ public sealed class ExceptionMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldSetInternalErrorStatusCode_WhenUnknownErrorOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new Exception());
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(500);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetUnauthorizedStatusCode_WhenInvalidCredentialErrorOccurred()
+    public async Task Invoke_ShouldSetUnauthorizedStatusCode_WhenInvalidCredentialExceptionOccurred()
     {
         var context = new DefaultHttpContext();
         _next.Invoke(context).Throws(new InvalidCredentialException());
@@ -60,5 +49,101 @@ public sealed class ExceptionMiddlewareTests
 
         context.Response.Should().NotBeNull();
         context.Response.StatusCode.Should().Be(401);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenNoteAccessDeniedExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new NoteAccessDeniedException(0));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(403);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenRemoveSeniorProfileDeniedExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new RemoveSeniorProfileDeniedException(String.Empty));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(403);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenNoteNotFoundExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new NoteNotFoundException(0));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetBadRequestStatusCode_WhenProfileNotFoundExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new ProfileNotFoundException(""));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenSeniorNotFoundExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new SeniorNotFoundException(String.Empty));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetConflictStatusCode_WhenCaretakerProfileAlreadyExistsExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new CaretakerProfileAlreadyExistsException(String.Empty));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(409);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetConflictStatusCode_WhenSeniorProfileAlreadyExistsExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new SeniorProfileAlreadyExistsException(String.Empty));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(409);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetInternalErrorStatusCode_WhenUnknownExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new Exception());
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(500);
     }
 }

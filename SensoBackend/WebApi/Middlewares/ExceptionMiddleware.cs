@@ -34,8 +34,10 @@ public sealed class ExceptionMiddleware
                 ValidationException => 400,
                 InvalidCredentialException => 401,
                 NoteAccessDeniedException => 403,
-                SeniorNotFoundException => 404,
+                RemoveSeniorProfileDeniedException => 403,
                 NoteNotFoundException => 404,
+                ProfileNotFoundException => 404,
+                SeniorNotFoundException => 404,
                 CaretakerProfileAlreadyExistsException => 409,
                 SeniorProfileAlreadyExistsException => 409,
                 _ => 500
