@@ -27,7 +27,7 @@ public sealed class GetListOfProfilesByAccountIdHandlerTests
         await CreateCaretakerProfile(account);
 
         var profiles = await _sut.Handle(
-            new GetListOfProfilesByAccountIdRequest(account.Id),
+            new GetListOfProfilesByAccountIdRequest { AccountId = account.Id },
             CancellationToken.None
         );
 

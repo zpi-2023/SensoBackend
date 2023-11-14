@@ -6,14 +6,12 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Profiles.DeleteSeniorProfile;
 
-public sealed class DeleteSeniorProfileHandlerTests : IDisposable
+public sealed class DeleteSeniorProfileHandlerTests
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly DeleteSeniorProfileHandler _sut;
 
     public DeleteSeniorProfileHandlerTests() => _sut = new DeleteSeniorProfileHandler(_context);
-
-    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldDeleteProfile()
@@ -23,7 +21,7 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
         await _context.SaveChangesAsync();
 
         await _sut.Handle(
-            new DeleteSeniorProfileRequest(profile.AccountId),
+            new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
             CancellationToken.None
         );
 
@@ -39,7 +37,7 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
 
         var act = async () =>
             await _sut.Handle(
-                new DeleteSeniorProfileRequest(profile.AccountId),
+                new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
                 CancellationToken.None
             );
 
@@ -59,7 +57,7 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
 
         var act = async () =>
             await _sut.Handle(
-                new DeleteSeniorProfileRequest(profile.AccountId),
+                new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
                 CancellationToken.None
             );
 

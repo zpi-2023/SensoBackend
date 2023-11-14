@@ -39,7 +39,11 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
         await _context.SaveChangesAsync();
 
         await _sut.Handle(
-            new UpdateDashboardRequest(account.Id, new DashboardDto { Gadgets = new() }),
+            new UpdateDashboardRequest
+            {
+                SeniorId = account.Id,
+                Dto = new DashboardDto { Gadgets = new() }
+            },
             CancellationToken.None
         );
 
@@ -73,7 +77,14 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
         );
         await _context.SaveChangesAsync();
 
-        await _sut.Handle(new(account.Id, new() { Gadgets = gadgets }), CancellationToken.None);
+        await _sut.Handle(
+            new UpdateDashboardRequest
+            {
+                SeniorId = account.Id,
+                Dto = new DashboardDto { Gadgets = gadgets }
+            },
+            CancellationToken.None
+        );
 
         _context.DashboardItems
             .OrderBy(d => d.Position)
@@ -90,7 +101,11 @@ public sealed class UpdateDashboardValidatorTests
     [Fact]
     public void Validate_ShouldReturnValid_ForAValidGadgetList()
     {
-        var request = new UpdateDashboardRequest(0, Generators.DashboardDto.Generate());
+        var request = new UpdateDashboardRequest
+        {
+            SeniorId = 0,
+            Dto = Generators.DashboardDto.Generate()
+        };
 
         _sut.Validate(request).IsValid.Should().BeTrue();
     }
@@ -98,7 +113,11 @@ public sealed class UpdateDashboardValidatorTests
     [Fact]
     public void Validate_ShouldReturnValid_ForEmptyGadgetList()
     {
-        var request = new UpdateDashboardRequest(0, new() { Gadgets = new() });
+        var request = new UpdateDashboardRequest
+        {
+            SeniorId = 0,
+            Dto = new DashboardDto { Gadgets = new() }
+        };
 
         _sut.Validate(request).IsValid.Should().BeTrue();
     }
@@ -106,13 +125,14 @@ public sealed class UpdateDashboardValidatorTests
     [Fact]
     public void Validate_ShouldReturnValid_WhenPassedDuplicateGadgets()
     {
-        var request = new UpdateDashboardRequest(
-            0,
-            new()
+        var request = new UpdateDashboardRequest
+        {
+            SeniorId = 0,
+            Dto = new DashboardDto
             {
                 Gadgets = new() { ((Gadget)0).ToString("f"), ((Gadget)0).ToString("f") }
             }
-        );
+        };
 
         _sut.Validate(request).IsValid.Should().BeTrue();
     }
@@ -120,13 +140,14 @@ public sealed class UpdateDashboardValidatorTests
     [Fact]
     public void Validate_ShouldReturnInvalid_ForTooLongLists()
     {
-        var request = new UpdateDashboardRequest(
-            0,
-            new()
+        var request = new UpdateDashboardRequest
+        {
+            SeniorId = 0,
+            Dto = new DashboardDto
             {
                 Gadgets = Enumerable.Range(0, 7).Select(_ => ((Gadget)0).ToString("f")).ToList()
             }
-        );
+        };
 
         _sut.Validate(request).IsValid.Should().BeFalse();
     }
@@ -134,7 +155,11 @@ public sealed class UpdateDashboardValidatorTests
     [Fact]
     public void Validate_ShouldReturnInvalid_ForInvalidGadgetNames()
     {
-        var request = new UpdateDashboardRequest(0, new() { Gadgets = new() { "invalid" } });
+        var request = new UpdateDashboardRequest
+        {
+            SeniorId = 0,
+            Dto = new DashboardDto { Gadgets = new() { "invalid" } }
+        };
 
         _sut.Validate(request).IsValid.Should().BeFalse();
     }

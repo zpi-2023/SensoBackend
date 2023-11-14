@@ -25,7 +25,9 @@ public sealed class NotesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Create(UpsertNoteDto dto)
     {
-        var noteDto = await _mediator.Send(new CreateNoteRequest(this.GetAccountId(), dto));
+        var noteDto = await _mediator.Send(
+            new CreateNoteRequest { AccountId = this.GetAccountId(), Dto = dto }
+        );
         return CreatedAtAction(nameof(ReadOneByNoteId), new { noteId = noteDto.Id }, noteDto);
     }
 

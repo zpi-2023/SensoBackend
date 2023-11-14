@@ -22,7 +22,10 @@ public sealed class GetDashboardHandlerTests : IDisposable
         await _context.Accounts.AddAsync(account);
         await _context.SaveChangesAsync();
 
-        var result = await _sut.Handle(new GetDashboardRequest(account.Id), CancellationToken.None);
+        var result = await _sut.Handle(
+            new GetDashboardRequest { SeniorId = account.Id },
+            CancellationToken.None
+        );
 
         result.Gadgets.Should().BeEmpty();
     }
@@ -48,7 +51,10 @@ public sealed class GetDashboardHandlerTests : IDisposable
         );
         await _context.SaveChangesAsync();
 
-        var result = await _sut.Handle(new GetDashboardRequest(account.Id), CancellationToken.None);
+        var result = await _sut.Handle(
+            new GetDashboardRequest { SeniorId = account.Id },
+            CancellationToken.None
+        );
 
         result.Gadgets
             .Should()

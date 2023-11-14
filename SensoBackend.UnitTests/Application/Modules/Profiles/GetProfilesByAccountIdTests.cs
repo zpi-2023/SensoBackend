@@ -33,7 +33,7 @@ public sealed class GetProfilesByAccountIdHandlerTests
         await CreateCaretakerProfile(account);
 
         var profiles = await _sut.Handle(
-            new GetProfilesByAccountIdRequest(account.Id),
+            new GetProfilesByAccountIdRequest { AccountId = account.Id },
             CancellationToken.None
         );
 

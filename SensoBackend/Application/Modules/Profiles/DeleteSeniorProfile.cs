@@ -7,7 +7,10 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles;
 
-public sealed record DeleteSeniorProfileRequest(int AccountId) : IRequest;
+public sealed record DeleteSeniorProfileRequest : IRequest
+{
+    public required int AccountId { get; init; }
+}
 
 [UsedImplicitly]
 public sealed class DeleteSeniorProfileValidator : AbstractValidator<DeleteSeniorProfileRequest>

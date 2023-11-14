@@ -22,10 +22,11 @@ public sealed class CreateNoteHandlerTests
         await _context.SetUpSeniorProfile(seniorAccount);
 
         var noteDto = await _sut.Handle(
-            new CreateNoteRequest(
-                seniorAccount.Id,
-                new UpsertNoteDto { Content = "my note content", IsPrivate = false }
-            ),
+            new CreateNoteRequest
+            {
+                AccountId = seniorAccount.Id,
+                Dto = new UpsertNoteDto { Content = "my note content", IsPrivate = false }
+            },
             CancellationToken.None
         );
 
@@ -42,10 +43,11 @@ public sealed class CreateNoteHandlerTests
 
         var action = async () =>
             await _sut.Handle(
-                new CreateNoteRequest(
-                    invalidAccount.Id,
-                    new UpsertNoteDto { Content = "some contents", IsPrivate = true }
-                ),
+                new CreateNoteRequest
+                {
+                    AccountId = invalidAccount.Id,
+                    Dto = new UpsertNoteDto { Content = "some contents", IsPrivate = true }
+                },
                 CancellationToken.None
             );
 
@@ -68,15 +70,16 @@ public sealed class CreateNoteValidatorTests
         string? title
     )
     {
-        var request = new CreateNoteRequest(
-            1,
-            new UpsertNoteDto
+        var request = new CreateNoteRequest
+        {
+            AccountId = 1,
+            Dto = new UpsertNoteDto
             {
                 Content = content,
                 IsPrivate = isPrivate,
                 Title = title
             }
-        );
+        };
 
         var result = _sut.Validate(request);
 
@@ -86,10 +89,11 @@ public sealed class CreateNoteValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenContentIsEmpty()
     {
-        var request = new CreateNoteRequest(
-            6,
-            new UpsertNoteDto { Content = string.Empty, IsPrivate = false }
-        );
+        var request = new CreateNoteRequest
+        {
+            AccountId = 6,
+            Dto = new UpsertNoteDto { Content = string.Empty, IsPrivate = false }
+        };
 
         var result = _sut.Validate(request);
 
@@ -99,15 +103,16 @@ public sealed class CreateNoteValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenTitleIsTooLong()
     {
-        var request = new CreateNoteRequest(
-            15,
-            new UpsertNoteDto
+        var request = new CreateNoteRequest
+        {
+            AccountId = 15,
+            Dto = new UpsertNoteDto
             {
                 Content = "Valid content",
                 IsPrivate = true,
                 Title = new string('x', 300)
             }
-        );
+        };
 
         var result = _sut.Validate(request);
 

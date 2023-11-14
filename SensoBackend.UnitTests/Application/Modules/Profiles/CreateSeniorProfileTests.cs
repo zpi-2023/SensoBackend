@@ -23,7 +23,10 @@ public sealed class CreateSeniorProfileHandlerTests
         await _context.SetUpSeniorProfile(account);
 
         var action = async () =>
-            await _sut.Handle(new CreateSeniorProfileRequest(account.Id), CancellationToken.None);
+            await _sut.Handle(
+                new CreateSeniorProfileRequest { AccountId = account.Id },
+                CancellationToken.None
+            );
 
         await action.Should().ThrowAsync<SeniorProfileAlreadyExistsException>();
     }
@@ -33,7 +36,10 @@ public sealed class CreateSeniorProfileHandlerTests
     {
         var account = await _context.SetUpAccount();
 
-        await _sut.Handle(new CreateSeniorProfileRequest(account.Id), CancellationToken.None);
+        await _sut.Handle(
+            new CreateSeniorProfileRequest { AccountId = account.Id },
+            CancellationToken.None
+        );
 
         _context.Profiles
             .Any(p => p.AccountId == account.Id && p.SeniorId == account.Id)
@@ -47,7 +53,7 @@ public sealed class CreateSeniorProfileHandlerTests
         var account = await _context.SetUpAccount();
 
         var dto = await _sut.Handle(
-            new CreateSeniorProfileRequest(account.Id),
+            new CreateSeniorProfileRequest { AccountId = account.Id },
             CancellationToken.None
         );
 
@@ -62,7 +68,7 @@ public sealed class CreateSeniorProfileHandlerTests
         var ct = CancellationToken.None;
         var account = await _context.SetUpAccount();
 
-        await _sut.Handle(new CreateSeniorProfileRequest(account.Id), ct);
+        await _sut.Handle(new CreateSeniorProfileRequest { AccountId = account.Id }, ct);
 
         await _mediator.Received().Send(Arg.Any<UpdateDashboardRequest>(), ct);
     }

@@ -26,7 +26,10 @@ public sealed class GetEncodedSeniorIdHandlerTests
         var account = await _context.SetUpAccount();
 
         var action = async () =>
-            await _sut.Handle(new GetEncodedSeniorIdRequest(account.Id), CancellationToken.None);
+            await _sut.Handle(
+                new GetEncodedSeniorIdRequest { AccountId = account.Id },
+                CancellationToken.None
+            );
 
         await action.Should().ThrowAsync<SeniorNotFoundException>();
     }
@@ -38,7 +41,7 @@ public sealed class GetEncodedSeniorIdHandlerTests
         await _context.SetUpSeniorProfile(account);
 
         var dto = await _sut.Handle(
-            new GetEncodedSeniorIdRequest(account.Id),
+            new GetEncodedSeniorIdRequest { AccountId = account.Id },
             CancellationToken.None
         );
 
