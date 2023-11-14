@@ -76,18 +76,6 @@ public sealed class ExceptionMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenAccountNotFoundExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new AccountNotFoundException(String.Empty));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(404);
-    }
-
-    [Fact]
     public async Task Invoke_ShouldSetNotFoundStatusCode_WhenNoteNotFoundExceptionOccurred()
     {
         var context = new DefaultHttpContext();

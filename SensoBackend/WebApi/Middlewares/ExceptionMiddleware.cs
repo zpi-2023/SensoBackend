@@ -35,7 +35,6 @@ public sealed class ExceptionMiddleware
                 InvalidCredentialException => 401,
                 NoteAccessDeniedException => 403,
                 RemoveSeniorProfileDeniedException => 403,
-                AccountNotFoundException => 404,
                 NoteNotFoundException => 404,
                 ProfileNotFoundException => 404,
                 SeniorNotFoundException => 404,

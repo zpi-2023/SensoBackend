@@ -18,5 +18,5 @@ FROM base AS final
 RUN apt-get -y update; apt-get -y install curl
 WORKDIR /app
 COPY --from=publish /app/publish .
-HEALTHCHECK CMD curl -f http://localhost:80/healthz || exit 1
+HEALTHCHECK CMD curl -f http://localhost:80/api/v1/healthz || exit 1
 ENTRYPOINT ["dotnet", "SensoBackend.dll"]

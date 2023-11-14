@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SensoBackend.Domain.Enums;
 
 namespace SensoBackend.Application.Modules.Accounts.Contracts;
 
@@ -31,5 +32,5 @@ public sealed record AccountDto
     public required DateTimeOffset LastPasswordChangeAt { get; init; }
 
     [Required]
-    public required int RoleId { get; init; }
+    public required Role Role { get; init; }
 }

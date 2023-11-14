@@ -11,5 +11,5 @@ public class SeniorDataToEncode
     public required string SeniorDisplayName { get; init; }
 
     [Required]
-    public required DateTime ValidTo { get; init; } // TODO: Use DateTimeOffset instead?
+    public required DateTimeOffset ValidTo { get; init; }
 }
