@@ -101,6 +101,31 @@ public sealed class CreateCaretakerProfileHandlerTests
     }
 
     [Fact]
+    public async Task Handle_ShouldThrowSeniorNotFoundException_WhenSeniorWasDeleted()
+    {
+        var seniorAccount = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(seniorAccount);
+        var caretakerAccount = await _context.SetUpAccount();
+        var hash = SetUpHash(seniorAccount);
+
+        _context.Accounts.Remove(seniorAccount);
+        await _context.SaveChangesAsync();
+
+        var action = async () =>
+            await _sut.Handle(
+                new CreateCaretakerProfileRequest
+                {
+                    AccountId = caretakerAccount.Id,
+                    Hash = hash,
+                    SeniorAlias = "Senior"
+                },
+                CancellationToken.None
+            );
+
+        await action.Should().ThrowAsync<SeniorNotFoundException>();
+    }
+
+    [Fact]
     public async Task Handle_ShouldReturnDto_WhenProfileDoesNotExist()
     {
         var seniorAccount = await _context.SetUpAccount();

@@ -10,6 +10,8 @@ namespace SensoBackend.UnitTests.WebApi.Middlewares;
 
 public sealed class HasPermissionMiddlewareTests
 {
+    private const int MockAccountId = 123;
+
     private readonly HasPermissionMiddleware _sut =
         new(Substitute.For<RequestDelegate>(), Substitute.For<ILogger<HasPermissionMiddleware>>());
 
@@ -53,15 +55,14 @@ public sealed class HasPermissionMiddlewareTests
         string? seniorIdParam
     )
     {
-        const int accountId = 3;
         var authorizationService = Substitute.For<IAuthorizationService>();
-        authorizationService.GetRoleAsync(accountId).Returns(Role.Admin);
+        authorizationService.GetRoleAsync(MockAccountId).Returns(Role.Admin);
 
         var result = await _sut.ValidateAsync(
             authorizationService,
             new(permission),
             seniorIdParam,
-            accountId.ToString()
+            MockAccountId.ToString()
         );
 
         result.Should().Be(HasPermissionResult.Next);
@@ -70,9 +71,8 @@ public sealed class HasPermissionMiddlewareTests
     [Fact]
     public async Task ValidateAsync_ShouldThrow_WhenRoleIsInvalid()
     {
-        const int accountId = 5;
         var authorizationService = Substitute.For<IAuthorizationService>();
-        authorizationService.GetRoleAsync(accountId).Returns((Role)123456);
+        authorizationService.GetRoleAsync(MockAccountId).Returns((Role)123456);
 
         var action = async () =>
         {
@@ -80,7 +80,7 @@ public sealed class HasPermissionMiddlewareTests
                 authorizationService,
                 new(Permission.ReadNotes),
                 null,
-                accountId.ToString()
+                MockAccountId.ToString()
             );
         };
 
@@ -90,15 +90,14 @@ public sealed class HasPermissionMiddlewareTests
     [Fact]
     public async Task ValidateAsync_ShouldReturnBlockWithUnauthorized_WhenAccountHasInsufficientPermissions()
     {
-        const int accountId = 8;
         var authorizationService = Substitute.For<IAuthorizationService>();
-        authorizationService.GetRoleAsync(accountId).Returns(Role.Member);
+        authorizationService.GetRoleAsync(MockAccountId).Returns(Role.Member);
 
         var result = await _sut.ValidateAsync(
             authorizationService,
             new((Permission)123123),
             null,
-            accountId.ToString()
+            MockAccountId.ToString()
         );
 
         result.Should().Be(HasPermissionResult.BlockWithUnauthorized);
@@ -107,15 +106,14 @@ public sealed class HasPermissionMiddlewareTests
     [Fact]
     public async Task ValidateAsync_ShouldReturnNext_WhenAccountIsMemberWithSufficientPermissions()
     {
-        const int accountId = 13;
         var authorizationService = Substitute.For<IAuthorizationService>();
-        authorizationService.GetRoleAsync(accountId).Returns(Role.Member);
+        authorizationService.GetRoleAsync(MockAccountId).Returns(Role.Member);
 
         var result = await _sut.ValidateAsync(
             authorizationService,
             new(Permission.ReadNotes),
             null,
-            accountId.ToString()
+            MockAccountId.ToString()
         );
 
         result.Should().Be(HasPermissionResult.Next);
@@ -131,15 +129,14 @@ public sealed class HasPermissionMiddlewareTests
         string? seniorIdParam
     )
     {
-        const int accountId = 21;
         var authorizationService = Substitute.For<IAuthorizationService>();
-        authorizationService.GetRoleAsync(accountId).Returns(Role.Member);
+        authorizationService.GetRoleAsync(MockAccountId).Returns(Role.Member);
 
         var result = await _sut.ValidateAsync(
             authorizationService,
             new(permission),
             seniorIdParam,
-            accountId.ToString()
+            MockAccountId.ToString()
         );
 
         result.Should().Be(HasPermissionResult.BlockWithBadRequest);

@@ -61,7 +61,16 @@ public sealed class CreateCaretakerProfileHandler
 
         var account = await _context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
 
-        var senior = await _context.Accounts.FirstAsync(a => a.Id == seniorData.SeniorId, ct);
+        var seniorExists = await _context.Profiles.AnyAsync(
+            p => p.SeniorId == seniorData.SeniorId && p.AccountId == seniorData.SeniorId,
+            ct
+        );
+        if (!seniorExists)
+        {
+            throw new SeniorNotFoundException(
+                $"A senior with the given Id ({seniorData.SeniorId}) does not exist"
+            );
+        }
 
         var profile = request.Adapt<Profile>();
         profile.SeniorId = seniorData.SeniorId;
