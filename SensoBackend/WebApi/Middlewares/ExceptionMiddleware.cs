@@ -40,7 +40,6 @@ public sealed class ExceptionMiddleware
                 NoteNotFoundException => 404,
                 ProfileNotFoundException => 404,
                 SeniorNotFoundException => 404,
-                NoteNotFoundException => 404,
                 ReminderNotFoundException => 404,
                 IntakeRecordNotFoundException => 404,
                 CaretakerProfileAlreadyExistsException => 409,
