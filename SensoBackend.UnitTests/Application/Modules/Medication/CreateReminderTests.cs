@@ -30,10 +30,7 @@ public sealed class CreateReminderTests
             CancellationToken.None
         );
 
-        _context.Reminders
-            .Any(r => r.Id == reminder.Id && r.Senior == senior)
-            .Should()
-            .BeTrue();
+        _context.Reminders.Any(r => r.Id == reminder.Id && r.Senior == senior).Should().BeTrue();
     }
 
     [Fact]
@@ -56,10 +53,7 @@ public sealed class CreateReminderTests
             CancellationToken.None
         );
 
-        _context.Reminders
-            .Any(r => r.Id == reminder.Id && r.Senior == senior)
-            .Should()
-            .BeTrue();
+        _context.Reminders.Any(r => r.Id == reminder.Id && r.Senior == senior).Should().BeTrue();
     }
 
     [Fact]
@@ -71,15 +65,16 @@ public sealed class CreateReminderTests
 
         var reminderDto = Generators.CreateReminderDto.Generate();
 
-        var action = async () => await _sut.Handle(
-            new CreateReminderRequest
-            {
-                AccountId = account.Id,
-                SeniorId = senior.Id,
-                Dto = reminderDto
-            },
-            CancellationToken.None
-        );
+        var action = async () =>
+            await _sut.Handle(
+                new CreateReminderRequest
+                {
+                    AccountId = account.Id,
+                    SeniorId = senior.Id,
+                    Dto = reminderDto
+                },
+                CancellationToken.None
+            );
 
         await action.Should().ThrowAsync<SeniorReminderAccessDeniedException>();
     }

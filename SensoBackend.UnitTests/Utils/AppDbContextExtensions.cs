@@ -75,7 +75,7 @@ internal static class AppDbContextExtensions
         return note;
     }
 
-    public static async Task<Medication> SetUpMedication( this AppDbContext context )
+    public static async Task<Medication> SetUpMedication(this AppDbContext context)
     {
         var medication = new Medication
         {
@@ -103,7 +103,10 @@ internal static class AppDbContextExtensions
             )
         )
         {
-            throw new ArgumentException("Account must have a profile related to the given senior", nameof(seniorAccount));
+            throw new ArgumentException(
+                "Account must have a profile related to the given senior",
+                nameof(seniorAccount)
+            );
         }
 
         var reminder = new Reminder

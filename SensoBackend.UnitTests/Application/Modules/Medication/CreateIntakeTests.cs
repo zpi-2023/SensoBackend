@@ -51,15 +51,16 @@ public sealed class CreateIntakeTests
         var reminder = await _context.SetUpReminder(account, senior, medication);
         var createIntakeDto = Generators.CreateIntakeDto.Generate();
 
-        var action = async () => await _sut.Handle(
-            new CreateIntakeRequest
-            {
-                AccountId = account.Id,
-                ReminderId = reminder.Id,
-                Dto = createIntakeDto
-            },
-            CancellationToken.None
-        );
+        var action = async () =>
+            await _sut.Handle(
+                new CreateIntakeRequest
+                {
+                    AccountId = account.Id,
+                    ReminderId = reminder.Id,
+                    Dto = createIntakeDto
+                },
+                CancellationToken.None
+            );
 
         await action.Should().ThrowAsync<ReminderAccessDeniedException>();
     }
@@ -72,15 +73,16 @@ public sealed class CreateIntakeTests
 
         var createIntakeDto = Generators.CreateIntakeDto.Generate();
 
-        var action = async () => await _sut.Handle(
-            new CreateIntakeRequest
-            {
-                AccountId = senior.Id,
-                ReminderId = 2137, //there's nothing in reminders table anyway
-                Dto = createIntakeDto
-            },
-            CancellationToken.None
-        );
+        var action = async () =>
+            await _sut.Handle(
+                new CreateIntakeRequest
+                {
+                    AccountId = senior.Id,
+                    ReminderId = 2137, //there's nothing in reminders table anyway
+                    Dto = createIntakeDto
+                },
+                CancellationToken.None
+            );
 
         await action.Should().ThrowAsync<ReminderNotFoundException>();
     }

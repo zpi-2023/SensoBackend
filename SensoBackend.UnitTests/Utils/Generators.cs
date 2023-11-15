@@ -90,12 +90,13 @@ public static class Generators
         .RuleFor(i => i.TakenAt, f => f.Date.PastOffset())
         .RuleFor(i => i.AmountTaken, f => f.Random.Number());
 
-    public static readonly Faker<CreateReminderDto> CreateReminderDto = new Faker<CreateReminderDto>()
-        .RuleFor(r => r.MeicationName, f => f.Random.String())
-        .RuleFor(r => r.MedicationAmountInPackage, _ => default)
-        .RuleFor(r => r.AmountPerIntake, _ => default)
-        .RuleFor(r => r.AmountOwned, _ => default)
-        .RuleFor(r => r.AmountUnit, _ => "g")
-        .RuleFor(r => r.Cron, _ => "1 1 1 * * *")
-        .RuleFor(r => r.Description, f => f.Random.String());
+    public static readonly Faker<CreateReminderDto> CreateReminderDto =
+        new Faker<CreateReminderDto>()
+            .RuleFor(r => r.MeicationName, f => f.Random.String())
+            .RuleFor(r => r.MedicationAmountInPackage, _ => default)
+            .RuleFor(r => r.AmountPerIntake, _ => default)
+            .RuleFor(r => r.AmountOwned, _ => default)
+            .RuleFor(r => r.AmountUnit, _ => "g")
+            .RuleFor(r => r.Cron, _ => "1 1 1 * * *")
+            .RuleFor(r => r.Description, f => f.Random.String());
 }
