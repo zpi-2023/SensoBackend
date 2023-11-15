@@ -55,13 +55,8 @@ public sealed class CreateReminderValidator : AbstractValidator<CreateReminderRe
 public sealed class CreateReminderHandler : IRequestHandler<CreateReminderRequest, ReminderDto>
 {
     private readonly AppDbContext _context;
-    private readonly ILogger<CreateReminderHandler> _logger;
 
-    public CreateReminderHandler(AppDbContext context, ILogger<CreateReminderHandler> logger)
-    {
-        _context = context;
-        _logger = logger;
-    }
+    public CreateReminderHandler(AppDbContext context) => _context = context;
 
     public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken ct)
     {
@@ -87,8 +82,6 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
 
         if (!medicationsFromDb.Any())
         {
-            _logger.LogInformation("-----> Creating new Medication");
-
             var medicationDto = new MedicationDto
             {
                 Name = request.Dto.MeicationName,

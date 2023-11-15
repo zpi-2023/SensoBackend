@@ -1,6 +1,7 @@
 using Bogus;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
+using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
@@ -84,4 +85,17 @@ public static class Generators
 
     public static readonly Faker<EditCaretakerProfileDto> EditCaretakerProfileDto =
         new Faker<EditCaretakerProfileDto>().RuleFor(u => u.SeniorAlias, f => f.Name.FirstName());
+
+    public static readonly Faker<CreateIntakeDto> CreateIntakeDto = new Faker<CreateIntakeDto>()
+        .RuleFor(i => i.TakenAt, f => f.Date.PastOffset())
+        .RuleFor(i => i.AmountTaken, f => f.Random.Number());
+
+    public static readonly Faker<CreateReminderDto> CreateReminderDto = new Faker<CreateReminderDto>()
+        .RuleFor(r => r.MeicationName, f => f.Random.String())
+        .RuleFor(r => r.MedicationAmountInPackage, _ => default)
+        .RuleFor(r => r.AmountPerIntake, _ => default)
+        .RuleFor(r => r.AmountOwned, _ => default)
+        .RuleFor(r => r.AmountUnit, _ => "g")
+        .RuleFor(r => r.Cron, _ => "1 1 1 * * *")
+        .RuleFor(r => r.Description, f => f.Random.String());
 }
