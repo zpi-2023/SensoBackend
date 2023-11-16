@@ -16,16 +16,6 @@ public sealed record GetIntakeByIdRequest : IRequest<IntakeDto>
 }
 
 [UsedImplicitly]
-public sealed class GetIntakeByIdValidator : AbstractValidator<GetIntakeByIdRequest>
-{
-    public GetIntakeByIdValidator()
-    {
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
-        RuleFor(r => r.IntakeId).NotEmpty().WithMessage("IntakeId cannot be empty");
-    }
-}
-
-[UsedImplicitly]
 public sealed class GetIntakeByIdHandler : IRequestHandler<GetIntakeByIdRequest, IntakeDto>
 {
     private readonly AppDbContext _context;

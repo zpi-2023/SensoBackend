@@ -25,8 +25,6 @@ public sealed class CreateIntakeValidator : AbstractValidator<CreateIntakeReques
 {
     public CreateIntakeValidator()
     {
-        RuleFor(r => r.ReminderId).NotEmpty().WithMessage("ReminderId cannot be empty");
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
         RuleFor(r => r.Dto.AmountTaken)
             .NotEmpty()
             .WithMessage("AmountTaken cannot be empty")

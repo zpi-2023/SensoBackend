@@ -25,9 +25,7 @@ public sealed class CreateReminderValidator : AbstractValidator<CreateReminderRe
 {
     public CreateReminderValidator()
     {
-        RuleFor(r => r.SeniorId).NotEmpty().WithMessage("SeniorId cannot be empty");
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
-        RuleFor(r => r.Dto.MeicationName).NotEmpty().WithMessage("Medication name is empty");
+        RuleFor(r => r.Dto.MedicationName).NotEmpty().WithMessage("Medication name is empty");
         RuleFor(r => r.Dto.AmountPerIntake).NotEmpty().WithMessage("Amount per intake is empty");
         RuleFor(r => r.Dto.MedicationAmountInPackage)
             .GreaterThan(0)
@@ -69,7 +67,7 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
         var medicationsFromDb = await _context.Medications
             .Where(
                 m =>
-                    m.Name == request.Dto.MeicationName
+                    m.Name == request.Dto.MedicationName
                     && m.AmountInPackage == request.Dto.MedicationAmountInPackage
                     && m.AmountUnit == request.Dto.AmountUnit
             )
@@ -79,7 +77,7 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
         {
             var medicationDto = new MedicationDto
             {
-                Name = request.Dto.MeicationName,
+                Name = request.Dto.MedicationName,
                 AmountInPackage = request.Dto.MedicationAmountInPackage,
                 AmountUnit = request.Dto.AmountUnit
             };

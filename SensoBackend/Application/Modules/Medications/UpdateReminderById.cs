@@ -23,8 +23,6 @@ public sealed class UpdateReminderValidator : AbstractValidator<UpdateReminderBy
 {
     public UpdateReminderValidator()
     {
-        RuleFor(r => r.ReminderId).NotEmpty().WithMessage("ReminderId cannot be empty");
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
         RuleFor(r => r.Dto.AmountPerIntake)
             .NotEmpty()
             .WithMessage("AmountPerIntake cannot be empty");

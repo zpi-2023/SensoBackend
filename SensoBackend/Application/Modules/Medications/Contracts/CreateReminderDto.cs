@@ -5,7 +5,7 @@ namespace SensoBackend.Application.Modules.Medications.Contracts;
 public sealed record CreateReminderDto
 {
     [Required]
-    public required string MeicationName { get; init; }
+    public required string MedicationName { get; init; }
 
     public float? MedicationAmountInPackage { get; init; }
 

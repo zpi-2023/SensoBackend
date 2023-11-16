@@ -20,16 +20,6 @@ public sealed record GetSeniorRemindersRequest : IRequest<PaginatedDto<ReminderD
 }
 
 [UsedImplicitly]
-public sealed class GetSeniorRemindersValidator : AbstractValidator<GetSeniorRemindersRequest>
-{
-    public GetSeniorRemindersValidator()
-    {
-        RuleFor(r => r.SeniorId).NotEmpty().WithMessage("SeniorId cannot be empty");
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
-    }
-}
-
-[UsedImplicitly]
 public sealed class GetSeniorRemindersHandler
     : IRequestHandler<GetSeniorRemindersRequest, PaginatedDto<ReminderDto>>
 {

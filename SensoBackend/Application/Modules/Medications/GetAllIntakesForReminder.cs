@@ -19,17 +19,6 @@ public sealed record GetAllIntakesForReminderRequest : IRequest<PaginatedDto<Int
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForReminderValidator
-    : AbstractValidator<GetAllIntakesForReminderRequest>
-{
-    public GetAllIntakesForReminderValidator()
-    {
-        RuleFor(r => r.ReminderId).NotEmpty().WithMessage("ReminderId cannot be empty");
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
-    }
-}
-
-[UsedImplicitly]
 public sealed class GetAllIntakesForReminderHandler
     : IRequestHandler<GetAllIntakesForReminderRequest, PaginatedDto<IntakeDto>>
 {

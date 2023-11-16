@@ -20,17 +20,6 @@ public sealed record GetAllIntakesForSeniorRequest : IRequest<PaginatedDto<Intak
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForSeniorValidator
-    : AbstractValidator<GetAllIntakesForSeniorRequest>
-{
-    public GetAllIntakesForSeniorValidator()
-    {
-        RuleFor(r => r.SeniorId).NotEmpty().WithMessage("ReminderId cannot be empty");
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
-    }
-}
-
-[UsedImplicitly]
 public sealed class GetAllIntakesForSeniorHandler
     : IRequestHandler<GetAllIntakesForSeniorRequest, PaginatedDto<IntakeDto>>
 {

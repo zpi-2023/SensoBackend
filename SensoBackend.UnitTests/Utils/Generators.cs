@@ -93,7 +93,7 @@ public static class Generators
 
     public static readonly Faker<CreateReminderDto> CreateReminderDto =
         new Faker<CreateReminderDto>()
-            .RuleFor(r => r.MeicationName, f => f.Random.String())
+            .RuleFor(r => r.MedicationName, f => f.Random.String())
             .RuleFor(r => r.MedicationAmountInPackage, f => f.Random.Number() + 1)
             .RuleFor(r => r.AmountPerIntake, f => f.Random.Number() + 1)
             .RuleFor(r => r.AmountOwned, f => f.Random.Number())

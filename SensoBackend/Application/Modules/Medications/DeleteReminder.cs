@@ -18,16 +18,6 @@ public sealed record DeleteReminderRequest : IRequest
 }
 
 [UsedImplicitly]
-public sealed class DeleteReminderValidator : AbstractValidator<DeleteReminderRequest>
-{
-    public DeleteReminderValidator()
-    {
-        RuleFor(r => r.ReminderId).NotEmpty().WithMessage("ReminderId cannot be empty");
-        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
-    }
-}
-
-[UsedImplicitly]
 public sealed class DeleteReminderHandler : IRequestHandler<DeleteReminderRequest>
 {
     private readonly AppDbContext _context;
