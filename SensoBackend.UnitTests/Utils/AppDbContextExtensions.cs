@@ -90,6 +90,24 @@ internal static class AppDbContextExtensions
         return medication;
     }
 
+    public static async Task<Medication> SetUpMedication(
+        this AppDbContext context,
+        string medicationName
+    )
+    {
+        var medication = new Medication
+        {
+            Id = default,
+            Name = medicationName,
+            AmountInPackage = default,
+            AmountUnit = "g"
+        };
+
+        await context.Medications.AddAsync(medication);
+        await context.SaveChangesAsync();
+        return medication;
+    }
+
     public static async Task<Reminder> SetUpReminder(
         this AppDbContext context,
         Account userAccount,
@@ -113,7 +131,7 @@ internal static class AppDbContextExtensions
         {
             Id = default,
             SeniorId = seniorAccount.Id,
-            MedicationId = default,
+            MedicationId = medication.Id,
             IsActive = true,
             AmountPerIntake = default,
             AmountOwned = default,
@@ -124,5 +142,28 @@ internal static class AppDbContextExtensions
         await context.SaveChangesAsync();
 
         return reminder;
+    }
+
+    public static async Task<IntakeRecord> SetUpIntake(
+        this AppDbContext context,
+        Account userAccount,
+        Account seniorAccount
+    )
+    {
+        var medication = await context.SetUpMedication();
+        var reminer = await context.SetUpReminder(userAccount, seniorAccount, medication);
+
+        var intake = new IntakeRecord
+        {
+            Id = default,
+            ReminderId = reminer.Id,
+            TakenAt = new DateTimeOffset(2006, 10, 13, 10, 11, 15, TimeSpan.Zero),
+            AmountTaken = default,
+        };
+
+        await context.IntakeRecords.AddAsync(intake);
+        await context.SaveChangesAsync();
+
+        return intake;
     }
 }

@@ -14,12 +14,12 @@ public sealed record GetMedicationListRequest : IRequest<MedicationListDto>
 }
 
 [UsedImplicitly]
-public sealed class GetMedicationListHanddler
+public sealed class GetMedicationListHandler
     : IRequestHandler<GetMedicationListRequest, MedicationListDto>
 {
     private readonly AppDbContext _context;
 
-    public GetMedicationListHanddler(AppDbContext context) => _context = context;
+    public GetMedicationListHandler(AppDbContext context) => _context = context;
 
     public async Task<MedicationListDto> Handle(
         GetMedicationListRequest request,
