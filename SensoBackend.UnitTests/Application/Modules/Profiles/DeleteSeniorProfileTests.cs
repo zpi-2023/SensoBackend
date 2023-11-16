@@ -6,12 +6,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Profiles.DeleteSeniorProfile;
 
-public sealed class DeleteSeniorProfileHandlerTests
+public sealed class DeleteSeniorProfileHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly DeleteSeniorProfileHandler _sut;
 
     public DeleteSeniorProfileHandlerTests() => _sut = new DeleteSeniorProfileHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldDeleteProfile()

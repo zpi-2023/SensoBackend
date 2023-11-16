@@ -6,12 +6,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Notes;
 
-public sealed class UpdateNoteHandlerTests
+public sealed class UpdateNoteHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly UpdateNoteHandler _sut;
 
     public UpdateNoteHandlerTests() => _sut = new UpdateNoteHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldUpdateNote_WhenAllConditionsAreSatisfied()

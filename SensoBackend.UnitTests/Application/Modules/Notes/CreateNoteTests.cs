@@ -6,7 +6,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Notes;
 
-public sealed class CreateNoteHandlerTests
+public sealed class CreateNoteHandlerTests : IDisposable
 {
     private static readonly DateTimeOffset Now = new(2015, 4, 12, 18, 38, 5, TimeSpan.Zero);
     private readonly AppDbContext _context = Database.CreateFixture();
@@ -14,6 +14,8 @@ public sealed class CreateNoteHandlerTests
 
     public CreateNoteHandlerTests() =>
         _sut = new CreateNoteHandler(_context, new MockTimeProvider { Now = Now });
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldCreateNote_WhenAllConditionsAreSatisfied()

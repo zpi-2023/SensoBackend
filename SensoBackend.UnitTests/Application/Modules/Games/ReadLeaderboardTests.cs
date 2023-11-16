@@ -5,7 +5,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Games;
 
-public sealed class ReadLeaderboardHandlerTests
+public sealed class ReadLeaderboardHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly ReadLeaderboardHandler _sut;
@@ -14,6 +14,8 @@ public sealed class ReadLeaderboardHandlerTests
     private readonly PaginationQuery _defaultPaginationQuery = new() { Offset = 0, Limit = 10 };
 
     public ReadLeaderboardHandlerTests() => _sut = new ReadLeaderboardHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldReturnLeaderboard()

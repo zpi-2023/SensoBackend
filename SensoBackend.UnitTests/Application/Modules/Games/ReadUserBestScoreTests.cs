@@ -5,7 +5,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Games;
 
-public sealed class ReadUserBestScoreHandlerTests
+public sealed class ReadUserBestScoreHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly ReadUserBestScoreHandler _sut;
@@ -13,6 +13,8 @@ public sealed class ReadUserBestScoreHandlerTests
     private readonly string _validGameName = "wordle";
 
     public ReadUserBestScoreHandlerTests() => _sut = new ReadUserBestScoreHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldReturnUserBestScore()

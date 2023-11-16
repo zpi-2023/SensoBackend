@@ -6,7 +6,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Games;
 
-public sealed class TryUpdateUserBestScoreHandlerTests
+public sealed class TryUpdateUserBestScoreHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly TryUpdateUserBestScoreHandler _sut;
@@ -15,6 +15,8 @@ public sealed class TryUpdateUserBestScoreHandlerTests
 
     public TryUpdateUserBestScoreHandlerTests() =>
         _sut = new TryUpdateUserBestScoreHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldUpdateUserBestScore()

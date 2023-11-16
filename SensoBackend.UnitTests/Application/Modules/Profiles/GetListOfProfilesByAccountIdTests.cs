@@ -5,12 +5,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 
-public sealed class GetListOfProfilesByAccountIdHandlerTests
+public sealed class GetListOfProfilesByAccountIdHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly GetListOfProfilesByAccountIdHandler _sut;
 
     public GetListOfProfilesByAccountIdHandlerTests() => _sut = new(_context);
+
+    public void Dispose() => _context.Dispose();
 
     private async Task CreateCaretakerProfile(Account owner)
     {

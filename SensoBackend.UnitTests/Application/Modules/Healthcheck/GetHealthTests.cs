@@ -5,18 +5,22 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Tests.Application.Modules.Healthcheck;
 
-public sealed class GetHealthTests
+public sealed class GetHealthTests : IDisposable
 {
     private readonly DatabaseFacade _db;
     private readonly GetHealthHandler _sut;
 
+    private readonly AppDbContext _context;
+
     public GetHealthTests()
     {
-        var context = Substitute.For<AppDbContext>();
-        _db = Substitute.For<DatabaseFacade>(context);
-        context.Database.Returns(_db);
-        _sut = new GetHealthHandler(context);
+        _context = Substitute.For<AppDbContext>();
+        _db = Substitute.For<DatabaseFacade>(_context);
+        _context.Database.Returns(_db);
+        _sut = new GetHealthHandler(_context);
     }
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldReturnDatabaseOk_WhenDatabaseIsHealthy()

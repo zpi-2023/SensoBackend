@@ -7,7 +7,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 
-public sealed class CreateSeniorProfileHandlerTests
+public sealed class CreateSeniorProfileHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly IMediator _mediator = Substitute.For<IMediator>();
@@ -15,6 +15,8 @@ public sealed class CreateSeniorProfileHandlerTests
 
     public CreateSeniorProfileHandlerTests() =>
         _sut = new CreateSeniorProfileHandler(_context, _mediator);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldThrow_WhenSeniorProfileAlreadyExists()

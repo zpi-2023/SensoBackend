@@ -5,13 +5,15 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Notes;
 
-public sealed class ReadAllNotesBySeniorIdHandlerTests
+public sealed class ReadAllNotesBySeniorIdHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly ReadAllNotesBySeniorIdHandler _sut;
 
     public ReadAllNotesBySeniorIdHandlerTests() =>
         _sut = new ReadAllNotesBySeniorIdHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     private async Task<(Account seniorAccount, Note[] notes)> SetUpMockNotes()
     {

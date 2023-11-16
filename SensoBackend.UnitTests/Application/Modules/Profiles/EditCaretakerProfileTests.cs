@@ -7,12 +7,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Profiles.EditCaretakerProfile;
 
-public sealed class EditCaretakerProfileHandlerTests
+public sealed class EditCaretakerProfileHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly EditCaretakerProfileHandler _sut;
 
     public EditCaretakerProfileHandlerTests() => _sut = new EditCaretakerProfileHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldEditProfile()

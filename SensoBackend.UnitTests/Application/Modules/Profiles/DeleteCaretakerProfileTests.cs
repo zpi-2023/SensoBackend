@@ -7,13 +7,15 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Profiles.DeleteCaretakerProfile;
 
-public sealed class DeleteCaretakerProfileHandlerTests
+public sealed class DeleteCaretakerProfileHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly DeleteCaretakerProfileHandler _sut;
 
     public DeleteCaretakerProfileHandlerTests() =>
         _sut = new DeleteCaretakerProfileHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldDeleteProfile()

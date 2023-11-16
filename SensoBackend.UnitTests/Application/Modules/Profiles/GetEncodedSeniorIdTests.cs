@@ -6,7 +6,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 
-public sealed class GetEncodedSeniorIdHandlerTests
+public sealed class GetEncodedSeniorIdHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
 
@@ -19,6 +19,8 @@ public sealed class GetEncodedSeniorIdHandlerTests
                 new MockTimeProvider { Now = new(2021, 6, 15, 10, 0, 0, TimeSpan.Zero) }
             )
         );
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldThrow_WhenNoSeniorProfileExists()
