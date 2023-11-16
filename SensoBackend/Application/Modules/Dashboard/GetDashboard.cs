@@ -6,7 +6,10 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Dashboard;
 
-public sealed record GetDashboardRequest(int SeniorId) : IRequest<DashboardDto>;
+public sealed record GetDashboardRequest : IRequest<DashboardDto>
+{
+    public required int SeniorId;
+}
 
 [UsedImplicitly]
 public sealed class GetDashboardHandler : IRequestHandler<GetDashboardRequest, DashboardDto>

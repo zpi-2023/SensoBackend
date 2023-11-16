@@ -7,7 +7,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Notes;
 
-public sealed class CreateNoteHandlerTests
+public sealed class CreateNoteHandlerTests : IDisposable
 {
     private static readonly DateTimeOffset Now = new(2015, 4, 12, 18, 38, 5, TimeSpan.Zero);
     private readonly AppDbContext _context = Database.CreateFixture();
@@ -16,6 +16,8 @@ public sealed class CreateNoteHandlerTests
     public CreateNoteHandlerTests() =>
         _sut = new CreateNoteHandler(_context, new FakeTimeProvider(Now));
 
+    public void Dispose() => _context.Dispose();
+
     [Fact]
     public async Task Handle_ShouldCreateNote_WhenAllConditionsAreSatisfied()
     {
@@ -23,10 +25,11 @@ public sealed class CreateNoteHandlerTests
         await _context.SetUpSeniorProfile(seniorAccount);
 
         var noteDto = await _sut.Handle(
-            new CreateNoteRequest(
-                seniorAccount.Id,
-                new UpsertNoteDto { Content = "my note content", IsPrivate = false }
-            ),
+            new CreateNoteRequest
+            {
+                AccountId = seniorAccount.Id,
+                Dto = new UpsertNoteDto { Content = "my note content", IsPrivate = false }
+            },
             CancellationToken.None
         );
 
@@ -43,10 +46,11 @@ public sealed class CreateNoteHandlerTests
 
         var action = async () =>
             await _sut.Handle(
-                new CreateNoteRequest(
-                    invalidAccount.Id,
-                    new UpsertNoteDto { Content = "some contents", IsPrivate = true }
-                ),
+                new CreateNoteRequest
+                {
+                    AccountId = invalidAccount.Id,
+                    Dto = new UpsertNoteDto { Content = "some contents", IsPrivate = true }
+                },
                 CancellationToken.None
             );
 
@@ -69,15 +73,16 @@ public sealed class CreateNoteValidatorTests
         string? title
     )
     {
-        var request = new CreateNoteRequest(
-            1,
-            new UpsertNoteDto
+        var request = new CreateNoteRequest
+        {
+            AccountId = 1,
+            Dto = new UpsertNoteDto
             {
                 Content = content,
                 IsPrivate = isPrivate,
                 Title = title
             }
-        );
+        };
 
         var result = _sut.Validate(request);
 
@@ -87,10 +92,11 @@ public sealed class CreateNoteValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenContentIsEmpty()
     {
-        var request = new CreateNoteRequest(
-            6,
-            new UpsertNoteDto { Content = string.Empty, IsPrivate = false }
-        );
+        var request = new CreateNoteRequest
+        {
+            AccountId = 6,
+            Dto = new UpsertNoteDto { Content = string.Empty, IsPrivate = false }
+        };
 
         var result = _sut.Validate(request);
 
@@ -100,15 +106,16 @@ public sealed class CreateNoteValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenTitleIsTooLong()
     {
-        var request = new CreateNoteRequest(
-            15,
-            new UpsertNoteDto
+        var request = new CreateNoteRequest
+        {
+            AccountId = 15,
+            Dto = new UpsertNoteDto
             {
                 Content = "Valid content",
                 IsPrivate = true,
                 Title = new string('x', 300)
             }
-        );
+        };
 
         var result = _sut.Validate(request);
 

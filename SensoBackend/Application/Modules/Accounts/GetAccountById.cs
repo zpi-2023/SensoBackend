@@ -8,7 +8,10 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Accounts.GetAccountById;
 
-public sealed record GetAccountByIdRequest(GetAccountByIdDto Dto) : IRequest<AccountDto>;
+public sealed record GetAccountByIdRequest : IRequest<AccountDto>
+{
+    public required GetAccountByIdDto Dto;
+}
 
 [UsedImplicitly]
 public sealed class GetAccountByIdHandler : IRequestHandler<GetAccountByIdRequest, AccountDto>

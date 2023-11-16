@@ -25,7 +25,7 @@ public sealed class CreateAccountHandlerTests : IDisposable
     {
         var dto = Generators.CreateAccountDto.Generate();
 
-        await _sut.Handle(new CreateAccountRequest(dto), CancellationToken.None);
+        await _sut.Handle(new CreateAccountRequest { Dto = dto }, CancellationToken.None);
 
         _context.Accounts.Any(a => a.Email == dto.Email).Should().BeTrue();
 
@@ -52,7 +52,7 @@ public sealed class CreateAccountHandlerTests : IDisposable
         await _context.SaveChangesAsync();
 
         var act = async () =>
-            await _sut.Handle(new CreateAccountRequest(dto), CancellationToken.None);
+            await _sut.Handle(new CreateAccountRequest { Dto = dto }, CancellationToken.None);
 
         await act.Should().ThrowAsync<ValidationException>();
     }
@@ -67,7 +67,7 @@ public sealed class CreateAccountValidatorTests
     {
         var dto = Generators.CreateAccountDto.Generate() with { Email = "invalid-email" };
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().Throw<ValidationException>();
     }
@@ -77,7 +77,7 @@ public sealed class CreateAccountValidatorTests
     {
         var dto = Generators.CreateAccountDto.Generate() with { Email = string.Empty };
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().Throw<ValidationException>();
     }
@@ -87,7 +87,7 @@ public sealed class CreateAccountValidatorTests
     {
         var dto = Generators.CreateAccountDto.Generate() with { Password = string.Empty };
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().Throw<ValidationException>();
     }
@@ -97,7 +97,7 @@ public sealed class CreateAccountValidatorTests
     {
         var dto = Generators.CreateAccountDto.Generate() with { Password = "short" };
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().Throw<ValidationException>();
     }
@@ -107,7 +107,7 @@ public sealed class CreateAccountValidatorTests
     {
         var dto = Generators.CreateAccountDto.Generate() with { Password = new string('a', 51) };
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().Throw<ValidationException>();
     }
@@ -120,7 +120,7 @@ public sealed class CreateAccountValidatorTests
             PhoneNumber = "invalid-phone-number"
         };
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().Throw<ValidationException>();
     }
@@ -130,7 +130,7 @@ public sealed class CreateAccountValidatorTests
     {
         var dto = Generators.CreateAccountDto.Generate() with { PhoneNumber = null };
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().NotThrow();
     }
@@ -140,7 +140,7 @@ public sealed class CreateAccountValidatorTests
     {
         var dto = Generators.CreateAccountDto.Generate();
 
-        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest(dto));
+        Action act = () => _sut.ValidateAndThrow(new CreateAccountRequest { Dto = dto });
 
         act.Should().NotThrow();
     }

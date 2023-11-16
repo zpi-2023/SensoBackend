@@ -10,7 +10,11 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Notes;
 
-public sealed record CreateNoteRequest(int AccountId, UpsertNoteDto Dto) : IRequest<NoteDto>;
+public sealed record CreateNoteRequest : IRequest<NoteDto>
+{
+    public required int AccountId { get; init; }
+    public required UpsertNoteDto Dto { get; init; }
+}
 
 [UsedImplicitly]
 public sealed class CreateNoteValidator : AbstractValidator<CreateNoteRequest>

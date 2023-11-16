@@ -9,7 +9,11 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Dashboard;
 
-public sealed record UpdateDashboardRequest(int SeniorId, DashboardDto Dto) : IRequest;
+public sealed record UpdateDashboardRequest : IRequest
+{
+    public required int SeniorId;
+    public required DashboardDto Dto;
+}
 
 [UsedImplicitly]
 public sealed class UpdateDashboardValidator : AbstractValidator<UpdateDashboardRequest>

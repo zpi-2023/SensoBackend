@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,10 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles;
 
-public sealed record CreateSeniorProfileRequest(int AccountId) : IRequest<ProfileDisplayDto>;
+public sealed record CreateSeniorProfileRequest : IRequest<ProfileDisplayDto>
+{
+    public required int AccountId { get; init; }
+}
 
 [UsedImplicitly]
 public sealed class CreateSeniorProfileHandler
@@ -51,9 +53,10 @@ public sealed class CreateSeniorProfileHandler
         await _context.SaveChangesAsync(ct);
 
         await _mediator.Send(
-            new UpdateDashboardRequest(
-                account.Id,
-                new DashboardDto
+            new UpdateDashboardRequest
+            {
+                SeniorId = account.Id,
+                Dto = new DashboardDto
                 {
                     Gadgets = new()
                     {
@@ -63,7 +66,7 @@ public sealed class CreateSeniorProfileHandler
                         "editDashboard"
                     }
                 }
-            ),
+            },
             ct
         );
 
