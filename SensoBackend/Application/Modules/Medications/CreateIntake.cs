@@ -25,16 +25,8 @@ public sealed class CreateIntakeValidator : AbstractValidator<CreateIntakeReques
 {
     public CreateIntakeValidator()
     {
-        RuleFor(r => r.ReminderId)
-            .NotEmpty()
-            .WithMessage("ReminderId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("ReminderId has to be greater than 0");
-        RuleFor(r => r.AccountId)
-            .NotEmpty()
-            .WithMessage("AccountId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("AccountId has to be greater than 0");
+        RuleFor(r => r.ReminderId).NotEmpty().WithMessage("ReminderId cannot be empty");
+        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
         RuleFor(r => r.Dto.AmountTaken)
             .NotEmpty()
             .WithMessage("AmountTaken cannot be empty")
@@ -58,8 +50,10 @@ public sealed class CreateIntakeHandler : IRequestHandler<CreateIntakeRequest, I
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
         var neededProfile =
-            await _context.Profiles.FirstOrDefaultAsync(p => p.SeniorId == request.AccountId, ct)
-            ?? throw new ReminderAccessDeniedException(request.ReminderId);
+            await _context.Profiles.FirstOrDefaultAsync(
+                p => p.SeniorId == request.AccountId && p.SeniorId == reminder.SeniorId,
+                ct
+            ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
 
         var intakeRecord = request.Dto.Adapt<IntakeRecord>();
         intakeRecord.ReminderId = request.ReminderId;

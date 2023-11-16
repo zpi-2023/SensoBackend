@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SensoBackend.Application.Common.Pagination;
 using SensoBackend.Application.Modules.Medications;
 using SensoBackend.Application.Modules.Medications.Contracts;
-using SensoBackend.Application.Modules.Pagination;
-using SensoBackend.Application.Modules.Pagination.Contracts;
 
 namespace SensoBackend.WebApi.Controllers.V1;
 

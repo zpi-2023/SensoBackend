@@ -4,6 +4,7 @@ using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Medications.Contracts;
+using SensoBackend.Application.Modules.Medications.Utils;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
@@ -21,16 +22,8 @@ public sealed class DeleteReminderValidator : AbstractValidator<DeleteReminderRe
 {
     public DeleteReminderValidator()
     {
-        RuleFor(r => r.ReminderId)
-            .NotEmpty()
-            .WithMessage("ReminderId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("ReminderId has to be greater than 0");
-        RuleFor(r => r.AccountId)
-            .NotEmpty()
-            .WithMessage("AccountId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("AccountId has to be greater than 0");
+        RuleFor(r => r.ReminderId).NotEmpty().WithMessage("ReminderId cannot be empty");
+        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
     }
 }
 
@@ -43,15 +36,12 @@ public sealed class DeleteReminderHandler : IRequestHandler<DeleteReminderReques
 
     public async Task Handle(DeleteReminderRequest request, CancellationToken ct)
     {
-        var reminder =
-            await _context.Reminders.FindAsync(request.ReminderId, ct)
-            ?? throw new ReminderNotFoundException(request.ReminderId);
-
-        var neededProfile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId,
-                ct
-            ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
+        var reminder = await ReminderUtils.CheckReminderAndProfile(
+            context: _context,
+            accountId: request.AccountId,
+            reminderId: request.ReminderId,
+            ct: ct
+        );
 
         reminder.IsActive = false;
         await _context.SaveChangesAsync(ct);

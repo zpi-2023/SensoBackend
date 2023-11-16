@@ -19,5 +19,6 @@ public sealed record IntakeDto
     [Required]
     public required float AmountTaken { get; init; }
 
+    [Required]
     public string? AmountUnit { get; init; }
 }

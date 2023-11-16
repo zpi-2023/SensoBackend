@@ -16,11 +16,12 @@ public static class ReminderUtils
     /// <param name="accountId">Id of an account that sent the request</param>
     /// <param name="reminderId">Id of a reminder to be managed</param>
     /// <param name="ct">Cancellation token</param>
+    /// <returns> <see cref="Reminder"/> associated with a given reminderId</returns>
     /// <exception cref="ReminderNotFoundException">When reminder was not found - 404</exception>
     /// <exception cref="ReminderAccessDeniedException">
     /// When account with a given Id does not have a profile required to manage reminder - 403
     /// </exception>
-    public static async Task CheckReminderAndProfile(
+    public static async Task<Reminder> CheckReminderAndProfile(
         AppDbContext context,
         int accountId,
         int reminderId,
@@ -35,6 +36,8 @@ public static class ReminderUtils
             await context.Profiles.FirstOrDefaultAsync(
                 p => p.AccountId == accountId && p.SeniorId == reminder.SeniorId
             ) ?? throw new ReminderAccessDeniedException(reminderId);
+
+        return reminder;
     }
 
     public static async Task<ReminderDto> AdaptToDto(AppDbContext context, Reminder reminder)

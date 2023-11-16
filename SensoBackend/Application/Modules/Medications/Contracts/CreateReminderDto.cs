@@ -12,11 +12,15 @@ public sealed record CreateReminderDto
     [Required]
     public required float AmountPerIntake { get; init; }
 
+    [Required]
     public float? AmountOwned { get; init; }
 
+    [Required]
     public string? AmountUnit { get; init; }
 
+    [Required]
     public string? Cron { get; init; }
 
+    [Required]
     public string? Description { get; init; }
 }

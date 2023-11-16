@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using JetBrains.Annotations;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Common.Pagination;
 using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
-using SensoBackend.Application.Modules.Pagination;
-using SensoBackend.Application.Modules.Pagination.Contracts;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
@@ -27,16 +25,8 @@ public sealed class GetAllIntakesForSeniorValidator
 {
     public GetAllIntakesForSeniorValidator()
     {
-        RuleFor(r => r.SeniorId)
-            .NotEmpty()
-            .WithMessage("ReminderId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("ReminderId has to be greater than 0");
-        RuleFor(r => r.AccountId)
-            .NotEmpty()
-            .WithMessage("AccountId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("AccountId has to be greater than 0");
+        RuleFor(r => r.SeniorId).NotEmpty().WithMessage("ReminderId cannot be empty");
+        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
     }
 }
 
@@ -61,6 +51,7 @@ public sealed class GetAllIntakesForSeniorHandler
         var intakes = await _context.IntakeRecords
             .Include(ir => ir.Reminder)
             .Where(ir => ir.Reminder!.SeniorId == request.SeniorId)
+            .OrderBy(ir => ir.Id)
             .Paged(request.PaginationQuery)
             .ToListAsync(ct);
 
@@ -68,10 +59,6 @@ public sealed class GetAllIntakesForSeniorHandler
             .Select(ir => ReminderUtils.AdaptToDto(_context, ir).Result)
             .ToList();
 
-        return new PaginatedDto<IntakeDto>
-        {
-            Items = adaptedIntakes,
-            CurrentPage = request.PaginationQuery.Page
-        };
+        return new PaginatedDto<IntakeDto> { Items = adaptedIntakes };
     }
 }

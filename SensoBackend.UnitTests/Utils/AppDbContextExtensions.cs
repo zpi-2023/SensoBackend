@@ -81,7 +81,7 @@ internal static class AppDbContextExtensions
         {
             Id = default,
             Name = "medication",
-            AmountInPackage = default,
+            AmountInPackage = 3,
             AmountUnit = "g"
         };
 
@@ -99,7 +99,7 @@ internal static class AppDbContextExtensions
         {
             Id = default,
             Name = medicationName,
-            AmountInPackage = default,
+            AmountInPackage = 3,
             AmountUnit = "g"
         };
 
@@ -133,8 +133,8 @@ internal static class AppDbContextExtensions
             SeniorId = seniorAccount.Id,
             MedicationId = medication.Id,
             IsActive = true,
-            AmountPerIntake = default,
-            AmountOwned = default,
+            AmountPerIntake = 1,
+            AmountOwned = 3,
             Cron = "1 1 1 * * *",
             Description = "Description"
         };
@@ -158,7 +158,7 @@ internal static class AppDbContextExtensions
             Id = default,
             ReminderId = reminer.Id,
             TakenAt = new DateTimeOffset(2006, 10, 13, 10, 11, 15, TimeSpan.Zero),
-            AmountTaken = default,
+            AmountTaken = 1,
         };
 
         await context.IntakeRecords.AddAsync(intake);

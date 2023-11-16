@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SensoBackend.Application.Common.Pagination;
 using SensoBackend.Application.Modules.Medications;
 using SensoBackend.Application.Modules.Medications.Contracts;
-using SensoBackend.Application.Modules.Pagination;
-using SensoBackend.Application.Modules.Pagination.Contracts;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 
@@ -18,8 +17,6 @@ public sealed class RemindersController : ControllerBase
     private readonly IMediator _mediator;
 
     public RemindersController(IMediator mediator) => _mediator = mediator;
-
-    #region Reminders
 
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("{reminderId}")]
@@ -126,75 +123,4 @@ public sealed class RemindersController : ControllerBase
         var request = new GetIntakeByIdRequest { AccountId = accountId, IntakeId = intakeId };
         return Ok(await _mediator.Send(request));
     }
-
-    #endregion Reminders
-
-    #region SeniorReminders
-
-    [HasPermission(Permission.ManageReminders)]
-    [HttpGet("senior/{seniorId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<ReminderDto>))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetSeniorReminders(
-        int seniorId,
-        [FromQuery] PaginationQuery query
-    )
-    {
-        var accountId = this.GetAccountId();
-        var request = new GetSeniorRemindersRequest
-        {
-            AccountId = accountId,
-            SeniorId = seniorId,
-            PaginationQuery = query
-        };
-        return Ok(await _mediator.Send(request));
-    }
-
-    [HasPermission(Permission.ManageReminders)]
-    [HttpPost("senior/{seniorId}")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReminderDto))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> CreateReminder(int seniorId, CreateReminderDto dto)
-    {
-        var accountId = this.GetAccountId();
-
-        var reminderDto = await _mediator.Send(
-            new CreateReminderRequest
-            {
-                AccountId = accountId,
-                SeniorId = seniorId,
-                Dto = dto
-            }
-        );
-
-        return CreatedAtAction(
-            nameof(GetReminderById),
-            new { reminderId = reminderDto.Id },
-            reminderDto
-        );
-    }
-
-    [HasPermission(Permission.ManageReminders)]
-    [HttpGet("senior/{seniorId}/intakes")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<IntakeDto>))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetSeniorIntakes(
-        int seniorId,
-        [FromQuery] PaginationQuery query
-    )
-    {
-        var accountId = this.GetAccountId();
-        var request = new GetAllIntakesForSeniorRequest
-        {
-            AccountId = accountId,
-            SeniorId = seniorId,
-            PaginationQuery = query
-        };
-        return Ok(await _mediator.Send(request));
-    }
-
-    #endregion SeniorReminders
 }

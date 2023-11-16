@@ -20,16 +20,8 @@ public sealed class GetIntakeByIdValidator : AbstractValidator<GetIntakeByIdRequ
 {
     public GetIntakeByIdValidator()
     {
-        RuleFor(r => r.AccountId)
-            .NotEmpty()
-            .WithMessage("AccountId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("AccountId has to be greater than 0");
-        RuleFor(r => r.IntakeId)
-            .NotEmpty()
-            .WithMessage("IntakeId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("IntakeId has to be greater than 0");
+        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
+        RuleFor(r => r.IntakeId).NotEmpty().WithMessage("IntakeId cannot be empty");
     }
 }
 

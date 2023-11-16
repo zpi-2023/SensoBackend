@@ -23,21 +23,11 @@ public sealed class UpdateReminderValidator : AbstractValidator<UpdateReminderBy
 {
     public UpdateReminderValidator()
     {
-        RuleFor(r => r.ReminderId)
-            .NotEmpty()
-            .WithMessage("ReminderId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("ReminderId has to be greater than 0");
-        RuleFor(r => r.AccountId)
-            .NotEmpty()
-            .WithMessage("AccountId cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("AccountId has to be greater than 0");
+        RuleFor(r => r.ReminderId).NotEmpty().WithMessage("ReminderId cannot be empty");
+        RuleFor(r => r.AccountId).NotEmpty().WithMessage("AccountId cannot be empty");
         RuleFor(r => r.Dto.AmountPerIntake)
             .NotEmpty()
-            .WithMessage("AmountPerIntake cannot be empty")
-            .GreaterThan(0)
-            .WithMessage("AmountPerIntake has to be greater than 0");
+            .WithMessage("AmountPerIntake cannot be empty");
     }
 }
 
@@ -51,14 +41,12 @@ public sealed class UpdateReminderByIdHandler
 
     public async Task<ReminderDto> Handle(UpdateReminderByIdRequest request, CancellationToken ct)
     {
-        var reminder =
-            await _context.Reminders.FindAsync(request.ReminderId, ct)
-            ?? throw new ReminderNotFoundException(request.ReminderId);
-
-        var neededProfile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId
-            ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
+        var reminder = await ReminderUtils.CheckReminderAndProfile(
+            _context,
+            request.AccountId,
+            request.ReminderId,
+            ct
+        );
 
         reminder.AmountPerIntake = request.Dto.AmountPerIntake;
         reminder.AmountOwned = request.Dto.AmountOwned;
