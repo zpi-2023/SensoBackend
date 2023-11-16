@@ -2,12 +2,9 @@
 
 namespace SensoBackend.Application.Modules.Profiles.Utils;
 
-public sealed class SeniorIdRepo : ISeniorIdRepo
+public sealed class SeniorIdRepo(TimeProvider timeProvider) : ISeniorIdRepo
 {
-    private readonly Dictionary<int, SeniorDataToEncode> _seniors = new();
-    private readonly TimeProvider _timeProvider;
-
-    public SeniorIdRepo(TimeProvider timeProvider) => _timeProvider = timeProvider;
+    private readonly Dictionary<int, SeniorDataToEncode> _seniors =  [ ];
 
     public SeniorDataToEncode? Get(int hash)
     {
@@ -18,7 +15,7 @@ public sealed class SeniorIdRepo : ISeniorIdRepo
 
         _seniors.Remove(hash);
 
-        return seniorData.ValidTo >= _timeProvider.GetUtcNow() ? seniorData : null;
+        return seniorData.ValidTo >= timeProvider.GetUtcNow() ? seniorData : null;
     }
 
     public int AssignHash(SeniorDataToEncode seniorData)
@@ -34,7 +31,7 @@ public sealed class SeniorIdRepo : ISeniorIdRepo
         // A bit ugly, but it avoids unnecessary memory allocations
         foreach (
             var key in _seniors
-                .Where(r => r.Value.ValidTo < _timeProvider.GetUtcNow())
+                .Where(r => r.Value.ValidTo < timeProvider.GetUtcNow())
                 .Select(r => r.Key)
         )
         {
