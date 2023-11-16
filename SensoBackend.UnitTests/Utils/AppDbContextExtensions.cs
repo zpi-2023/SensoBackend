@@ -151,12 +151,31 @@ internal static class AppDbContextExtensions
     )
     {
         var medication = await context.SetUpMedication();
-        var reminer = await context.SetUpReminder(userAccount, seniorAccount, medication);
+        var reminder = await context.SetUpReminder(userAccount, seniorAccount, medication);
 
         var intake = new IntakeRecord
         {
             Id = default,
-            ReminderId = reminer.Id,
+            ReminderId = reminder.Id,
+            TakenAt = new DateTimeOffset(2006, 10, 13, 10, 11, 15, TimeSpan.Zero),
+            AmountTaken = 1,
+        };
+
+        await context.IntakeRecords.AddAsync(intake);
+        await context.SaveChangesAsync();
+
+        return intake;
+    }
+
+    public static async Task<IntakeRecord> SetUpIntakeForReminder(
+        this AppDbContext context,
+        Reminder reminder
+    )
+    {
+        var intake = new IntakeRecord
+        {
+            Id = default,
+            ReminderId = reminder.Id,
             TakenAt = new DateTimeOffset(2006, 10, 13, 10, 11, 15, TimeSpan.Zero),
             AmountTaken = 1,
         };

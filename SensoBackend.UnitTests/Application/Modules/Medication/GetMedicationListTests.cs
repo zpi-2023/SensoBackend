@@ -4,12 +4,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Medication;
 
-public sealed class GetMedicationListTests
+public sealed class GetMedicationListTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly GetMedicationListHandler _sut;
 
     public GetMedicationListTests() => _sut = new GetMedicationListHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldReturnCorrectMedicationList_WhenEverythingIsOk()

@@ -100,4 +100,10 @@ public static class Generators
             .RuleFor(r => r.AmountUnit, _ => "g")
             .RuleFor(r => r.Cron, _ => "1 1 1 * * *")
             .RuleFor(r => r.Description, f => f.Random.String());
+    public static readonly Faker<UpdateReminderDto> UpdateReminderDto =
+        new Faker<UpdateReminderDto>()
+            .RuleFor(r => r.AmountPerIntake, _ => 2137)
+            .RuleFor(r => r.AmountOwned, f => f.Random.Number())
+            .RuleFor(r => r.Cron, _ => "1 1 1 * * *")
+            .RuleFor(r => r.Description, f => f.Random.String());
 }

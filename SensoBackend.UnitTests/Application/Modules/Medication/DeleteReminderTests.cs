@@ -5,12 +5,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Medication;
 
-public sealed class DeleteReminderTests
+public sealed class DeleteReminderTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly DeleteReminderHandler _sut;
 
     public DeleteReminderTests() => _sut = new DeleteReminderHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldDeleteReminer_WhenSeniorWantsToDdeleteIt()

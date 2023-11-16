@@ -5,12 +5,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Medication;
 
-public sealed class CreateReminderTests
+public sealed class CreateReminderTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly CreateReminderHandler _sut;
 
     public CreateReminderTests() => _sut = new CreateReminderHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldCreateReminder_WhenSeniorWantsToCreateIt()

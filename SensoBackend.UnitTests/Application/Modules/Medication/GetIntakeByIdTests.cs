@@ -6,12 +6,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Medication;
 
-public sealed class GetIntakeByIdTests
+public sealed class GetIntakeByIdTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly GetIntakeByIdHandler _sut;
 
     public GetIntakeByIdTests() => _sut = new GetIntakeByIdHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldReturnIntake_WhenSeniorWantsIt()

@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Medications.Contracts;

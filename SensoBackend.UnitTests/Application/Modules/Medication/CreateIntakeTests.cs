@@ -5,12 +5,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.Tests.Application.Modules.Medication;
 
-public sealed class CreateIntakeTests
+public sealed class CreateIntakeTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly CreateIntakeHandler _sut;
 
     public CreateIntakeTests() => _sut = new CreateIntakeHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldCreateIntake_WhenSeniorCreatesIntake()

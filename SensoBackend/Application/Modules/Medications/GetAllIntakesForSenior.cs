@@ -46,7 +46,7 @@ public sealed class GetAllIntakesForSeniorHandler
         var neededProfile =
             await _context.Profiles.FirstOrDefaultAsync(
                 p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
-            ) ?? throw new ReminderAccessDeniedException(request.SeniorId);
+            ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
 
         var intakes = await _context.IntakeRecords
             .Include(ir => ir.Reminder)
