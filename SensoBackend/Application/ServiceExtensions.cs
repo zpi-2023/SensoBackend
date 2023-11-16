@@ -20,7 +20,7 @@ public static class ServiceExtensions
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
-        services.AddSingleton<ITimeProvider, TimeProvider>();
+        services.AddSingleton(TimeProvider.System);
         services.AddSingleton<ISeniorIdRepo, SeniorIdRepo>();
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly);

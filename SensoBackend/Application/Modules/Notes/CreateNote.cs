@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Notes.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
@@ -27,9 +26,9 @@ public sealed class CreateNoteValidator : AbstractValidator<CreateNoteRequest>
 public sealed class CreateNoteHandler : IRequestHandler<CreateNoteRequest, NoteDto>
 {
     private readonly AppDbContext _context;
-    private readonly ITimeProvider _timeProvider;
+    private readonly TimeProvider _timeProvider;
 
-    public CreateNoteHandler(AppDbContext context, ITimeProvider timeProvider)
+    public CreateNoteHandler(AppDbContext context, TimeProvider timeProvider)
     {
         _context = context;
         _timeProvider = timeProvider;
@@ -44,7 +43,7 @@ public sealed class CreateNoteHandler : IRequestHandler<CreateNoteRequest, NoteD
             Id = default,
             AccountId = request.AccountId,
             Content = request.Dto.Content,
-            CreatedAt = _timeProvider.Now,
+            CreatedAt = _timeProvider.GetUtcNow(),
             IsPrivate = request.Dto.IsPrivate,
             Title = request.Dto.Title,
         };
