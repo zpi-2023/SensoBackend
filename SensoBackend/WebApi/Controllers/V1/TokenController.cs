@@ -33,7 +33,7 @@ public sealed class TokenController : ControllerBase
     public async Task<IActionResult> CreateToken(GetAccountByCredentialsDto dto)
     {
         _logger.LogInformation("Creating new token for {Email}.", dto.Email);
-        var account = await _mediator.Send(new GetAccountByCredentialsRequest(dto));
+        var account = await _mediator.Send(new GetAccountByCredentialsRequest { Dto = dto });
         return Ok(_jwtProvider.GenerateToken(account));
     }
 }

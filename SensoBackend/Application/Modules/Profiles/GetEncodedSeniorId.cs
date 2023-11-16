@@ -9,7 +9,10 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles;
 
-public sealed record GetEncodedSeniorIdRequest(int AccountId) : IRequest<EncodedSeniorDto>;
+public sealed record GetEncodedSeniorIdRequest : IRequest<EncodedSeniorDto>
+{
+    public required int AccountId { get; init; }
+}
 
 [UsedImplicitly]
 public sealed class GetEncodedSeniorIdHandler

@@ -30,7 +30,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> Create(CreateAccountDto dto)
     {
         _logger.LogInformation("Creating new account for {Email}.", dto.Email);
-        await _mediator.Send(new CreateAccountRequest(dto));
+        await _mediator.Send(new CreateAccountRequest { Dto = dto });
         return NoContent();
     }
 
@@ -41,7 +41,9 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> GetProfiles()
     {
         var accountId = this.GetAccountId();
-        var profiles = await _mediator.Send(new GetProfilesByAccountIdRequest(accountId));
+        var profiles = await _mediator.Send(
+            new GetProfilesByAccountIdRequest { AccountId = accountId }
+        );
         return Ok(profiles);
     }
 
@@ -53,7 +55,9 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> CreateSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        var profile = await _mediator.Send(new CreateSeniorProfileRequest(accountId));
+        var profile = await _mediator.Send(
+            new CreateSeniorProfileRequest { AccountId = accountId }
+        );
 
         return Ok(profile);
     }
@@ -66,7 +70,9 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> GetSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        var encodedData = await _mediator.Send(new GetEncodedSeniorIdRequest(accountId));
+        var encodedData = await _mediator.Send(
+            new GetEncodedSeniorIdRequest { AccountId = accountId }
+        );
         return Ok(encodedData);
     }
 
@@ -79,7 +85,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> DeleteSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        await _mediator.Send(new DeleteSeniorProfileRequest(accountId));
+        await _mediator.Send(new DeleteSeniorProfileRequest { AccountId = accountId });
         return NoContent();
     }
 

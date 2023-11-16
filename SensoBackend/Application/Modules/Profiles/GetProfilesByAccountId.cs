@@ -7,7 +7,10 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Profiles;
 
-public sealed record GetProfilesByAccountIdRequest(int AccountId) : IRequest<ProfilesDto>;
+public sealed record GetProfilesByAccountIdRequest : IRequest<ProfilesDto>
+{
+    public required int AccountId { get; init; }
+}
 
 [UsedImplicitly]
 public sealed class GetProfilesByAccountIdHandler

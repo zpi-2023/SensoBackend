@@ -7,7 +7,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 
-public sealed class GetProfilesByAccountIdHandlerTests
+public sealed class GetProfilesByAccountIdHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly GetProfilesByAccountIdHandler _sut;
@@ -17,6 +17,8 @@ public sealed class GetProfilesByAccountIdHandlerTests
         TypeAdapterConfig.GlobalSettings.Apply(new MappingConfig());
         _sut = new(_context);
     }
+
+    public void Dispose() => _context.Dispose();
 
     private async Task CreateCaretakerProfile(Account owner)
     {
@@ -33,7 +35,7 @@ public sealed class GetProfilesByAccountIdHandlerTests
         await CreateCaretakerProfile(account);
 
         var profiles = await _sut.Handle(
-            new GetProfilesByAccountIdRequest(account.Id),
+            new GetProfilesByAccountIdRequest { AccountId = account.Id },
             CancellationToken.None
         );
 

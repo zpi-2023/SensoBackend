@@ -73,7 +73,7 @@ public sealed class EditCaretakerProfileValidatorTests
     {
         var dto = Generators.CaretakerProfile.Generate();
 
-        Action act = () =>
+        var act = () =>
             _sut.ValidateAndThrow(
                 new EditCaretakerProfileRequest
                 {

@@ -11,7 +11,10 @@ using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Accounts.CreateAccount;
 
-public sealed record CreateAccountRequest(CreateAccountDto Dto) : IRequest;
+public sealed record CreateAccountRequest : IRequest
+{
+    public required CreateAccountDto Dto;
+}
 
 [UsedImplicitly]
 public sealed class CreateAccountValidator : AbstractValidator<CreateAccountRequest>

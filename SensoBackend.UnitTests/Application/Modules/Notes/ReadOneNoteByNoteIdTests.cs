@@ -5,12 +5,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Notes;
 
-public sealed class ReadOneNoteByNoteIdHandlerTests
+public sealed class ReadOneNoteByNoteIdHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly ReadOneNoteByNoteIdHandler _sut;
 
     public ReadOneNoteByNoteIdHandlerTests() => _sut = new ReadOneNoteByNoteIdHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Theory]
     [InlineData(true)]
