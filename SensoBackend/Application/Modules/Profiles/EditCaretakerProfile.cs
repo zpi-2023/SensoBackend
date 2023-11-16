@@ -46,10 +46,12 @@ public sealed class EditCaretakerProfileHandler
     )
     {
         var profile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
-                ct
-            )
+            await _context
+                .Profiles
+                .FirstOrDefaultAsync(
+                    p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
+                    ct
+                )
             ?? throw new ProfileNotFoundException(
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
             );

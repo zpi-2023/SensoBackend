@@ -33,10 +33,12 @@ public sealed class GetEncodedSeniorIdHandler
     {
         if (
             !(
-                await _context.Profiles.AnyAsync(
-                    p => p.AccountId == request.AccountId && p.AccountId == p.SeniorId,
-                    ct
-                )
+                await _context
+                    .Profiles
+                    .AnyAsync(
+                        p => p.AccountId == request.AccountId && p.AccountId == p.SeniorId,
+                        ct
+                    )
             )
         )
         {

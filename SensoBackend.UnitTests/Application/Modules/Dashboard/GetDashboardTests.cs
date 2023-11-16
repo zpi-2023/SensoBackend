@@ -32,25 +32,28 @@ public sealed class GetDashboardHandlerTests : IDisposable
     {
         var account = Generators.Account.Generate();
         await _context.Accounts.AddAsync(account);
-        await _context.DashboardItems.AddRangeAsync(
-            Enumerable
-                .Range(0, 3)
-                .Select(
-                    idx =>
-                        new DashboardItem
-                        {
-                            Id = 0,
-                            AccountId = account.Id,
-                            Gadget = (Gadget)idx,
-                            Position = idx
-                        }
-                )
-        );
+        await _context
+            .DashboardItems
+            .AddRangeAsync(
+                Enumerable
+                    .Range(0, 3)
+                    .Select(
+                        idx =>
+                            new DashboardItem
+                            {
+                                Id = 0,
+                                AccountId = account.Id,
+                                Gadget = (Gadget)idx,
+                                Position = idx
+                            }
+                    )
+            );
         await _context.SaveChangesAsync();
 
         var result = await _sut.Handle(new GetDashboardRequest(account.Id), CancellationToken.None);
 
-        result.Gadgets
+        result
+            .Gadgets
             .Should()
             .BeEquivalentTo(Enum.GetValues<Gadget>().Take(3).Select(g => g.ToString("f")));
     }

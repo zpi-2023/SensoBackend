@@ -17,7 +17,8 @@ public sealed class GetDashboardHandler : IRequestHandler<GetDashboardRequest, D
 
     public async Task<DashboardDto> Handle(GetDashboardRequest request, CancellationToken ct)
     {
-        var gadgets = await _context.DashboardItems
+        var gadgets = await _context
+            .DashboardItems
             .Where(di => di.AccountId == request.SeniorId)
             .OrderBy(di => di.Position)
             .Select(di => di.Gadget!.ToString("f"))

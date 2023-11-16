@@ -35,7 +35,8 @@ public sealed class CreateSeniorProfileHandlerTests
 
         await _sut.Handle(new CreateSeniorProfileRequest(account.Id), CancellationToken.None);
 
-        _context.Profiles
+        _context
+            .Profiles
             .Any(p => p.AccountId == account.Id && p.SeniorId == account.Id)
             .Should()
             .BeTrue();

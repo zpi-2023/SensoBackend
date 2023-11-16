@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Time.Testing;
 using FluentValidation;
+using Microsoft.Extensions.Time.Testing;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Application.Modules.Profiles.Utils;
@@ -13,7 +13,9 @@ namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 public sealed class CreateCaretakerProfileHandlerTests
 {
     private readonly AppDbContext _context = Database.CreateFixture();
-    private readonly TimeProvider _timeProvider = new FakeTimeProvider(new DateTimeOffset(new DateTime(2023, 9, 4, 12, 0, 0), TimeSpan.Zero));
+    private readonly TimeProvider _timeProvider = new FakeTimeProvider(
+        new DateTimeOffset(new DateTime(2023, 9, 4, 12, 0, 0), TimeSpan.Zero)
+    );
     private readonly ISeniorIdRepo _seniorIdRepo;
     private readonly CreateCaretakerProfileHandler _sut;
 
@@ -164,7 +166,8 @@ public sealed class CreateCaretakerProfileHandlerTests
             CancellationToken.None
         );
 
-        _context.Profiles
+        _context
+            .Profiles
             .Any(p => p.AccountId == caretakerAccount.Id && p.SeniorId == seniorAccount.Id)
             .Should()
             .BeTrue();

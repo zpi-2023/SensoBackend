@@ -38,10 +38,12 @@ public sealed class DeleteCaretakerProfileHandler : IRequestHandler<DeleteCareta
     public async Task Handle(DeleteCaretakerProfileRequest request, CancellationToken ct)
     {
         var profile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
-                ct
-            )
+            await _context
+                .Profiles
+                .FirstOrDefaultAsync(
+                    p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
+                    ct
+                )
             ?? throw new ProfileNotFoundException(
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
             );

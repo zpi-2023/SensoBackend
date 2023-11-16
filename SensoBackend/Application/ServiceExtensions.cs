@@ -1,10 +1,10 @@
+using System.Reflection;
 using FluentValidation;
 using Mapster;
 using MediatR;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Behaviors;
 using SensoBackend.Application.Modules.Profiles.Utils;
-using System.Reflection;
 
 namespace SensoBackend.Application;
 

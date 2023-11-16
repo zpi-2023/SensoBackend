@@ -1,10 +1,10 @@
-﻿using JetBrains.Annotations;
+﻿using System.Security.Authentication;
+using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Infrastructure.Data;
-using System.Security.Authentication;
 
 namespace SensoBackend.Application.Modules.Accounts.GetAccountById;
 

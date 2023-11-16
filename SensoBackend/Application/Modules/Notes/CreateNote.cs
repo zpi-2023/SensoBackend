@@ -57,10 +57,9 @@ public sealed class CreateNoteHandler : IRequestHandler<CreateNoteRequest, NoteD
     private async Task GuardHasSeniorProfileAsync(int accountId, CancellationToken ct)
     {
         if (
-            !await _context.Profiles.AnyAsync(
-                p => p.AccountId == accountId && p.AccountId == p.SeniorId,
-                ct
-            )
+            !await _context
+                .Profiles
+                .AnyAsync(p => p.AccountId == accountId && p.AccountId == p.SeniorId, ct)
         )
         {
             throw new SeniorNotFoundException("Given account does not have a senior profile");

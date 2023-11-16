@@ -16,9 +16,7 @@ public sealed class GetEncodedSeniorIdHandlerTests
     public GetEncodedSeniorIdHandlerTests() =>
         _sut = new GetEncodedSeniorIdHandler(
             _context,
-            new SeniorIdRepo(
-                new FakeTimeProvider(new(2021, 6, 15, 10, 0, 0, TimeSpan.Zero))
-            )
+            new SeniorIdRepo(new FakeTimeProvider(new(2021, 6, 15, 10, 0, 0, TimeSpan.Zero)))
         );
 
     [Fact]

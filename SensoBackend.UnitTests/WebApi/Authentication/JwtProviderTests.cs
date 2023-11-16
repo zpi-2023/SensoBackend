@@ -22,8 +22,7 @@ public sealed class JwtProviderTests
 
     private readonly JwtProvider _sut;
 
-    public JwtProviderTests() =>
-        _sut = new JwtProvider(_jwtOptions, new FakeTimeProvider(Now));
+    public JwtProviderTests() => _sut = new JwtProvider(_jwtOptions, new FakeTimeProvider(Now));
 
     [Fact]
     public void GenerateToken_ShouldReturnToken()
@@ -39,11 +38,13 @@ public sealed class JwtProviderTests
         token.ValidTo.Should().Be(Now.UtcDateTime.AddDays(7));
         token.Issuer.Should().Be(_jwtOptions.Value.Issuer);
         token.Audiences.Should().Contain(_jwtOptions.Value.Audience);
-        token.Claims
+        token
+            .Claims
             .Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.Sub)
             .Equals(account.Id);
-        token.Claims
+        token
+            .Claims
             .Should()
             .Contain(c => c.Type == JwtRegisteredClaimNames.Email)
             .Equals(account.Email);

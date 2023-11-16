@@ -46,10 +46,9 @@ public sealed class ReadOneNoteByNoteIdHandler
 
         if (
             !note.IsPrivate
-            && await _context.Profiles.AnyAsync(
-                p => p.SeniorId == note.AccountId && p.AccountId == accountId,
-                ct
-            )
+            && await _context
+                .Profiles
+                .AnyAsync(p => p.SeniorId == note.AccountId && p.AccountId == accountId, ct)
         ) // The user is a caretaker of the senior, and the note is not private
         {
             return true;

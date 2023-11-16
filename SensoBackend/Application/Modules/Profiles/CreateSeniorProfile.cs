@@ -3,9 +3,9 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Application.Modules.Dashboard;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
+using SensoBackend.Application.Modules.Profiles.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
@@ -39,10 +39,9 @@ public sealed class CreateSeniorProfileHandler
             );
         }
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(
-            a => a.Id == request.AccountId,
-            ct
-        );
+        var account = await _context
+            .Accounts
+            .FirstOrDefaultAsync(a => a.Id == request.AccountId, ct);
 
         var profile = request.Adapt<Profile>();
         profile.Alias = account!.DisplayName;
