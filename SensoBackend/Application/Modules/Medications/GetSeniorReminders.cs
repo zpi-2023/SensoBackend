@@ -33,11 +33,14 @@ public sealed class GetSeniorRemindersHandler
     )
     {
         var neededProfile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
-            ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
+            await _context
+                .Profiles
+                .FirstOrDefaultAsync(
+                    p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
+                ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
 
-        var reminders = await _context.Reminders
+        var reminders = await _context
+            .Reminders
             .Where(r => r.SeniorId == request.SeniorId)
             .Include(r => r.Medication)
             .OrderBy(r => r.Id)

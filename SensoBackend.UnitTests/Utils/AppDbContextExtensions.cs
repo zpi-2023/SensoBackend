@@ -146,9 +146,9 @@ internal static class AppDbContextExtensions
     )
     {
         if (
-            !await context.Profiles.AnyAsync(
-                p => p.AccountId == userAccount.Id && p.SeniorId == seniorAccount.Id
-            )
+            !await context
+                .Profiles
+                .AnyAsync(p => p.AccountId == userAccount.Id && p.SeniorId == seniorAccount.Id)
         )
         {
             throw new ArgumentException(

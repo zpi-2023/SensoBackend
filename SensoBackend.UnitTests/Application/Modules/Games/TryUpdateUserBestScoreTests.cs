@@ -38,9 +38,9 @@ public sealed class TryUpdateUserBestScoreHandlerTests : IDisposable
             CancellationToken.None
         );
 
-        var updatedLeaderboardEntry = await _context.LeaderboardEntries.FirstAsync(
-            l => l.AccountId == account.Id && l.Game == _game
-        );
+        var updatedLeaderboardEntry = await _context
+            .LeaderboardEntries
+            .FirstAsync(l => l.AccountId == account.Id && l.Game == _game);
 
         updatedLeaderboardEntry.Score.Should().Be(newBestScoreDto.Score);
     }
@@ -61,9 +61,9 @@ public sealed class TryUpdateUserBestScoreHandlerTests : IDisposable
             CancellationToken.None
         );
 
-        var updatedLeaderboardEntry = await _context.LeaderboardEntries.FirstAsync(
-            l => l.AccountId == account.Id && l.Game == _game
-        );
+        var updatedLeaderboardEntry = await _context
+            .LeaderboardEntries
+            .FirstAsync(l => l.AccountId == account.Id && l.Game == _game);
 
         updatedLeaderboardEntry.Score.Should().Be(newBestScoreDto.Score);
     }
@@ -85,9 +85,9 @@ public sealed class TryUpdateUserBestScoreHandlerTests : IDisposable
             CancellationToken.None
         );
 
-        var updatedLeaderboardEntry = await _context.LeaderboardEntries.FirstAsync(
-            l => l.AccountId == account.Id && l.Game == _game
-        );
+        var updatedLeaderboardEntry = await _context
+            .LeaderboardEntries
+            .FirstAsync(l => l.AccountId == account.Id && l.Game == _game);
 
         updatedLeaderboardEntry.Score.Should().Be(leaderboardEntry.Score);
     }

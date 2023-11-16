@@ -48,10 +48,12 @@ public sealed class CreateIntakeHandler : IRequestHandler<CreateIntakeRequest, I
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
         var neededProfile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.SeniorId == request.AccountId && p.SeniorId == reminder.SeniorId,
-                ct
-            ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
+            await _context
+                .Profiles
+                .FirstOrDefaultAsync(
+                    p => p.SeniorId == request.AccountId && p.SeniorId == reminder.SeniorId,
+                    ct
+                ) ?? throw new ReminderAccessDeniedException(request.ReminderId);
 
         var intakeRecord = request.Dto.Adapt<IntakeRecord>();
         intakeRecord.ReminderId = request.ReminderId;

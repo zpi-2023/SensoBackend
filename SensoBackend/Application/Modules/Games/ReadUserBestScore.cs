@@ -27,10 +27,9 @@ public sealed class ReadUserBestScoreHandler : IRequestHandler<ReadUserBestScore
     {
         var game = GetGame.FromName(request.GameName);
 
-        var score = await _context.LeaderboardEntries.FirstOrDefaultAsync(
-            s => s.AccountId == request.AccountId && s.Game == game,
-            ct
-        );
+        var score = await _context
+            .LeaderboardEntries
+            .FirstOrDefaultAsync(s => s.AccountId == request.AccountId && s.Game == game, ct);
 
         return new ScoreDto { Score = score?.Score ?? 0 };
     }

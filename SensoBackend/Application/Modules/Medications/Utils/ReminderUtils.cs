@@ -33,9 +33,11 @@ public static class ReminderUtils
             ?? throw new ReminderNotFoundException(reminderId);
 
         var neededProfile =
-            await context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == accountId && p.SeniorId == reminder.SeniorId
-            ) ?? throw new ReminderAccessDeniedException(reminderId);
+            await context
+                .Profiles
+                .FirstOrDefaultAsync(
+                    p => p.AccountId == accountId && p.SeniorId == reminder.SeniorId
+                ) ?? throw new ReminderAccessDeniedException(reminderId);
 
         return reminder;
     }

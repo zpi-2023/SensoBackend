@@ -28,9 +28,11 @@ public sealed class GetReminderByIdHandler : IRequestHandler<GetReminderByIdRequ
             await _context.Reminders.FindAsync(request.ReminderId, ct)
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
-        var neededProfile = await _context.Profiles.FirstOrDefaultAsync(
-            p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId
-        );
+        var neededProfile = await _context
+            .Profiles
+            .FirstOrDefaultAsync(
+                p => p.AccountId == request.AccountId && p.SeniorId == reminder.SeniorId
+            );
 
         return neededProfile is null
             ? throw new ReminderAccessDeniedException(request.ReminderId)
