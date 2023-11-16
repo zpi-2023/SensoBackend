@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Time.Testing;
 using FluentValidation;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Profiles;
@@ -12,10 +13,7 @@ namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 public sealed class CreateCaretakerProfileHandlerTests
 {
     private readonly AppDbContext _context = Database.CreateFixture();
-    private readonly ITimeProvider _timeProvider = new MockTimeProvider
-    {
-        Now = new DateTimeOffset(new DateTime(2023, 9, 4, 12, 0, 0), TimeSpan.Zero)
-    };
+    private readonly TimeProvider _timeProvider = new FakeTimeProvider(new DateTimeOffset(new DateTime(2023, 9, 4, 12, 0, 0), TimeSpan.Zero));
     private readonly ISeniorIdRepo _seniorIdRepo;
     private readonly CreateCaretakerProfileHandler _sut;
 
@@ -32,7 +30,7 @@ public sealed class CreateCaretakerProfileHandlerTests
             {
                 SeniorDisplayName = account.DisplayName,
                 SeniorId = account.Id,
-                ValidTo = _timeProvider.Now.AddMinutes(20)
+                ValidTo = _timeProvider.GetUtcNow().AddMinutes(20)
             }
         );
     }

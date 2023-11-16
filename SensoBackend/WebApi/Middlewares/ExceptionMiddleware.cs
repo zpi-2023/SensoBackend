@@ -28,7 +28,7 @@ public sealed class ExceptionMiddleware
             var noControlCharsExceptionMessage = new string(
                 exception.Message.Where(c => !char.IsControl(c)).ToArray()
             );
-            context.Response.Headers.Add("X-Error-Message", noControlCharsExceptionMessage);
+            context.Response.Headers.Append("X-Error-Message", noControlCharsExceptionMessage);
             context.Response.StatusCode = exception switch
             {
                 ValidationException => 400,

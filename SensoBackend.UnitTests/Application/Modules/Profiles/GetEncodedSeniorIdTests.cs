@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Time.Testing;
 using SensoBackend.Application.Modules.Profiles;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Domain.Exceptions;
@@ -16,7 +17,7 @@ public sealed class GetEncodedSeniorIdHandlerTests
         _sut = new GetEncodedSeniorIdHandler(
             _context,
             new SeniorIdRepo(
-                new MockTimeProvider { Now = new(2021, 6, 15, 10, 0, 0, TimeSpan.Zero) }
+                new FakeTimeProvider(new(2021, 6, 15, 10, 0, 0, TimeSpan.Zero))
             )
         );
 

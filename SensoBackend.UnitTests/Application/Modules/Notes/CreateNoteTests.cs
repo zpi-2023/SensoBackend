@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Time.Testing;
 using SensoBackend.Application.Modules.Notes;
 using SensoBackend.Application.Modules.Notes.Contracts;
 using SensoBackend.Domain.Exceptions;
@@ -13,7 +14,7 @@ public sealed class CreateNoteHandlerTests
     private readonly CreateNoteHandler _sut;
 
     public CreateNoteHandlerTests() =>
-        _sut = new CreateNoteHandler(_context, new MockTimeProvider { Now = Now });
+        _sut = new CreateNoteHandler(_context, new FakeTimeProvider(Now));
 
     [Fact]
     public async Task Handle_ShouldCreateNote_WhenAllConditionsAreSatisfied()
