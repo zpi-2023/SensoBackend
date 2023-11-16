@@ -6,7 +6,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 
-public sealed class GetEncodedSeniorIdHandlerTests
+public sealed class GetEncodedSeniorIdHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
 
@@ -20,13 +20,18 @@ public sealed class GetEncodedSeniorIdHandlerTests
             )
         );
 
+    public void Dispose() => _context.Dispose();
+
     [Fact]
     public async Task Handle_ShouldThrow_WhenNoSeniorProfileExists()
     {
         var account = await _context.SetUpAccount();
 
         var action = async () =>
-            await _sut.Handle(new GetEncodedSeniorIdRequest(account.Id), CancellationToken.None);
+            await _sut.Handle(
+                new GetEncodedSeniorIdRequest { AccountId = account.Id },
+                CancellationToken.None
+            );
 
         await action.Should().ThrowAsync<SeniorNotFoundException>();
     }
@@ -38,7 +43,7 @@ public sealed class GetEncodedSeniorIdHandlerTests
         await _context.SetUpSeniorProfile(account);
 
         var dto = await _sut.Handle(
-            new GetEncodedSeniorIdRequest(account.Id),
+            new GetEncodedSeniorIdRequest { AccountId = account.Id },
             CancellationToken.None
         );
 

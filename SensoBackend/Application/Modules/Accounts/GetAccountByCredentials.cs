@@ -8,8 +8,10 @@ using System.Security.Authentication;
 
 namespace SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
 
-public sealed record GetAccountByCredentialsRequest(GetAccountByCredentialsDto Dto)
-    : IRequest<AccountDto>;
+public sealed record GetAccountByCredentialsRequest : IRequest<AccountDto>
+{
+    public required GetAccountByCredentialsDto Dto;
+}
 
 [UsedImplicitly]
 public sealed class GetAccountByCredentialsHandler

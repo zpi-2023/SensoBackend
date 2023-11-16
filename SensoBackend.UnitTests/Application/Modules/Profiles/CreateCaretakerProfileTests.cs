@@ -9,7 +9,7 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Profiles;
 
-public sealed class CreateCaretakerProfileHandlerTests
+public sealed class CreateCaretakerProfileHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly ITimeProvider _timeProvider = new MockTimeProvider
@@ -24,6 +24,8 @@ public sealed class CreateCaretakerProfileHandlerTests
         _seniorIdRepo = new SeniorIdRepo(_timeProvider);
         _sut = new CreateCaretakerProfileHandler(_context, _seniorIdRepo);
     }
+
+    public void Dispose() => _context.Dispose();
 
     private int SetUpHash(Account account)
     {

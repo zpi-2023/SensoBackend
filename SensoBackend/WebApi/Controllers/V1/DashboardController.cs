@@ -23,7 +23,7 @@ public sealed class DashboardController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Get([FromRoute] int seniorId) =>
-        Ok(await _mediator.Send(new GetDashboardRequest(seniorId)));
+        Ok(await _mediator.Send(new GetDashboardRequest { SeniorId = seniorId }));
 
     [HasPermission(Permission.ManageDashboard)]
     [HttpPut("{seniorId}")]
@@ -32,7 +32,7 @@ public sealed class DashboardController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Put([FromRoute] int seniorId, DashboardDto dto)
     {
-        await _mediator.Send(new UpdateDashboardRequest(seniorId, dto));
+        await _mediator.Send(new UpdateDashboardRequest { SeniorId = seniorId, Dto = dto });
         return NoContent();
     }
 }

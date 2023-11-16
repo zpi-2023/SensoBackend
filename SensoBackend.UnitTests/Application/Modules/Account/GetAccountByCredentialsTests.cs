@@ -33,7 +33,7 @@ public sealed class GetAccountByCredentialsTests : IDisposable
         };
 
         var result = await _sut.Handle(
-            new GetAccountByCredentialsRequest(dto),
+            new GetAccountByCredentialsRequest { Dto = dto },
             CancellationToken.None
         );
 
@@ -58,7 +58,10 @@ public sealed class GetAccountByCredentialsTests : IDisposable
         var dto = Generators.GetAccountByCredentialsDto.Generate();
 
         var act = async () =>
-            await _sut.Handle(new GetAccountByCredentialsRequest(dto), CancellationToken.None);
+            await _sut.Handle(
+                new GetAccountByCredentialsRequest { Dto = dto },
+                CancellationToken.None
+            );
 
         await act.Should().ThrowAsync<InvalidCredentialException>();
     }
@@ -81,7 +84,10 @@ public sealed class GetAccountByCredentialsTests : IDisposable
         };
 
         var act = async () =>
-            await _sut.Handle(new GetAccountByCredentialsRequest(dto), CancellationToken.None);
+            await _sut.Handle(
+                new GetAccountByCredentialsRequest { Dto = dto },
+                CancellationToken.None
+            );
 
         await act.Should().ThrowAsync<InvalidCredentialException>();
     }

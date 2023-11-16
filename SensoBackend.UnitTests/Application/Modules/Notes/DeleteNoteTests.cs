@@ -6,12 +6,14 @@ using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Notes;
 
-public sealed class DeleteNoteHandlerTests
+public sealed class DeleteNoteHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly DeleteNoteHandler _sut;
 
     public DeleteNoteHandlerTests() => _sut = new DeleteNoteHandler(_context);
+
+    public void Dispose() => _context.Dispose();
 
     [Fact]
     public async Task Handle_ShouldDeleteNote_WhenAllConditionsAreSatisfied()

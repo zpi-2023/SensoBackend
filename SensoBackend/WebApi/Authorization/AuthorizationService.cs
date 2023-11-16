@@ -20,13 +20,15 @@ public class AuthorizationService : IAuthorizationService
     public async Task<Role> GetRoleAsync(int accountId)
     {
         var dto = new GetAccountByIdDto { Id = accountId };
-        var account = await _mediator.Send(new GetAccountByIdRequest(dto));
+        var account = await _mediator.Send(new GetAccountByIdRequest { Dto = dto });
         return account.Role;
     }
 
     public async Task<List<ProfileInfo>> GetProfilesByAccountId(int accountId)
     {
-        var profiles = await _mediator.Send(new GetListOfProfilesByAccountIdRequest(accountId));
+        var profiles = await _mediator.Send(
+            new GetListOfProfilesByAccountIdRequest { AccountId = accountId }
+        );
         return profiles;
     }
 }

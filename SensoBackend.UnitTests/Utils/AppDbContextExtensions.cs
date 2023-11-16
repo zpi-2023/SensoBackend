@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.UnitTests.Utils;
@@ -73,6 +74,35 @@ internal static class AppDbContextExtensions
         await context.Notes.AddAsync(note);
         await context.SaveChangesAsync();
         return note;
+    }
+
+    public static async Task<LeaderboardEntry> SetupLeaderboardEntry(
+        this AppDbContext context,
+        Game game,
+        Account account,
+        int score
+    )
+    {
+        var leaderboardEntry = new LeaderboardEntry
+        {
+            Id = default,
+            AccountId = account.Id,
+            Game = game,
+            Score = score
+        };
+        await context.LeaderboardEntries.AddAsync(leaderboardEntry);
+        await context.SaveChangesAsync();
+        return leaderboardEntry;
+    }
+
+    public static async Task<LeaderboardEntry> SetupLeaderboardEntry(
+        this AppDbContext context,
+        Game game,
+        int score
+    )
+    {
+        var account = await context.SetUpAccount();
+        return await context.SetupLeaderboardEntry(game, account, score);
     }
 
     public static async Task<Medication> SetUpMedication(this AppDbContext context)

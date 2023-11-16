@@ -23,7 +23,7 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
         await _context.SaveChangesAsync();
 
         await _sut.Handle(
-            new DeleteSeniorProfileRequest(profile.AccountId),
+            new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
             CancellationToken.None
         );
 
@@ -39,7 +39,7 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
 
         var act = async () =>
             await _sut.Handle(
-                new DeleteSeniorProfileRequest(profile.AccountId),
+                new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
                 CancellationToken.None
             );
 
@@ -59,7 +59,7 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
 
         var act = async () =>
             await _sut.Handle(
-                new DeleteSeniorProfileRequest(profile.AccountId),
+                new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
                 CancellationToken.None
             );
 
