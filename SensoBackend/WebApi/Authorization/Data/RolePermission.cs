@@ -11,7 +11,8 @@ public static class RolePermission
             Permission.ManageDashboard,
             Permission.ReadNotes,
             Permission.MutateNotes,
-            Permission.ManageGames
+            Permission.ManageGames,
+            Permission.ManageReminders
         };
 
     private static HashSet<Permission> AdminPermissions => Enum.GetValues<Permission>().ToHashSet();

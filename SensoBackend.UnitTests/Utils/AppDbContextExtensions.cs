@@ -104,4 +104,115 @@ internal static class AppDbContextExtensions
         var account = await context.SetUpAccount();
         return await context.SetupLeaderboardEntry(game, account, score);
     }
+
+    public static async Task<Medication> SetUpMedication(this AppDbContext context)
+    {
+        var medication = new Medication
+        {
+            Id = default,
+            Name = "medication",
+            AmountInPackage = 3,
+            AmountUnit = "g"
+        };
+
+        await context.Medications.AddAsync(medication);
+        await context.SaveChangesAsync();
+        return medication;
+    }
+
+    public static async Task<Medication> SetUpMedication(
+        this AppDbContext context,
+        string medicationName
+    )
+    {
+        var medication = new Medication
+        {
+            Id = default,
+            Name = medicationName,
+            AmountInPackage = 3,
+            AmountUnit = "g"
+        };
+
+        await context.Medications.AddAsync(medication);
+        await context.SaveChangesAsync();
+        return medication;
+    }
+
+    public static async Task<Reminder> SetUpReminder(
+        this AppDbContext context,
+        Account userAccount,
+        Account seniorAccount,
+        Medication medication
+    )
+    {
+        if (
+            !await context.Profiles.AnyAsync(
+                p => p.AccountId == userAccount.Id && p.SeniorId == seniorAccount.Id
+            )
+        )
+        {
+            throw new ArgumentException(
+                "Account must have a profile related to the given senior",
+                nameof(seniorAccount)
+            );
+        }
+
+        var reminder = new Reminder
+        {
+            Id = default,
+            SeniorId = seniorAccount.Id,
+            MedicationId = medication.Id,
+            IsActive = true,
+            AmountPerIntake = 1,
+            AmountOwned = 3,
+            Cron = "1 1 1 * * *",
+            Description = "Description"
+        };
+        await context.Reminders.AddAsync(reminder);
+        await context.SaveChangesAsync();
+
+        return reminder;
+    }
+
+    public static async Task<IntakeRecord> SetUpIntake(
+        this AppDbContext context,
+        Account userAccount,
+        Account seniorAccount
+    )
+    {
+        var medication = await context.SetUpMedication();
+        var reminder = await context.SetUpReminder(userAccount, seniorAccount, medication);
+
+        var intake = new IntakeRecord
+        {
+            Id = default,
+            ReminderId = reminder.Id,
+            TakenAt = new DateTimeOffset(2006, 10, 13, 10, 11, 15, TimeSpan.Zero),
+            AmountTaken = 1,
+        };
+
+        await context.IntakeRecords.AddAsync(intake);
+        await context.SaveChangesAsync();
+
+        return intake;
+    }
+
+    public static async Task<IntakeRecord> SetUpIntakeForReminder(
+        this AppDbContext context,
+        Reminder reminder
+    )
+    {
+        var intake = new IntakeRecord
+        {
+            Id = default,
+            ReminderId = reminder.Id,
+            TakenAt = new DateTimeOffset(2006, 10, 13, 10, 11, 15, TimeSpan.Zero),
+            AmountTaken = 1,
+        };
+
+        await context.IntakeRecords.AddAsync(intake);
+        await context.SaveChangesAsync();
+
+        return intake;
+    }
 }

@@ -1,4 +1,4 @@
-namespace SensoBackend.Application.Common.Pagination;
+﻿namespace SensoBackend.Application.Common.Pagination;
 
 public sealed record PaginatedDto<T>
 {
