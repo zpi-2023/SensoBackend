@@ -1,6 +1,8 @@
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Games;
 using SensoBackend.Application.Modules.Games.Contracts;
+using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
 
@@ -11,7 +13,8 @@ public sealed class TryUpdateUserBestScoreHandlerTests : IDisposable
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly TryUpdateUserBestScoreHandler _sut;
 
-    private readonly string _validGameName = "wordle";
+    private static readonly string _validGameName = "wordle";
+    private static readonly Game _game = Game.Wordle;
 
     public TryUpdateUserBestScoreHandlerTests() =>
         _sut = new TryUpdateUserBestScoreHandler(_context);
@@ -21,25 +24,72 @@ public sealed class TryUpdateUserBestScoreHandlerTests : IDisposable
     [Fact]
     public async Task Handle_ShouldUpdateUserBestScore()
     {
-        // TODO
+        var account = await _context.SetUpAccount();
+        var leaderboardEntry = await _context.SetupLeaderboardEntry(_game, account, 1);
+        var newBestScoreDto = new ScoreDto { Score = leaderboardEntry.Score + 1 };
+
+        await _sut.Handle(
+            new TryUpdateUserBestScoreRequest
+            {
+                AccountId = account.Id,
+                GameName = _validGameName,
+                Dto = newBestScoreDto
+            },
+            CancellationToken.None
+        );
+
+        var updatedLeaderboardEntry = await _context.LeaderboardEntries.FirstAsync(
+            l => l.AccountId == account.Id && l.Game == _game
+        );
+
+        updatedLeaderboardEntry.Score.Should().Be(newBestScoreDto.Score);
     }
 
     [Fact]
     public async Task Handle_ShouldCreateUserBestScore_WhenScoreDoesNotExists()
     {
-        // TODO
+        var account = await _context.SetUpAccount();
+        var newBestScoreDto = new ScoreDto { Score = 1 };
+
+        await _sut.Handle(
+            new TryUpdateUserBestScoreRequest
+            {
+                AccountId = account.Id,
+                GameName = _validGameName,
+                Dto = newBestScoreDto
+            },
+            CancellationToken.None
+        );
+
+        var updatedLeaderboardEntry = await _context.LeaderboardEntries.FirstAsync(
+            l => l.AccountId == account.Id && l.Game == _game
+        );
+
+        updatedLeaderboardEntry.Score.Should().Be(newBestScoreDto.Score);
     }
 
     [Fact]
     public async Task Handle_ShouldNotUpdateUserBestScore_WhenScoreIsLowerThanCurrentBestScore()
     {
-        // TODO
-    }
+        var account = await _context.SetUpAccount();
+        var leaderboardEntry = await _context.SetupLeaderboardEntry(_game, account, 2);
+        var newBestScoreDto = new ScoreDto { Score = leaderboardEntry.Score - 1 };
 
-    [Fact]
-    public async Task Handle_ShouldNotUpdateUserBestScore_WhenScoreIsEqualToCurrentBestScore()
-    {
-        // TODO
+        await _sut.Handle(
+            new TryUpdateUserBestScoreRequest
+            {
+                AccountId = account.Id,
+                GameName = _validGameName,
+                Dto = newBestScoreDto
+            },
+            CancellationToken.None
+        );
+
+        var updatedLeaderboardEntry = await _context.LeaderboardEntries.FirstAsync(
+            l => l.AccountId == account.Id && l.Game == _game
+        );
+
+        updatedLeaderboardEntry.Score.Should().Be(leaderboardEntry.Score);
     }
 }
 
