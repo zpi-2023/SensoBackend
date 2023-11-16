@@ -10,6 +10,6 @@ public enum Permission
     ManageDashboard,
     ReadNotes,
     MutateNotes,
-    ManageGames
+    ManageGames,
     ManageReminders
 }

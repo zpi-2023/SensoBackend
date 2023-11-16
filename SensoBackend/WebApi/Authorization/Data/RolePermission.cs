@@ -11,8 +11,7 @@ public static class RolePermission
             Permission.ManageDashboard,
             Permission.ReadNotes,
             Permission.MutateNotes,
-            Permission.ManageGames
-            Permission.MutateNotes,
+            Permission.ManageGames,
             Permission.ManageReminders
         };
 
