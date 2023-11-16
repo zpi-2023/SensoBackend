@@ -33,7 +33,8 @@ public sealed class ReadLeaderboardHandler
     {
         var game = GetGame.FromName(request.GameName);
 
-        var leaderboard = await _context.LeaderboardEntries
+        var leaderboard = await _context
+            .LeaderboardEntries
             .Where(l => l.Game == game)
             .OrderByDescending(l => l.Score)
             .Paged(request.Pagination)

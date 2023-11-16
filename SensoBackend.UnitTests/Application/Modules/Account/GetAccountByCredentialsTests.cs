@@ -1,8 +1,8 @@
+using System.Security.Authentication;
 using Mapster;
 using SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
-using System.Security.Authentication;
 
 namespace SensoBackend.Tests.Application.Modules.Accounts.GetAccountByCredentials;
 
@@ -47,7 +47,8 @@ public sealed class GetAccountByCredentialsTests : IDisposable
         result.DisplayName.Should().Be(expectedResult.DisplayName);
         result.CreatedAt.Should().BeCloseTo(expectedResult.CreatedAt, TimeSpan.FromSeconds(2));
         result.LastLoginAt.Should().BeCloseTo(expectedResult.LastLoginAt, TimeSpan.FromSeconds(2));
-        result.LastPasswordChangeAt
+        result
+            .LastPasswordChangeAt
             .Should()
             .BeCloseTo(expectedResult.LastPasswordChangeAt, TimeSpan.FromSeconds(2));
     }

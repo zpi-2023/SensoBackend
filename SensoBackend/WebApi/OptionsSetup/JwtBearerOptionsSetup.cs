@@ -1,8 +1,8 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SensoBackend.WebApi.Authentication;
-using System.Text;
 
 namespace SensoBackend.WebApi.OptionsSetup;
 

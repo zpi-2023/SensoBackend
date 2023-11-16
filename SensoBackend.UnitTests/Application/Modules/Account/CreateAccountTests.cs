@@ -1,6 +1,7 @@
 using FluentValidation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Time.Testing;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
@@ -15,7 +16,7 @@ public sealed class CreateAccountHandlerTests : IDisposable
     private readonly CreateAccountHandler _sut;
 
     public CreateAccountHandlerTests() =>
-        _sut = new CreateAccountHandler(_context, new MockTimeProvider { Now = Now });
+        _sut = new CreateAccountHandler(_context, new FakeTimeProvider(Now));
 
     public void Dispose() => _context.Dispose();
 

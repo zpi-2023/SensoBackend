@@ -1,20 +1,20 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.WebApi.Authentication;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace SensoBackend.WebApi.Authenticaion;
 
 public sealed class JwtProvider : IJwtProvider
 {
     private readonly JwtOptions _options;
-    private readonly ITimeProvider _timeProvider;
+    private readonly TimeProvider _timeProvider;
 
-    public JwtProvider(IOptions<JwtOptions> options, ITimeProvider timeProvider)
+    public JwtProvider(IOptions<JwtOptions> options, TimeProvider timeProvider)
     {
         _options = options.Value;
         _timeProvider = timeProvider;
@@ -38,7 +38,7 @@ public sealed class JwtProvider : IJwtProvider
             _options.Audience,
             claims,
             null,
-            _timeProvider.Now.UtcDateTime.AddDays(7),
+            _timeProvider.GetUtcNow().UtcDateTime.AddDays(7),
             signingCredentials
         );
 

@@ -1,5 +1,5 @@
+using Microsoft.Extensions.Time.Testing;
 using SensoBackend.Application.Modules.Profiles.Utils;
-using SensoBackend.UnitTests.Utils;
 
 namespace SensoBackend.UnitTests.Application.Modules.Profiles.Utils;
 
@@ -17,7 +17,7 @@ public sealed class SeniorIdRepoTests
     [Fact]
     public void Get_ShouldReturnData_WhenDataInRepoAndNotExpired()
     {
-        var sut = new SeniorIdRepo(new MockTimeProvider { Now = MockNow });
+        var sut = new SeniorIdRepo(new FakeTimeProvider(MockNow));
         var hash = sut.AssignHash(MockSeniorData);
 
         var seniorData = sut.Get(hash);
@@ -28,7 +28,7 @@ public sealed class SeniorIdRepoTests
     [Fact]
     public void Get_ShouldReturnNull_WhenHashIsInvalid()
     {
-        var sut = new SeniorIdRepo(new MockTimeProvider { Now = MockNow });
+        var sut = new SeniorIdRepo(new FakeTimeProvider(MockNow));
 
         var seniorData = sut.Get(1234);
 
@@ -38,11 +38,11 @@ public sealed class SeniorIdRepoTests
     [Fact]
     public void Get_ShouldReturnNull_WhenTheHashHasExpired()
     {
-        var timeProvider = new MockTimeProvider { Now = MockNow };
+        var timeProvider = new FakeTimeProvider(MockNow);
         var sut = new SeniorIdRepo(timeProvider);
         var hash = sut.AssignHash(MockSeniorData);
 
-        timeProvider.Now = timeProvider.Now.AddMinutes(25);
+        timeProvider.Advance(TimeSpan.FromMinutes(25));
         var seniorData = sut.Get(hash);
 
         seniorData.Should().Be(null);

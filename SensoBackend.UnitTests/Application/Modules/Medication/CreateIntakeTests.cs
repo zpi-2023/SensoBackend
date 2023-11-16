@@ -34,7 +34,8 @@ public sealed class CreateIntakeTests : IDisposable
             CancellationToken.None
         );
 
-        _context.IntakeRecords
+        _context
+            .IntakeRecords
             .Any(ir => ir.Id == intake.Id && ir.Reminder == reminder)
             .Should()
             .BeTrue();

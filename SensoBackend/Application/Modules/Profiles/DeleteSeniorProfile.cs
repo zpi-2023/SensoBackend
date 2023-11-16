@@ -31,18 +31,19 @@ public sealed class DeleteSeniorProfileHandler : IRequestHandler<DeleteSeniorPro
     public async Task Handle(DeleteSeniorProfileRequest request, CancellationToken ct)
     {
         var profile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == request.AccountId,
-                ct
-            )
+            await _context
+                .Profiles
+                .FirstOrDefaultAsync(
+                    p => p.AccountId == request.AccountId && p.SeniorId == request.AccountId,
+                    ct
+                )
             ?? throw new ProfileNotFoundException(
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.AccountId} was not found"
             );
 
-        var hasCaretakerProfiles = await _context.Profiles.AnyAsync(
-            p => p.SeniorId == request.AccountId && p.AccountId != request.AccountId,
-            ct
-        );
+        var hasCaretakerProfiles = await _context
+            .Profiles
+            .AnyAsync(p => p.SeniorId == request.AccountId && p.AccountId != request.AccountId, ct);
 
         if (hasCaretakerProfiles)
         {

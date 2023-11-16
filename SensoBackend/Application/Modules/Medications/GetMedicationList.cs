@@ -28,7 +28,8 @@ public sealed class GetMedicationListHandler
     {
         var searchTermLowerCase = request.SearchTerm.ToLower();
 
-        var medicationList = await _context.Medications
+        var medicationList = await _context
+            .Medications
             .Where(m => m.Name.ToLower().Contains(searchTermLowerCase))
             .Select(m => m.Adapt<MedicationDto>())
             .ToListAsync(ct);

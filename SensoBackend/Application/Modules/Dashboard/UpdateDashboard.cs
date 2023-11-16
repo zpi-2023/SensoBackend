@@ -39,14 +39,18 @@ public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequ
 
     public async Task Handle(UpdateDashboardRequest request, CancellationToken ct)
     {
-        var gadgetIds = request.Dto.Gadgets.Select(
-            (name, position) =>
-                (Enum.GetValues<Gadget>().First(g => g.ToString("f") == name), position)
-        );
+        var gadgetIds = request
+            .Dto
+            .Gadgets
+            .Select(
+                (name, position) =>
+                    (Enum.GetValues<Gadget>().First(g => g.ToString("f") == name), position)
+            );
 
         using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
-        var oldItems = await _context.DashboardItems
+        var oldItems = await _context
+            .DashboardItems
             .Where(di => di.AccountId == request.SeniorId)
             .ToListAsync(ct);
 
@@ -54,16 +58,18 @@ public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequ
 
         foreach (var (gadget, position) in gadgetIds)
         {
-            await _context.DashboardItems.AddAsync(
-                new DashboardItem
-                {
-                    Id = default,
-                    AccountId = request.SeniorId,
-                    Gadget = gadget,
-                    Position = position
-                },
-                ct
-            );
+            await _context
+                .DashboardItems
+                .AddAsync(
+                    new DashboardItem
+                    {
+                        Id = default,
+                        AccountId = request.SeniorId,
+                        Gadget = gadget,
+                        Position = position
+                    },
+                    ct
+                );
         }
 
         await _context.SaveChangesAsync(ct);

@@ -1,11 +1,11 @@
-using FluentValidation.Results;
+using System.Security.Authentication;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ExceptionExtensions;
-using SensoBackend.WebApi.Middlewares;
-using System.Security.Authentication;
 using SensoBackend.Domain.Exceptions;
+using SensoBackend.WebApi.Middlewares;
 
 namespace SensoBackend.Tests.WebApi.Middlewares;
 

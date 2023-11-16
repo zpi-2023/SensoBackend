@@ -54,9 +54,9 @@ internal static class AppDbContextExtensions
     )
     {
         if (
-            !await context.Profiles.AnyAsync(
-                p => p.AccountId == account.Id && p.SeniorId == account.Id
-            )
+            !await context
+                .Profiles
+                .AnyAsync(p => p.AccountId == account.Id && p.SeniorId == account.Id)
         )
         {
             throw new ArgumentException("Account must have a senior profile", nameof(account));
@@ -146,9 +146,9 @@ internal static class AppDbContextExtensions
     )
     {
         if (
-            !await context.Profiles.AnyAsync(
-                p => p.AccountId == userAccount.Id && p.SeniorId == seniorAccount.Id
-            )
+            !await context
+                .Profiles
+                .AnyAsync(p => p.AccountId == userAccount.Id && p.SeniorId == seniorAccount.Id)
         )
         {
             throw new ArgumentException(

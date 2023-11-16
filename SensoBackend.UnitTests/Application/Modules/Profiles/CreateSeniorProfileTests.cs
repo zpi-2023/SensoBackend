@@ -43,7 +43,8 @@ public sealed class CreateSeniorProfileHandlerTests : IDisposable
             CancellationToken.None
         );
 
-        _context.Profiles
+        _context
+            .Profiles
             .Any(p => p.AccountId == account.Id && p.SeniorId == account.Id)
             .Should()
             .BeTrue();

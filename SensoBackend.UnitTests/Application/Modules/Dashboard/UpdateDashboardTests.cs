@@ -22,20 +22,22 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
     {
         var account = Generators.Account.Generate();
         await _context.Accounts.AddAsync(account);
-        await _context.DashboardItems.AddRangeAsync(
-            Enumerable
-                .Range(0, 3)
-                .Select(
-                    idx =>
-                        new DashboardItem
-                        {
-                            Id = 0,
-                            AccountId = account.Id,
-                            Gadget = (Gadget)idx,
-                            Position = idx
-                        }
-                )
-        );
+        await _context
+            .DashboardItems
+            .AddRangeAsync(
+                Enumerable
+                    .Range(0, 3)
+                    .Select(
+                        idx =>
+                            new DashboardItem
+                            {
+                                Id = 0,
+                                AccountId = account.Id,
+                                Gadget = (Gadget)idx,
+                                Position = idx
+                            }
+                    )
+            );
         await _context.SaveChangesAsync();
 
         await _sut.Handle(
@@ -61,20 +63,22 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
             ((Gadget)0).ToString("f")
         };
         await _context.Accounts.AddAsync(account);
-        await _context.DashboardItems.AddRangeAsync(
-            Enumerable
-                .Range(0, 3)
-                .Select(
-                    idx =>
-                        new DashboardItem
-                        {
-                            Id = 0,
-                            AccountId = account.Id,
-                            Gadget = (Gadget)idx,
-                            Position = idx
-                        }
-                )
-        );
+        await _context
+            .DashboardItems
+            .AddRangeAsync(
+                Enumerable
+                    .Range(0, 3)
+                    .Select(
+                        idx =>
+                            new DashboardItem
+                            {
+                                Id = 0,
+                                AccountId = account.Id,
+                                Gadget = (Gadget)idx,
+                                Position = idx
+                            }
+                    )
+            );
         await _context.SaveChangesAsync();
 
         await _sut.Handle(
@@ -86,7 +90,8 @@ public sealed class UpdateDashboardHandlerTests : IDisposable
             CancellationToken.None
         );
 
-        _context.DashboardItems
+        _context
+            .DashboardItems
             .OrderBy(d => d.Position)
             .Select(d => d.Gadget!.ToString("f"))
             .Should()

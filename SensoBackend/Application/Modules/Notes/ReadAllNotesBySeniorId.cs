@@ -28,7 +28,8 @@ public sealed class ReadAllNotesBySeniorIdHandler
         CancellationToken ct
     )
     {
-        var notes = await _context.Notes
+        var notes = await _context
+            .Notes
             .Where(IsNoteVisible(request))
             .OrderByDescending(n => n.CreatedAt)
             .ToListAsync(ct);

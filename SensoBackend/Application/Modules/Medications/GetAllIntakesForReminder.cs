@@ -38,7 +38,8 @@ public sealed class GetAllIntakesForReminderHandler
             ct: ct
         );
 
-        var intakes = await _context.IntakeRecords
+        var intakes = await _context
+            .IntakeRecords
             .Where(ir => ir.ReminderId == request.ReminderId)
             .OrderBy(ir => ir.Id)
             .Paged(request.PaginationQuery)

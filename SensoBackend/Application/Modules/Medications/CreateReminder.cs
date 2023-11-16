@@ -53,7 +53,8 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
 
     public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken ct)
     {
-        bool validProfileExists = await _context.Profiles
+        bool validProfileExists = await _context
+            .Profiles
             .Where(p => p.SeniorId == request.SeniorId && p.AccountId == request.AccountId)
             .AnyAsync(ct);
 
@@ -64,7 +65,8 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
 
         Medication medication;
 
-        var medicationsFromDb = await _context.Medications
+        var medicationsFromDb = await _context
+            .Medications
             .Where(
                 m =>
                     m.Name == request.Dto.MedicationName

@@ -32,11 +32,14 @@ public sealed class GetAllIntakesForSeniorHandler
     )
     {
         var neededProfile =
-            await _context.Profiles.FirstOrDefaultAsync(
-                p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
-            ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
+            await _context
+                .Profiles
+                .FirstOrDefaultAsync(
+                    p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
+                ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
 
-        var intakes = await _context.IntakeRecords
+        var intakes = await _context
+            .IntakeRecords
             .Include(ir => ir.Reminder)
             .Where(ir => ir.Reminder!.SeniorId == request.SeniorId)
             .OrderBy(ir => ir.Id)

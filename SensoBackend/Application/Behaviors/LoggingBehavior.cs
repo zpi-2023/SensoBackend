@@ -1,5 +1,5 @@
-using MediatR;
 using System.Diagnostics;
+using MediatR;
 
 namespace SensoBackend.Application.Behaviors;
 

@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
@@ -44,9 +43,9 @@ public sealed class CreateAccountValidator : AbstractValidator<CreateAccountRequ
 public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
 {
     private readonly AppDbContext _context;
-    private readonly ITimeProvider _timeProvider;
+    private readonly TimeProvider _timeProvider;
 
-    public CreateAccountHandler(AppDbContext context, ITimeProvider timeProvider)
+    public CreateAccountHandler(AppDbContext context, TimeProvider timeProvider)
     {
         _context = context;
         _timeProvider = timeProvider;
@@ -59,7 +58,7 @@ public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
             throw new ValidationException("Email is already taken");
         }
 
-        var now = _timeProvider.Now;
+        var now = _timeProvider.GetUtcNow();
 
         var account = request.Dto.Adapt<Account>();
         account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);

@@ -1,8 +1,8 @@
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SensoBackend.Application.Modules.Healthcheck.Contracts;
 using SensoBackend.Application.Modules.Healthcheck;
+using SensoBackend.Application.Modules.Healthcheck.Contracts;
 
 namespace SensoBackend.WebApi.Controllers.V1;
 

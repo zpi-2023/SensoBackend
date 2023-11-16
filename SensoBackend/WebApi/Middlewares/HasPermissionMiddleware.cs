@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using System.Diagnostics;
+using System.Net;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http.Features;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Domain.Enums;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
-using System.Diagnostics;
-using System.Net;
-using System.Security.Claims;
 
 namespace SensoBackend.WebApi.Middlewares;
 
@@ -93,11 +93,16 @@ public class HasPermissionMiddleware
     {
         _logger.LogInformation("Processing the request through the HasPermissionMiddleware...");
 
-        var attribute = context.Features
+        var attribute = context
+            .Features
             .Get<IEndpointFeature>()
-            ?.Endpoint?.Metadata.GetMetadata<HasPermissionAttribute>();
+            ?.Endpoint
+            ?.Metadata
+            .GetMetadata<HasPermissionAttribute>();
         var seniorIdParam = context.Request.RouteValues["seniorId"]?.ToString();
-        var accountIdClaim = context.User.Claims
+        var accountIdClaim = context
+            .User
+            .Claims
             .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
             ?.Value;
 
