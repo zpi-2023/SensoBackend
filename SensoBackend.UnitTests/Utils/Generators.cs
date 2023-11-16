@@ -1,5 +1,4 @@
 using Bogus;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Dashboard.Contracts;
 using SensoBackend.Application.Modules.Medications.Contracts;

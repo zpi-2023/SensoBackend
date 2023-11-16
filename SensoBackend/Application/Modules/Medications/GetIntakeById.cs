@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using MediatR;
 using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
