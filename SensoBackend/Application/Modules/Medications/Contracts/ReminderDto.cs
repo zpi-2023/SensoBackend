@@ -13,7 +13,6 @@ public sealed record ReminderDto
     [Required]
     public required string MedicationName { get; init; }
 
-    [Required]
     public float? MedicationAmountInPackage { get; init; }
 
     [Required]
@@ -22,15 +21,11 @@ public sealed record ReminderDto
     [Required]
     public required float AmountPerIntake { get; init; }
 
-    [Required]
     public float? AmountOwned { get; init; }
 
-    [Required]
     public string? AmountUnit { get; init; }
 
-    [Required]
     public string? Cron { get; init; }
 
-    [Required]
     public string? Description { get; init; }
 }

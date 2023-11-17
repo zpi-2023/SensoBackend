@@ -19,7 +19,10 @@ public sealed record AccountDto
 
     [Required]
     public required bool Verified { get; init; }
+
     public string? PhoneNumber { get; init; }
+
+    [Required]
     public required string DisplayName { get; init; }
 
     [Required]

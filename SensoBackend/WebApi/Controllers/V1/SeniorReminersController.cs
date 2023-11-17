@@ -10,7 +10,7 @@ using SensoBackend.WebApi.Authorization.Data;
 namespace SensoBackend.WebApi.Controllers.V1;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/reminers/senior")]
+[Route("api/v{version:apiVersion}/reminders/senior")]
 [ApiVersion("1.0")]
 public sealed class SeniorRemindersController : ControllerBase
 {

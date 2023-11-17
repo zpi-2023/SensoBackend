@@ -10,6 +10,5 @@ public sealed record UpsertNoteDto
     [Required]
     public required bool IsPrivate { get; init; }
 
-    [Required]
     public string? Title { get; init; }
 }
