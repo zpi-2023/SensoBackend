@@ -11,6 +11,9 @@ public enum Gadget
     toggleLanguage,
     trackMedication,
     playGames,
+    playMemoryGame,
+    playSudokuGame,
+    playWordleGame,
     manageNotes,
     quickCreateNote
 }
