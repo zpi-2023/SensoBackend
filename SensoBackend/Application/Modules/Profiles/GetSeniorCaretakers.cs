@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 using Mapster;
 using MediatR;
@@ -49,9 +48,9 @@ public sealed class GetSeniorCaretakersHandler
                         AccountId = p.AccountId,
                         SeniorId = p.SeniorId,
                         Type = "caretaker",
-                        DisplayName = p.Account.DisplayName,
+                        DisplayName = p.Account!.DisplayName,
                         Email = p.Account.Email,
-                        PhoneNumber = p.Account.PhoneNumber
+                        PhoneNumber = p.Account!.PhoneNumber
                     }
             )
             .ToListAsync(ct);

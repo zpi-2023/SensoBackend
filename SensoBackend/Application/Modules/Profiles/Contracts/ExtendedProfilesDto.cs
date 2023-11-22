@@ -19,8 +19,7 @@ public class ExtendedProfileDto
     [Required]
     public required string Email { get; init; }
 
-    [Required]
-    public required string PhoneNumber { get; init; }
+    public string? PhoneNumber { get; init; }
 }
 
 public class ExtendedProfilesDto
