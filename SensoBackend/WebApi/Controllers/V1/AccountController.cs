@@ -90,6 +90,20 @@ public sealed class AccountController : ControllerBase
     }
 
     [HasPermission(Permission.ManageProfiles)]
+    [HttpGet("profiles/senior/caretakers")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ExtendedProfilesDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetSeniorCaretakers()
+    {
+        var accountId = this.GetAccountId();
+        var caretakers = await _mediator.Send(
+            new GetSeniorCaretakersRequest { AccountId = accountId }
+        );
+        return Ok(caretakers);
+    }
+
+    [HasPermission(Permission.ManageProfiles)]
     [HttpPost("profiles/caretaker")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProfileDisplayDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

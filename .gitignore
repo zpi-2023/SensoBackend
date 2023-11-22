@@ -6,3 +6,5 @@ riderModule.iml
 SensoBackend.csproj.user
 SensoBackend.sln.DotSettings.user
 .vs/
+.vscode/
+.fake
