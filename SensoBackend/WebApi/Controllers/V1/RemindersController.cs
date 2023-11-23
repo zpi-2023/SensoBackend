@@ -12,12 +12,8 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public sealed class RemindersController : ControllerBase
+public sealed class RemindersController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public RemindersController(IMediator mediator) => _mediator = mediator;
-
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("{reminderId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReminderDto))]
@@ -28,7 +24,7 @@ public sealed class RemindersController : ControllerBase
     {
         var accountId = this.GetAccountId();
         var request = new GetReminderByIdRequest { AccountId = accountId, ReminderId = reminderId };
-        return Ok(await _mediator.Send(request));
+        return Ok(await mediator.Send(request));
     }
 
     [HasPermission(Permission.ManageReminders)]
@@ -46,7 +42,7 @@ public sealed class RemindersController : ControllerBase
             ReminderId = reminderId,
             Dto = dto
         };
-        return Ok(await _mediator.Send(request));
+        return Ok(await mediator.Send(request));
     }
 
     [HasPermission(Permission.ManageReminders)]
@@ -67,7 +63,7 @@ public sealed class RemindersController : ControllerBase
             ReminderId = reminderId,
             PaginationQuery = query
         };
-        return Ok(await _mediator.Send(request));
+        return Ok(await mediator.Send(request));
     }
 
     [HasPermission(Permission.ManageReminders)]
@@ -81,7 +77,7 @@ public sealed class RemindersController : ControllerBase
         var accountId = this.GetAccountId();
         var request = new DeleteReminderRequest { AccountId = accountId, ReminderId = reminderId };
 
-        await _mediator.Send(request);
+        await mediator.Send(request);
 
         return NoContent();
     }
@@ -102,7 +98,7 @@ public sealed class RemindersController : ControllerBase
             ReminderId = reminderId
         };
 
-        var intakeDto = await _mediator.Send(request);
+        var intakeDto = await mediator.Send(request);
 
         return CreatedAtAction(
             nameof(GetIntakeRecordById),
@@ -121,6 +117,6 @@ public sealed class RemindersController : ControllerBase
     {
         var accountId = this.GetAccountId();
         var request = new GetIntakeByIdRequest { AccountId = accountId, IntakeId = intakeId };
-        return Ok(await _mediator.Send(request));
+        return Ok(await mediator.Send(request));
     }
 }

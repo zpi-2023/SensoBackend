@@ -27,17 +27,9 @@ public sealed class CreateNoteValidator : AbstractValidator<CreateNoteRequest>
 }
 
 [UsedImplicitly]
-public sealed class CreateNoteHandler : IRequestHandler<CreateNoteRequest, NoteDto>
+public sealed class CreateNoteHandler(AppDbContext context, TimeProvider timeProvider)
+    : IRequestHandler<CreateNoteRequest, NoteDto>
 {
-    private readonly AppDbContext _context;
-    private readonly TimeProvider _timeProvider;
-
-    public CreateNoteHandler(AppDbContext context, TimeProvider timeProvider)
-    {
-        _context = context;
-        _timeProvider = timeProvider;
-    }
-
     public async Task<NoteDto> Handle(CreateNoteRequest request, CancellationToken ct)
     {
         await GuardHasSeniorProfileAsync(request.AccountId, ct);
@@ -47,13 +39,13 @@ public sealed class CreateNoteHandler : IRequestHandler<CreateNoteRequest, NoteD
             Id = default,
             AccountId = request.AccountId,
             Content = request.Dto.Content,
-            CreatedAt = _timeProvider.GetUtcNow(),
+            CreatedAt = timeProvider.GetUtcNow(),
             IsPrivate = request.Dto.IsPrivate,
             Title = request.Dto.Title,
         };
 
-        await _context.Notes.AddAsync(note, ct);
-        await _context.SaveChangesAsync(ct);
+        await context.Notes.AddAsync(note, ct);
+        await context.SaveChangesAsync(ct);
 
         return note.Adapt<NoteDto>();
     }
@@ -61,7 +53,7 @@ public sealed class CreateNoteHandler : IRequestHandler<CreateNoteRequest, NoteD
     private async Task GuardHasSeniorProfileAsync(int accountId, CancellationToken ct)
     {
         if (
-            !await _context
+            !await context
                 .Profiles
                 .AnyAsync(p => p.AccountId == accountId && p.AccountId == p.SeniorId, ct)
         )

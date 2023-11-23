@@ -22,16 +22,13 @@ public sealed class DeleteSeniorProfileValidator : AbstractValidator<DeleteSenio
 }
 
 [UsedImplicitly]
-public sealed class DeleteSeniorProfileHandler : IRequestHandler<DeleteSeniorProfileRequest>
+public sealed class DeleteSeniorProfileHandler(AppDbContext context)
+    : IRequestHandler<DeleteSeniorProfileRequest>
 {
-    private readonly AppDbContext _context;
-
-    public DeleteSeniorProfileHandler(AppDbContext context) => _context = context;
-
     public async Task Handle(DeleteSeniorProfileRequest request, CancellationToken ct)
     {
         var profile =
-            await _context
+            await context
                 .Profiles
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.AccountId,
@@ -41,7 +38,7 @@ public sealed class DeleteSeniorProfileHandler : IRequestHandler<DeleteSeniorPro
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.AccountId} was not found"
             );
 
-        var hasCaretakerProfiles = await _context
+        var hasCaretakerProfiles = await context
             .Profiles
             .AnyAsync(p => p.SeniorId == request.AccountId && p.AccountId != request.AccountId, ct);
 
@@ -52,7 +49,7 @@ public sealed class DeleteSeniorProfileHandler : IRequestHandler<DeleteSeniorPro
             );
         }
 
-        _context.Profiles.Remove(profile);
-        await _context.SaveChangesAsync(ct);
+        context.Profiles.Remove(profile);
+        await context.SaveChangesAsync(ct);
     }
 }

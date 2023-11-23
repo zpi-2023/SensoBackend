@@ -1,7 +1,3 @@
 namespace SensoBackend.Domain.Exceptions;
 
-public class ProfileNotFoundException : Exception
-{
-    public ProfileNotFoundException(string message)
-        : base(message) { }
-}
+public class ProfileNotFoundException(string message) : Exception(message) { }

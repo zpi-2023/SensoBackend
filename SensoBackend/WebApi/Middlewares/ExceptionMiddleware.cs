@@ -4,26 +4,17 @@ using SensoBackend.Domain.Exceptions;
 
 namespace SensoBackend.WebApi.Middlewares;
 
-public sealed class ExceptionMiddleware
+public sealed class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionMiddleware> _logger;
-
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
-
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Error during request processing.");
+            logger.LogError(exception, "Error during request processing.");
             context.Response.ContentType = "application/json";
             var noControlCharsExceptionMessage = new string(
                 exception.Message.Where(c => !char.IsControl(c)).ToArray()

@@ -30,17 +30,13 @@ public sealed class UpdateReminderValidator : AbstractValidator<UpdateReminderBy
 }
 
 [UsedImplicitly]
-public sealed class UpdateReminderByIdHandler
+public sealed class UpdateReminderByIdHandler(AppDbContext context)
     : IRequestHandler<UpdateReminderByIdRequest, ReminderDto>
 {
-    private readonly AppDbContext _context;
-
-    public UpdateReminderByIdHandler(AppDbContext context) => _context = context;
-
     public async Task<ReminderDto> Handle(UpdateReminderByIdRequest request, CancellationToken ct)
     {
         var reminder = await ReminderUtils.CheckReminderAndProfile(
-            _context,
+            context,
             request.AccountId,
             request.ReminderId,
             ct
@@ -50,8 +46,8 @@ public sealed class UpdateReminderByIdHandler
         reminder.AmountOwned = request.Dto.AmountOwned;
         reminder.Cron = request.Dto.Cron;
         reminder.Description = request.Dto.Description;
-        await _context.SaveChangesAsync(ct);
+        await context.SaveChangesAsync(ct);
 
-        return ReminderUtils.AdaptToDto(_context, reminder).Result;
+        return ReminderUtils.AdaptToDto(context, reminder).Result;
     }
 }

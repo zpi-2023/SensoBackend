@@ -17,31 +17,22 @@ public sealed record CreateSeniorProfileRequest : IRequest<ProfileDisplayDto>
 }
 
 [UsedImplicitly]
-public sealed class CreateSeniorProfileHandler
+public sealed class CreateSeniorProfileHandler(AppDbContext context, IMediator mediator)
     : IRequestHandler<CreateSeniorProfileRequest, ProfileDisplayDto>
 {
-    private readonly AppDbContext _context;
-    private readonly IMediator _mediator;
-
-    public CreateSeniorProfileHandler(AppDbContext context, IMediator mediator)
-    {
-        _context = context;
-        _mediator = mediator;
-    }
-
     public async Task<ProfileDisplayDto> Handle(
         CreateSeniorProfileRequest request,
         CancellationToken ct
     )
     {
-        if (await _context.Profiles.AnyAsync(p => p.SeniorId == request.AccountId, ct))
+        if (await context.Profiles.AnyAsync(p => p.SeniorId == request.AccountId, ct))
         {
             throw new SeniorProfileAlreadyExistsException(
                 "This account already has a senior profile"
             );
         }
 
-        var account = await _context
+        var account = await context
             .Accounts
             .FirstOrDefaultAsync(a => a.Id == request.AccountId, ct);
 
@@ -49,10 +40,10 @@ public sealed class CreateSeniorProfileHandler
         profile.Alias = account!.DisplayName;
         profile.SeniorId = request.AccountId;
 
-        await _context.Profiles.AddAsync(profile, ct);
-        await _context.SaveChangesAsync(ct);
+        await context.Profiles.AddAsync(profile, ct);
+        await context.SaveChangesAsync(ct);
 
-        await _mediator.Send(
+        await mediator.Send(
             new UpdateDashboardRequest
             {
                 SeniorId = account.Id,

@@ -12,12 +12,8 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/reminders/senior")]
 [ApiVersion("1.0")]
-public sealed class SeniorRemindersController : ControllerBase
+public sealed class SeniorRemindersController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public SeniorRemindersController(IMediator mediator) => _mediator = mediator;
-
     #region SeniorReminders
 
     [HasPermission(Permission.ManageReminders)]
@@ -37,7 +33,7 @@ public sealed class SeniorRemindersController : ControllerBase
             SeniorId = seniorId,
             PaginationQuery = query
         };
-        return Ok(await _mediator.Send(request));
+        return Ok(await mediator.Send(request));
     }
 
     [HasPermission(Permission.ManageReminders)]
@@ -49,7 +45,7 @@ public sealed class SeniorRemindersController : ControllerBase
     {
         var accountId = this.GetAccountId();
 
-        var reminderDto = await _mediator.Send(
+        var reminderDto = await mediator.Send(
             new CreateReminderRequest
             {
                 AccountId = accountId,
@@ -83,7 +79,7 @@ public sealed class SeniorRemindersController : ControllerBase
             SeniorId = seniorId,
             PaginationQuery = query
         };
-        return Ok(await _mediator.Send(request));
+        return Ok(await mediator.Send(request));
     }
 
     #endregion SeniorReminders

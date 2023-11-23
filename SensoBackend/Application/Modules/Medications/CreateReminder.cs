@@ -45,15 +45,12 @@ public sealed class CreateReminderValidator : AbstractValidator<CreateReminderRe
 }
 
 [UsedImplicitly]
-public sealed class CreateReminderHandler : IRequestHandler<CreateReminderRequest, ReminderDto>
+public sealed class CreateReminderHandler(AppDbContext context)
+    : IRequestHandler<CreateReminderRequest, ReminderDto>
 {
-    private readonly AppDbContext _context;
-
-    public CreateReminderHandler(AppDbContext context) => _context = context;
-
     public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken ct)
     {
-        bool validProfileExists = await _context
+        bool validProfileExists = await context
             .Profiles
             .Where(p => p.SeniorId == request.SeniorId && p.AccountId == request.AccountId)
             .AnyAsync(ct);
@@ -65,7 +62,7 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
 
         Medication medication;
 
-        var medicationsFromDb = await _context
+        var medicationsFromDb = await context
             .Medications
             .Where(
                 m =>
@@ -97,9 +94,9 @@ public sealed class CreateReminderHandler : IRequestHandler<CreateReminderReques
         reminder.Medication = medication;
         reminder.IsActive = true;
 
-        await _context.Reminders.AddAsync(reminder, ct);
-        await _context.SaveChangesAsync(ct);
+        await context.Reminders.AddAsync(reminder, ct);
+        await context.SaveChangesAsync(ct);
 
-        return ReminderUtils.AdaptToDto(_context, reminder).Result;
+        return ReminderUtils.AdaptToDto(context, reminder).Result;
     }
 }

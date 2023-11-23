@@ -11,19 +11,15 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public sealed class DashboardController : ControllerBase
+public sealed class DashboardController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public DashboardController(IMediator mediator) => _mediator = mediator;
-
     [HasPermission(Permission.ManageDashboard)]
     [HttpGet("{seniorId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DashboardDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Get([FromRoute] int seniorId) =>
-        Ok(await _mediator.Send(new GetDashboardRequest { SeniorId = seniorId }));
+        Ok(await mediator.Send(new GetDashboardRequest { SeniorId = seniorId }));
 
     [HasPermission(Permission.ManageDashboard)]
     [HttpPut("{seniorId}")]
@@ -32,7 +28,7 @@ public sealed class DashboardController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Put([FromRoute] int seniorId, DashboardDto dto)
     {
-        await _mediator.Send(new UpdateDashboardRequest { SeniorId = seniorId, Dto = dto });
+        await mediator.Send(new UpdateDashboardRequest { SeniorId = seniorId, Dto = dto });
         return NoContent();
     }
 }

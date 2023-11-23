@@ -14,20 +14,14 @@ public sealed record ReadUserBestScoreRequest : IRequest<ScoreDto>
 }
 
 [UsedImplicitly]
-public sealed class ReadUserBestScoreHandler : IRequestHandler<ReadUserBestScoreRequest, ScoreDto>
+public sealed class ReadUserBestScoreHandler(AppDbContext context)
+    : IRequestHandler<ReadUserBestScoreRequest, ScoreDto>
 {
-    private readonly AppDbContext _context;
-
-    public ReadUserBestScoreHandler(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<ScoreDto> Handle(ReadUserBestScoreRequest request, CancellationToken ct)
     {
         var game = GetGame.FromName(request.GameName);
 
-        var score = await _context
+        var score = await context
             .LeaderboardEntries
             .FirstOrDefaultAsync(s => s.AccountId == request.AccountId && s.Game == game, ct);
 

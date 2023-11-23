@@ -16,17 +16,8 @@ public enum HasPermissionResult
     BlockWithBadRequest
 }
 
-public class HasPermissionMiddleware
+public class HasPermissionMiddleware(RequestDelegate next, ILogger<HasPermissionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<HasPermissionMiddleware> _logger;
-
-    public HasPermissionMiddleware(RequestDelegate next, ILogger<HasPermissionMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
-
     public async Task<HasPermissionResult> ValidateAsync(
         IAuthorizationService authorizationService,
         HasPermissionAttribute? attribute,
@@ -39,7 +30,7 @@ public class HasPermissionMiddleware
             return HasPermissionResult.Next;
         }
 
-        _logger.LogInformation(
+        logger.LogInformation(
             "HasPermissionAttribute found, validating permission {Permission}...",
             attribute.Permission
         );
@@ -51,7 +42,7 @@ public class HasPermissionMiddleware
 
         var role = await authorizationService.GetRoleAsync(accountId);
 
-        _logger.LogInformation("Extracted account: {Role} with id {AccountId}", role, accountId);
+        logger.LogInformation("Extracted account: {Role} with id {AccountId}", role, accountId);
 
         if (role == Role.Admin)
         {
@@ -73,7 +64,7 @@ public class HasPermissionMiddleware
             return HasPermissionResult.Next;
         }
 
-        _logger.LogInformation("Path contains the seniorId param, looking for a valid profile...");
+        logger.LogInformation("Path contains the seniorId param, looking for a valid profile...");
 
         if (!int.TryParse(seniorIdParam, out var seniorId))
         {
@@ -91,7 +82,7 @@ public class HasPermissionMiddleware
 
     public async Task Invoke(HttpContext context, IAuthorizationService authorizationService)
     {
-        _logger.LogInformation("Processing the request through the HasPermissionMiddleware...");
+        logger.LogInformation("Processing the request through the HasPermissionMiddleware...");
 
         var attribute = context
             .Features
@@ -116,15 +107,15 @@ public class HasPermissionMiddleware
         switch (result)
         {
             case HasPermissionResult.Next:
-                _logger.LogInformation("Permission granted, continuing!");
-                await _next(context);
+                logger.LogInformation("Permission granted, continuing!");
+                await next(context);
                 return;
             case HasPermissionResult.BlockWithUnauthorized:
-                _logger.LogInformation("Permission denied, blocking with 401 Unauthorized!");
+                logger.LogInformation("Permission denied, blocking with 401 Unauthorized!");
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return;
             case HasPermissionResult.BlockWithBadRequest:
-                _logger.LogInformation("Permission denied, blocking with 400 Bad Request!");
+                logger.LogInformation("Permission denied, blocking with 400 Bad Request!");
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;
             default:

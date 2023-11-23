@@ -35,20 +35,17 @@ public sealed class CreateIntakeValidator : AbstractValidator<CreateIntakeReques
 }
 
 [UsedImplicitly]
-public sealed class CreateIntakeHandler : IRequestHandler<CreateIntakeRequest, IntakeDto>
+public sealed class CreateIntakeHandler(AppDbContext context)
+    : IRequestHandler<CreateIntakeRequest, IntakeDto>
 {
-    private readonly AppDbContext _context;
-
-    public CreateIntakeHandler(AppDbContext context) => _context = context;
-
     public async Task<IntakeDto> Handle(CreateIntakeRequest request, CancellationToken ct)
     {
         var reminder =
-            await _context.Reminders.FindAsync(request.ReminderId, ct)
+            await context.Reminders.FindAsync(request.ReminderId, ct)
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
         var neededProfile =
-            await _context
+            await context
                 .Profiles
                 .FirstOrDefaultAsync(
                     p => p.SeniorId == request.AccountId && p.SeniorId == reminder.SeniorId,
@@ -58,10 +55,10 @@ public sealed class CreateIntakeHandler : IRequestHandler<CreateIntakeRequest, I
         var intakeRecord = request.Dto.Adapt<IntakeRecord>();
         intakeRecord.ReminderId = request.ReminderId;
 
-        await _context.IntakeRecords.AddAsync(intakeRecord, ct);
-        await _context.SaveChangesAsync(ct);
+        await context.IntakeRecords.AddAsync(intakeRecord, ct);
+        await context.SaveChangesAsync(ct);
 
-        var intakeDto = ReminderUtils.AdaptToDto(_context, intakeRecord!).Result;
+        var intakeDto = ReminderUtils.AdaptToDto(context, intakeRecord!).Result;
         return intakeDto;
     }
 }

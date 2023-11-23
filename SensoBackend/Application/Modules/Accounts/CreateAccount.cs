@@ -40,25 +40,17 @@ public sealed class CreateAccountValidator : AbstractValidator<CreateAccountRequ
 }
 
 [UsedImplicitly]
-public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
+public sealed class CreateAccountHandler(AppDbContext context, TimeProvider timeProvider)
+    : IRequestHandler<CreateAccountRequest>
 {
-    private readonly AppDbContext _context;
-    private readonly TimeProvider _timeProvider;
-
-    public CreateAccountHandler(AppDbContext context, TimeProvider timeProvider)
-    {
-        _context = context;
-        _timeProvider = timeProvider;
-    }
-
     public async Task Handle(CreateAccountRequest request, CancellationToken ct)
     {
-        if (await _context.Accounts.AnyAsync(a => a.Email == request.Dto.Email, ct))
+        if (await context.Accounts.AnyAsync(a => a.Email == request.Dto.Email, ct))
         {
             throw new ValidationException("Email is already taken");
         }
 
-        var now = _timeProvider.GetUtcNow();
+        var now = timeProvider.GetUtcNow();
 
         var account = request.Dto.Adapt<Account>();
         account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password);
@@ -70,7 +62,7 @@ public sealed class CreateAccountHandler : IRequestHandler<CreateAccountRequest>
         account.DisplayName = request.Dto.DisplayName;
         account.Role = Role.Member;
 
-        await _context.Accounts.AddAsync(account, ct);
-        await _context.SaveChangesAsync(ct);
+        await context.Accounts.AddAsync(account, ct);
+        await context.SaveChangesAsync(ct);
     }
 }

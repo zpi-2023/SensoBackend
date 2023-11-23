@@ -16,19 +16,15 @@ public sealed record ReadAllNotesBySeniorIdRequest : IRequest<NoteListDto>
 }
 
 [UsedImplicitly]
-public sealed class ReadAllNotesBySeniorIdHandler
+public sealed class ReadAllNotesBySeniorIdHandler(AppDbContext context)
     : IRequestHandler<ReadAllNotesBySeniorIdRequest, NoteListDto>
 {
-    private readonly AppDbContext _context;
-
-    public ReadAllNotesBySeniorIdHandler(AppDbContext context) => _context = context;
-
     public async Task<NoteListDto> Handle(
         ReadAllNotesBySeniorIdRequest request,
         CancellationToken ct
     )
     {
-        var notes = await _context
+        var notes = await context
             .Notes
             .Where(IsNoteVisible(request))
             .OrderByDescending(n => n.CreatedAt)

@@ -19,26 +19,22 @@ public sealed record GetAllIntakesForReminderRequest : IRequest<PaginatedDto<Int
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForReminderHandler
+public sealed class GetAllIntakesForReminderHandler(AppDbContext context)
     : IRequestHandler<GetAllIntakesForReminderRequest, PaginatedDto<IntakeDto>>
 {
-    private readonly AppDbContext _context;
-
-    public GetAllIntakesForReminderHandler(AppDbContext context) => _context = context;
-
     public async Task<PaginatedDto<IntakeDto>> Handle(
         GetAllIntakesForReminderRequest request,
         CancellationToken ct
     )
     {
         await ReminderUtils.CheckReminderAndProfile(
-            context: _context,
+            context: context,
             accountId: request.AccountId,
             reminderId: request.ReminderId,
             ct: ct
         );
 
-        var intakes = await _context
+        var intakes = await context
             .IntakeRecords
             .Where(ir => ir.ReminderId == request.ReminderId)
             .OrderBy(ir => ir.Id)
@@ -46,7 +42,7 @@ public sealed class GetAllIntakesForReminderHandler
             .ToListAsync(ct);
 
         var adaptedIntakes = intakes
-            .Select(ir => ReminderUtils.AdaptToDto(_context, ir).Result)
+            .Select(ir => ReminderUtils.AdaptToDto(context, ir).Result)
             .ToList();
 
         return new PaginatedDto<IntakeDto> { Items = adaptedIntakes };

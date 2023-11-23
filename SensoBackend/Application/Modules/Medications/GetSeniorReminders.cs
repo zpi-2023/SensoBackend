@@ -20,26 +20,22 @@ public sealed record GetSeniorRemindersRequest : IRequest<PaginatedDto<ReminderD
 }
 
 [UsedImplicitly]
-public sealed class GetSeniorRemindersHandler
+public sealed class GetSeniorRemindersHandler(AppDbContext context)
     : IRequestHandler<GetSeniorRemindersRequest, PaginatedDto<ReminderDto>>
 {
-    private readonly AppDbContext _context;
-
-    public GetSeniorRemindersHandler(AppDbContext context) => _context = context;
-
     public async Task<PaginatedDto<ReminderDto>> Handle(
         GetSeniorRemindersRequest request,
         CancellationToken ct
     )
     {
         var neededProfile =
-            await _context
+            await context
                 .Profiles
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
                 ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
 
-        var reminders = await _context
+        var reminders = await context
             .Reminders
             .Where(r => r.SeniorId == request.SeniorId)
             .Include(r => r.Medication)
@@ -48,7 +44,7 @@ public sealed class GetSeniorRemindersHandler
             .ToListAsync(ct);
 
         var adaptedReminders = reminders
-            .Select(r => ReminderUtils.AdaptToDto(_context, r).Result)
+            .Select(r => ReminderUtils.AdaptToDto(context, r).Result)
             .ToList();
 
         return new PaginatedDto<ReminderDto> { Items = adaptedReminders };

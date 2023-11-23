@@ -16,16 +16,9 @@ public sealed record ReadLeaderboardRequest : IRequest<PaginatedDto<LeaderboardE
 }
 
 [UsedImplicitly]
-public sealed class ReadLeaderboardHandler
+public sealed class ReadLeaderboardHandler(AppDbContext context)
     : IRequestHandler<ReadLeaderboardRequest, PaginatedDto<LeaderboardEntryDto>>
 {
-    private readonly AppDbContext _context;
-
-    public ReadLeaderboardHandler(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<PaginatedDto<LeaderboardEntryDto>> Handle(
         ReadLeaderboardRequest request,
         CancellationToken ct
@@ -33,7 +26,7 @@ public sealed class ReadLeaderboardHandler
     {
         var game = GetGame.FromName(request.GameName);
 
-        var leaderboard = await _context
+        var leaderboard = await context
             .LeaderboardEntries
             .Where(l => l.Game == game)
             .OrderByDescending(l => l.Score)

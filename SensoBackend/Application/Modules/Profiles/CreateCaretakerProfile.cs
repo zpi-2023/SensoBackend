@@ -21,25 +21,16 @@ public sealed record CreateCaretakerProfileRequest : IRequest<ProfileDisplayDto>
 }
 
 [UsedImplicitly]
-public sealed class CreateCaretakerProfileHandler
+public sealed class CreateCaretakerProfileHandler(AppDbContext context, ISeniorIdRepo seniorIdRepo)
     : IRequestHandler<CreateCaretakerProfileRequest, ProfileDisplayDto>
 {
-    private readonly AppDbContext _context;
-    private readonly ISeniorIdRepo _seniorIdRepo;
-
-    public CreateCaretakerProfileHandler(AppDbContext context, ISeniorIdRepo seniorIdRepo)
-    {
-        _context = context;
-        _seniorIdRepo = seniorIdRepo;
-    }
-
     public async Task<ProfileDisplayDto> Handle(
         CreateCaretakerProfileRequest request,
         CancellationToken ct
     )
     {
         var seniorData =
-            _seniorIdRepo.Get(request.Hash)
+            seniorIdRepo.Get(request.Hash)
             ?? throw new SeniorNotFoundException("Provided hash was not found in the database");
 
         if (seniorData.SeniorId == request.AccountId)
@@ -48,7 +39,7 @@ public sealed class CreateCaretakerProfileHandler
         }
 
         if (
-            await _context
+            await context
                 .Profiles
                 .AnyAsync(
                     p => p.SeniorId == seniorData.SeniorId && p.AccountId == request.AccountId,
@@ -61,9 +52,9 @@ public sealed class CreateCaretakerProfileHandler
             );
         }
 
-        var account = await _context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
+        var account = await context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
 
-        var seniorExists = await _context
+        var seniorExists = await context
             .Profiles
             .AnyAsync(
                 p => p.SeniorId == seniorData.SeniorId && p.AccountId == seniorData.SeniorId,
@@ -80,8 +71,8 @@ public sealed class CreateCaretakerProfileHandler
         profile.SeniorId = seniorData.SeniorId;
         profile.Alias = request.SeniorAlias;
 
-        await _context.Profiles.AddAsync(profile, ct);
-        await _context.SaveChangesAsync(ct);
+        await context.Profiles.AddAsync(profile, ct);
+        await context.SaveChangesAsync(ct);
 
         return new ProfileDisplayDto
         {
