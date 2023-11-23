@@ -87,7 +87,7 @@ public sealed class AccountController(ILogger<AccountController> logger, IMediat
     public async Task<IActionResult> GetSeniorCaretakers()
     {
         var accountId = this.GetAccountId();
-        var caretakers = await _mediator.Send(
+        var caretakers = await mediator.Send(
             new GetSeniorCaretakersRequest { AccountId = accountId }
         );
         return Ok(caretakers);
