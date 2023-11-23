@@ -3,9 +3,7 @@ using SensoBackend.WebApi.Authorization.Data;
 
 namespace SensoBackend.WebApi.Authorization;
 
-public sealed class HasPermissionAttribute : AuthorizeAttribute
+public sealed class HasPermissionAttribute(Permission permission) : AuthorizeAttribute
 {
-    public Permission Permission { get; }
-
-    public HasPermissionAttribute(Permission permission) => Permission = permission;
+    public Permission Permission { get; } = permission;
 }

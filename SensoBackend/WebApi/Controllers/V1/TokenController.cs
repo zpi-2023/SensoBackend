@@ -10,30 +10,19 @@ namespace SensoBackend.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public sealed class TokenController : ControllerBase
+public sealed class TokenController(
+    ILogger<TokenController> logger,
+    IMediator mediator,
+    IJwtProvider jwtProvider
+) : ControllerBase
 {
-    private readonly ILogger<TokenController> _logger;
-    private readonly IMediator _mediator;
-    private readonly IJwtProvider _jwtProvider;
-
-    public TokenController(
-        ILogger<TokenController> logger,
-        IMediator mediator,
-        IJwtProvider jwtProvider
-    )
-    {
-        _logger = logger;
-        _mediator = mediator;
-        _jwtProvider = jwtProvider;
-    }
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> CreateToken(GetAccountByCredentialsDto dto)
     {
-        _logger.LogInformation("Creating new token for {Email}.", dto.Email);
-        var account = await _mediator.Send(new GetAccountByCredentialsRequest { Dto = dto });
-        return Ok(_jwtProvider.GenerateToken(account));
+        logger.LogInformation("Creating new token for {Email}.", dto.Email);
+        var account = await mediator.Send(new GetAccountByCredentialsRequest { Dto = dto });
+        return Ok(jwtProvider.GenerateToken(account));
     }
 }

@@ -14,13 +14,9 @@ public sealed record GetMedicationListRequest : IRequest<MedicationListDto>
 }
 
 [UsedImplicitly]
-public sealed class GetMedicationListHandler
+public sealed class GetMedicationListHandler(AppDbContext context)
     : IRequestHandler<GetMedicationListRequest, MedicationListDto>
 {
-    private readonly AppDbContext _context;
-
-    public GetMedicationListHandler(AppDbContext context) => _context = context;
-
     public async Task<MedicationListDto> Handle(
         GetMedicationListRequest request,
         CancellationToken ct
@@ -28,7 +24,7 @@ public sealed class GetMedicationListHandler
     {
         var searchTermLowerCase = request.SearchTerm.ToLower();
 
-        var medicationList = await _context
+        var medicationList = await context
             .Medications
             .Where(m => m.Name.ToLower().Contains(searchTermLowerCase))
             .Select(m => m.Adapt<MedicationDto>())

@@ -14,19 +14,15 @@ public sealed record GetAccountByCredentialsRequest : IRequest<AccountDto>
 }
 
 [UsedImplicitly]
-public sealed class GetAccountByCredentialsHandler
+public sealed class GetAccountByCredentialsHandler(AppDbContext context)
     : IRequestHandler<GetAccountByCredentialsRequest, AccountDto>
 {
-    private readonly AppDbContext _context;
-
-    public GetAccountByCredentialsHandler(AppDbContext context) => _context = context;
-
     public async Task<AccountDto> Handle(
         GetAccountByCredentialsRequest request,
         CancellationToken ct
     )
     {
-        var account = await _context
+        var account = await context
             .Accounts
             .FirstOrDefaultAsync(a => a.Email == request.Dto.Email, ct);
 

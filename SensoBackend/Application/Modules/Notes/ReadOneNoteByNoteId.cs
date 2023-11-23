@@ -16,17 +16,13 @@ public sealed record ReadOneNoteByNoteIdRequest : IRequest<NoteDto>
 }
 
 [UsedImplicitly]
-public sealed class ReadOneNoteByNoteIdHandler
+public sealed class ReadOneNoteByNoteIdHandler(AppDbContext context)
     : IRequestHandler<ReadOneNoteByNoteIdRequest, NoteDto>
 {
-    private readonly AppDbContext _context;
-
-    public ReadOneNoteByNoteIdHandler(AppDbContext context) => _context = context;
-
     public async Task<NoteDto> Handle(ReadOneNoteByNoteIdRequest request, CancellationToken ct)
     {
         var note =
-            await _context.Notes.FindAsync(request.NoteId, ct)
+            await context.Notes.FindAsync(request.NoteId, ct)
             ?? throw new NoteNotFoundException(request.NoteId);
 
         if (!await HasAccessAsync(note, request.AccountId, ct))
@@ -46,7 +42,7 @@ public sealed class ReadOneNoteByNoteIdHandler
 
         if (
             !note.IsPrivate
-            && await _context
+            && await context
                 .Profiles
                 .AnyAsync(p => p.SeniorId == note.AccountId && p.AccountId == accountId, ct)
         ) // The user is a caretaker of the senior, and the note is not private

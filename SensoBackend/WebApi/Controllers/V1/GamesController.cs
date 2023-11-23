@@ -12,12 +12,8 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public sealed class GamesController : ControllerBase
+public sealed class GamesController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public GamesController(IMediator mediator) => _mediator = mediator;
-
     [HasPermission(Permission.ManageGames)]
     [HttpGet("{gameName}/score")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ScoreDto))]
@@ -25,7 +21,7 @@ public sealed class GamesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ReadBestScore(string gameName)
     {
-        var score = await _mediator.Send(
+        var score = await mediator.Send(
             new ReadUserBestScoreRequest { AccountId = this.GetAccountId(), GameName = gameName }
         );
 
@@ -40,7 +36,7 @@ public sealed class GamesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> TryUpdateBestScore(string gameName, ScoreDto dto)
     {
-        await _mediator.Send(
+        await mediator.Send(
             new TryUpdateUserBestScoreRequest
             {
                 AccountId = this.GetAccountId(),
@@ -63,7 +59,7 @@ public sealed class GamesController : ControllerBase
         [FromQuery] PaginationQuery query
     )
     {
-        var leaderboard = await _mediator.Send(
+        var leaderboard = await mediator.Send(
             new ReadLeaderboardRequest { GameName = gameName, Pagination = query }
         );
 

@@ -19,26 +19,22 @@ public sealed record GetAllIntakesForSeniorRequest : IRequest<PaginatedDto<Intak
 }
 
 [UsedImplicitly]
-public sealed class GetAllIntakesForSeniorHandler
+public sealed class GetAllIntakesForSeniorHandler(AppDbContext context)
     : IRequestHandler<GetAllIntakesForSeniorRequest, PaginatedDto<IntakeDto>>
 {
-    private readonly AppDbContext _context;
-
-    public GetAllIntakesForSeniorHandler(AppDbContext context) => _context = context;
-
     public async Task<PaginatedDto<IntakeDto>> Handle(
         GetAllIntakesForSeniorRequest request,
         CancellationToken ct
     )
     {
         var neededProfile =
-            await _context
+            await context
                 .Profiles
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId
                 ) ?? throw new SeniorReminderAccessDeniedException(request.SeniorId);
 
-        var intakes = await _context
+        var intakes = await context
             .IntakeRecords
             .Include(ir => ir.Reminder)
             .Where(ir => ir.Reminder!.SeniorId == request.SeniorId)
@@ -47,7 +43,7 @@ public sealed class GetAllIntakesForSeniorHandler
             .ToListAsync(ct);
 
         var adaptedIntakes = intakes
-            .Select(ir => ReminderUtils.AdaptToDto(_context, ir).Result)
+            .Select(ir => ReminderUtils.AdaptToDto(context, ir).Result)
             .ToList();
 
         return new PaginatedDto<IntakeDto> { Items = adaptedIntakes };

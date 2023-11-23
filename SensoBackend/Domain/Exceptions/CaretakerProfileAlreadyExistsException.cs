@@ -1,7 +1,3 @@
 ﻿namespace SensoBackend.Domain.Exceptions;
 
-public class CaretakerProfileAlreadyExistsException : Exception
-{
-    public CaretakerProfileAlreadyExistsException(string message)
-        : base(message) { }
-}
+public class CaretakerProfileAlreadyExistsException(string message) : Exception(message) { }

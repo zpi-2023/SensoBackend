@@ -1,7 +1,4 @@
 ﻿namespace SensoBackend.Domain.Exceptions;
 
-public class ReminderNotFoundException : Exception
-{
-    public ReminderNotFoundException(int reminderId)
-        : base($"Reminder with id {reminderId} was not found") { }
-}
+public class ReminderNotFoundException(int reminderId)
+    : Exception($"Reminder with id {reminderId} was not found") { }

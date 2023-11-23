@@ -31,12 +31,9 @@ public sealed class UpdateDashboardValidator : AbstractValidator<UpdateDashboard
 }
 
 [UsedImplicitly]
-public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequest>
+public sealed class UpdateDashboardHandler(AppDbContext context)
+    : IRequestHandler<UpdateDashboardRequest>
 {
-    private readonly AppDbContext _context;
-
-    public UpdateDashboardHandler(AppDbContext context) => _context = context;
-
     public async Task Handle(UpdateDashboardRequest request, CancellationToken ct)
     {
         var gadgetIds = request
@@ -47,18 +44,18 @@ public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequ
                     (Enum.GetValues<Gadget>().First(g => g.ToString("f") == name), position)
             );
 
-        using var transaction = await _context.Database.BeginTransactionAsync(ct);
+        using var transaction = await context.Database.BeginTransactionAsync(ct);
 
-        var oldItems = await _context
+        var oldItems = await context
             .DashboardItems
             .Where(di => di.AccountId == request.SeniorId)
             .ToListAsync(ct);
 
-        _context.DashboardItems.RemoveRange(oldItems);
+        context.DashboardItems.RemoveRange(oldItems);
 
         foreach (var (gadget, position) in gadgetIds)
         {
-            await _context
+            await context
                 .DashboardItems
                 .AddAsync(
                     new DashboardItem
@@ -72,7 +69,7 @@ public sealed class UpdateDashboardHandler : IRequestHandler<UpdateDashboardRequ
                 );
         }
 
-        await _context.SaveChangesAsync(ct);
+        await context.SaveChangesAsync(ct);
         await transaction.CommitAsync(ct);
     }
 }

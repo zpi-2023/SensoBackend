@@ -12,15 +12,12 @@ public sealed record GetDashboardRequest : IRequest<DashboardDto>
 }
 
 [UsedImplicitly]
-public sealed class GetDashboardHandler : IRequestHandler<GetDashboardRequest, DashboardDto>
+public sealed class GetDashboardHandler(AppDbContext context)
+    : IRequestHandler<GetDashboardRequest, DashboardDto>
 {
-    private readonly AppDbContext _context;
-
-    public GetDashboardHandler(AppDbContext context) => _context = context;
-
     public async Task<DashboardDto> Handle(GetDashboardRequest request, CancellationToken ct)
     {
-        var gadgets = await _context
+        var gadgets = await context
             .DashboardItems
             .Where(di => di.AccountId == request.SeniorId)
             .OrderBy(di => di.Position)

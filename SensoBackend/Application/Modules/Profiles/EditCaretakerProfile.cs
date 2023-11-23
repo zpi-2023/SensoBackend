@@ -33,20 +33,16 @@ public sealed class EditCaretakerProfileValidator : AbstractValidator<EditCareta
 }
 
 [UsedImplicitly]
-public sealed class EditCaretakerProfileHandler
+public sealed class EditCaretakerProfileHandler(AppDbContext context)
     : IRequestHandler<EditCaretakerProfileRequest, ProfileDisplayDto>
 {
-    private readonly AppDbContext _context;
-
-    public EditCaretakerProfileHandler(AppDbContext context) => _context = context;
-
     public async Task<ProfileDisplayDto> Handle(
         EditCaretakerProfileRequest request,
         CancellationToken ct
     )
     {
         var profile =
-            await _context
+            await context
                 .Profiles
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
@@ -57,7 +53,7 @@ public sealed class EditCaretakerProfileHandler
             );
 
         profile.Alias = request.SeniorAlias;
-        await _context.SaveChangesAsync(ct);
+        await context.SaveChangesAsync(ct);
         return new ProfileDisplayDto
         {
             Type = "caretaker",

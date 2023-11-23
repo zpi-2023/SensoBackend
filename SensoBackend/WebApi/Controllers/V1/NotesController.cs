@@ -11,12 +11,8 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public sealed class NotesController : ControllerBase
+public sealed class NotesController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public NotesController(IMediator mediator) => _mediator = mediator;
-
     [HasPermission(Permission.MutateNotes)]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(NoteDto))]
@@ -25,7 +21,7 @@ public sealed class NotesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Create(UpsertNoteDto dto)
     {
-        var noteDto = await _mediator.Send(
+        var noteDto = await mediator.Send(
             new CreateNoteRequest { AccountId = this.GetAccountId(), Dto = dto }
         );
         return CreatedAtAction(nameof(ReadOneByNoteId), new { noteId = noteDto.Id }, noteDto);
@@ -38,7 +34,7 @@ public sealed class NotesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ReadAllBySeniorId(int seniorId)
     {
-        var noteListDto = await _mediator.Send(
+        var noteListDto = await mediator.Send(
             new ReadAllNotesBySeniorIdRequest
             {
                 AccountId = this.GetAccountId(),
@@ -57,7 +53,7 @@ public sealed class NotesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ReadOneByNoteId(int noteId)
     {
-        var noteDto = await _mediator.Send(
+        var noteDto = await mediator.Send(
             new ReadOneNoteByNoteIdRequest { AccountId = this.GetAccountId(), NoteId = noteId }
         );
 
@@ -73,7 +69,7 @@ public sealed class NotesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int noteId, UpsertNoteDto dto)
     {
-        var noteDto = await _mediator.Send(
+        var noteDto = await mediator.Send(
             new UpdateNoteRequest
             {
                 AccountId = this.GetAccountId(),
@@ -93,7 +89,7 @@ public sealed class NotesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int noteId)
     {
-        await _mediator.Send(
+        await mediator.Send(
             new DeleteNoteRequest { AccountId = this.GetAccountId(), NoteId = noteId }
         );
         return NoContent();

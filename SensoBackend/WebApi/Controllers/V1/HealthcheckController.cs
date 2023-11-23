@@ -9,13 +9,9 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/healthz")]
 [ApiVersion("1.0")]
-public sealed class HealthcheckController : ControllerBase
+public sealed class HealthcheckController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public HealthcheckController(IMediator mediator) => _mediator = mediator;
-
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HealthcheckDto))]
-    public async Task<IActionResult> Get() => Ok(await _mediator.Send(new GetHealthRequest()));
+    public async Task<IActionResult> Get() => Ok(await mediator.Send(new GetHealthRequest()));
 }

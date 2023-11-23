@@ -9,16 +9,10 @@ using SensoBackend.WebApi.Authentication;
 
 namespace SensoBackend.WebApi.Authenticaion;
 
-public sealed class JwtProvider : IJwtProvider
+public sealed class JwtProvider(IOptions<JwtOptions> options, TimeProvider timeProvider)
+    : IJwtProvider
 {
-    private readonly JwtOptions _options;
-    private readonly TimeProvider _timeProvider;
-
-    public JwtProvider(IOptions<JwtOptions> options, TimeProvider timeProvider)
-    {
-        _options = options.Value;
-        _timeProvider = timeProvider;
-    }
+    private readonly JwtOptions _options = options.Value;
 
     public TokenDto GenerateToken(AccountDto account)
     {
@@ -38,7 +32,7 @@ public sealed class JwtProvider : IJwtProvider
             _options.Audience,
             claims,
             null,
-            _timeProvider.GetUtcNow().UtcDateTime.AddDays(7),
+            timeProvider.GetUtcNow().UtcDateTime.AddDays(7),
             signingCredentials
         );
 

@@ -5,12 +5,9 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SensoBackend.WebApi.OptionsSetup;
 
-public class SwaggerGenOptionsSetup : IConfigureNamedOptions<SwaggerGenOptions>
+public class SwaggerGenOptionsSetup(IApiVersionDescriptionProvider provider)
+    : IConfigureNamedOptions<SwaggerGenOptions>
 {
-    private readonly IApiVersionDescriptionProvider _provider;
-
-    public SwaggerGenOptionsSetup(IApiVersionDescriptionProvider provider) => _provider = provider;
-
     public void Configure(string? name, SwaggerGenOptions options) => Configure(options);
 
     public void Configure(SwaggerGenOptions options)
@@ -46,7 +43,7 @@ public class SwaggerGenOptionsSetup : IConfigureNamedOptions<SwaggerGenOptions>
             }
         );
 
-        foreach (var description in _provider.ApiVersionDescriptions)
+        foreach (var description in provider.ApiVersionDescriptions)
         {
             options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
         }

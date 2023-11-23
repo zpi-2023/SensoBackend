@@ -26,16 +26,13 @@ public sealed class UpdateNoteValidator : AbstractValidator<UpdateNoteRequest>
 }
 
 [UsedImplicitly]
-public sealed class UpdateNoteHandler : IRequestHandler<UpdateNoteRequest, NoteDto>
+public sealed class UpdateNoteHandler(AppDbContext context)
+    : IRequestHandler<UpdateNoteRequest, NoteDto>
 {
-    private readonly AppDbContext _context;
-
-    public UpdateNoteHandler(AppDbContext context) => _context = context;
-
     public async Task<NoteDto> Handle(UpdateNoteRequest request, CancellationToken ct)
     {
         var note =
-            await _context.Notes.FindAsync(request.NoteId, ct)
+            await context.Notes.FindAsync(request.NoteId, ct)
             ?? throw new NoteNotFoundException(request.NoteId);
 
         if (note.AccountId != request.AccountId)
@@ -46,7 +43,7 @@ public sealed class UpdateNoteHandler : IRequestHandler<UpdateNoteRequest, NoteD
         note.Content = request.Dto.Content;
         note.Title = request.Dto.Title;
         note.IsPrivate = request.Dto.IsPrivate;
-        await _context.SaveChangesAsync(ct);
+        await context.SaveChangesAsync(ct);
 
         return note.Adapt<NoteDto>();
     }

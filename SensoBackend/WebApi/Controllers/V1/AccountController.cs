@@ -13,24 +13,16 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public sealed class AccountController : ControllerBase
+public sealed class AccountController(ILogger<AccountController> logger, IMediator mediator)
+    : ControllerBase
 {
-    private readonly ILogger<AccountController> _logger;
-    private readonly IMediator _mediator;
-
-    public AccountController(ILogger<AccountController> logger, IMediator mediator)
-    {
-        _logger = logger;
-        _mediator = mediator;
-    }
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(CreateAccountDto dto)
     {
-        _logger.LogInformation("Creating new account for {Email}.", dto.Email);
-        await _mediator.Send(new CreateAccountRequest { Dto = dto });
+        logger.LogInformation("Creating new account for {Email}.", dto.Email);
+        await mediator.Send(new CreateAccountRequest { Dto = dto });
         return NoContent();
     }
 
@@ -41,7 +33,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> GetProfiles()
     {
         var accountId = this.GetAccountId();
-        var profiles = await _mediator.Send(
+        var profiles = await mediator.Send(
             new GetProfilesByAccountIdRequest { AccountId = accountId }
         );
         return Ok(profiles);
@@ -55,9 +47,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> CreateSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        var profile = await _mediator.Send(
-            new CreateSeniorProfileRequest { AccountId = accountId }
-        );
+        var profile = await mediator.Send(new CreateSeniorProfileRequest { AccountId = accountId });
 
         return Ok(profile);
     }
@@ -70,7 +60,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> GetSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        var encodedData = await _mediator.Send(
+        var encodedData = await mediator.Send(
             new GetEncodedSeniorIdRequest { AccountId = accountId }
         );
         return Ok(encodedData);
@@ -85,7 +75,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> DeleteSeniorProfile()
     {
         var accountId = this.GetAccountId();
-        await _mediator.Send(new DeleteSeniorProfileRequest { AccountId = accountId });
+        await mediator.Send(new DeleteSeniorProfileRequest { AccountId = accountId });
         return NoContent();
     }
 
@@ -112,7 +102,7 @@ public sealed class AccountController : ControllerBase
     {
         var accountId = this.GetAccountId();
 
-        var profile = await _mediator.Send(
+        var profile = await mediator.Send(
             new CreateCaretakerProfileRequest
             {
                 AccountId = accountId,
@@ -133,7 +123,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> DeleteCaretakerProfile(int seniorId)
     {
         var accountId = this.GetAccountId();
-        await _mediator.Send(
+        await mediator.Send(
             new DeleteCaretakerProfileRequest { AccountId = accountId, SeniorId = seniorId }
         );
         return NoContent();
@@ -148,7 +138,7 @@ public sealed class AccountController : ControllerBase
     public async Task<IActionResult> EditCaretakerProfile(int seniorId, EditCaretakerProfileDto dto)
     {
         var accountId = this.GetAccountId();
-        var profile = await _mediator.Send(
+        var profile = await mediator.Send(
             new EditCaretakerProfileRequest
             {
                 AccountId = accountId,

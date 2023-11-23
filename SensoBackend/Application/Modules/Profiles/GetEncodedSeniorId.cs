@@ -15,19 +15,10 @@ public sealed record GetEncodedSeniorIdRequest : IRequest<EncodedSeniorDto>
 }
 
 [UsedImplicitly]
-public sealed class GetEncodedSeniorIdHandler
+public sealed class GetEncodedSeniorIdHandler(AppDbContext context, ISeniorIdRepo seniorIdRepo)
     : IRequestHandler<GetEncodedSeniorIdRequest, EncodedSeniorDto>
 {
     private const int TokenValidForMinutes = 20;
-
-    private readonly AppDbContext _context;
-    private readonly ISeniorIdRepo _seniorIdRepo;
-
-    public GetEncodedSeniorIdHandler(AppDbContext context, ISeniorIdRepo seniorIdRepo)
-    {
-        _context = context;
-        _seniorIdRepo = seniorIdRepo;
-    }
 
     public async Task<EncodedSeniorDto> Handle(
         GetEncodedSeniorIdRequest request,
@@ -36,7 +27,7 @@ public sealed class GetEncodedSeniorIdHandler
     {
         if (
             !(
-                await _context
+                await context
                     .Profiles
                     .AnyAsync(
                         p => p.AccountId == request.AccountId && p.AccountId == p.SeniorId,
@@ -48,7 +39,7 @@ public sealed class GetEncodedSeniorIdHandler
             throw new SeniorNotFoundException("Given account does not have a senior profile");
         }
 
-        var account = await _context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
+        var account = await context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
 
         var validTo = DateTimeOffset.UtcNow.AddMinutes(TokenValidForMinutes);
         var seniorData = new SeniorDataToEncode
@@ -60,7 +51,7 @@ public sealed class GetEncodedSeniorIdHandler
 
         return new EncodedSeniorDto
         {
-            Hash = _seniorIdRepo.AssignHash(seniorData),
+            Hash = seniorIdRepo.AssignHash(seniorData),
             SeniorDisplayName = seniorData.SeniorDisplayName,
             ValidFor = (int)TimeSpan.FromMinutes(TokenValidForMinutes).TotalSeconds
         };

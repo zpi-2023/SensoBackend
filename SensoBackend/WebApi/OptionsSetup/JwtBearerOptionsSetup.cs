@@ -6,11 +6,10 @@ using SensoBackend.WebApi.Authentication;
 
 namespace SensoBackend.WebApi.OptionsSetup;
 
-public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
+public class JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions)
+    : IConfigureNamedOptions<JwtBearerOptions>
 {
-    private readonly JwtOptions _jwtOptions;
-
-    public JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions) => _jwtOptions = jwtOptions.Value;
+    private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
     public void Configure(string? name, JwtBearerOptions options) => Configure(options);
 

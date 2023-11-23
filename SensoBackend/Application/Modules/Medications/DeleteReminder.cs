@@ -18,22 +18,19 @@ public sealed record DeleteReminderRequest : IRequest
 }
 
 [UsedImplicitly]
-public sealed class DeleteReminderHandler : IRequestHandler<DeleteReminderRequest>
+public sealed class DeleteReminderHandler(AppDbContext context)
+    : IRequestHandler<DeleteReminderRequest>
 {
-    private readonly AppDbContext _context;
-
-    public DeleteReminderHandler(AppDbContext context) => _context = context;
-
     public async Task Handle(DeleteReminderRequest request, CancellationToken ct)
     {
         var reminder = await ReminderUtils.CheckReminderAndProfile(
-            context: _context,
+            context: context,
             accountId: request.AccountId,
             reminderId: request.ReminderId,
             ct: ct
         );
 
         reminder.IsActive = false;
-        await _context.SaveChangesAsync(ct);
+        await context.SaveChangesAsync(ct);
     }
 }

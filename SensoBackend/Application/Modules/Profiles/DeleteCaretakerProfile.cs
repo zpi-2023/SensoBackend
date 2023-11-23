@@ -29,16 +29,13 @@ public sealed class DeleteCaretakerProfileValidator
 }
 
 [UsedImplicitly]
-public sealed class DeleteCaretakerProfileHandler : IRequestHandler<DeleteCaretakerProfileRequest>
+public sealed class DeleteCaretakerProfileHandler(AppDbContext context)
+    : IRequestHandler<DeleteCaretakerProfileRequest>
 {
-    private readonly AppDbContext _context;
-
-    public DeleteCaretakerProfileHandler(AppDbContext context) => _context = context;
-
     public async Task Handle(DeleteCaretakerProfileRequest request, CancellationToken ct)
     {
         var profile =
-            await _context
+            await context
                 .Profiles
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
@@ -48,7 +45,7 @@ public sealed class DeleteCaretakerProfileHandler : IRequestHandler<DeleteCareta
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
             );
 
-        _context.Profiles.Remove(profile);
-        await _context.SaveChangesAsync(ct);
+        context.Profiles.Remove(profile);
+        await context.SaveChangesAsync(ct);
     }
 }

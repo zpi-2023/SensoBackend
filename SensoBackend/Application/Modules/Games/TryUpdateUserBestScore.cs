@@ -28,20 +28,14 @@ public sealed class TryUpdateUserBestScoreValidator
 }
 
 [UsedImplicitly]
-public sealed class TryUpdateUserBestScoreHandler : IRequestHandler<TryUpdateUserBestScoreRequest>
+public sealed class TryUpdateUserBestScoreHandler(AppDbContext context)
+    : IRequestHandler<TryUpdateUserBestScoreRequest>
 {
-    private readonly AppDbContext _context;
-
-    public TryUpdateUserBestScoreHandler(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(TryUpdateUserBestScoreRequest request, CancellationToken ct)
     {
         var game = GetGame.FromName(request.GameName);
 
-        var score = await _context
+        var score = await context
             .LeaderboardEntries
             .FirstOrDefaultAsync(s => s.AccountId == request.AccountId && s.Game == game, ct);
 
@@ -54,7 +48,7 @@ public sealed class TryUpdateUserBestScoreHandler : IRequestHandler<TryUpdateUse
             score.Score = request.Dto.Score;
         }
 
-        await _context.SaveChangesAsync(ct);
+        await context.SaveChangesAsync(ct);
     }
 
     public async Task CreateLeaderboardEntry(
@@ -72,6 +66,6 @@ public sealed class TryUpdateUserBestScoreHandler : IRequestHandler<TryUpdateUse
             Score = score,
         };
 
-        await _context.LeaderboardEntries.AddAsync(leaderboardEntry, ct);
+        await context.LeaderboardEntries.AddAsync(leaderboardEntry, ct);
     }
 }

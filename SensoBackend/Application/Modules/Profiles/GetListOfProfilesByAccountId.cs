@@ -13,19 +13,15 @@ public sealed record GetListOfProfilesByAccountIdRequest : IRequest<List<Profile
 }
 
 [UsedImplicitly]
-public sealed class GetListOfProfilesByAccountIdHandler
+public sealed class GetListOfProfilesByAccountIdHandler(AppDbContext context)
     : IRequestHandler<GetListOfProfilesByAccountIdRequest, List<ProfileInfo>>
 {
-    private readonly AppDbContext _context;
-
-    public GetListOfProfilesByAccountIdHandler(AppDbContext context) => _context = context;
-
     public async Task<List<ProfileInfo>> Handle(
         GetListOfProfilesByAccountIdRequest request,
         CancellationToken ct
     )
     {
-        var profiles = await _context
+        var profiles = await context
             .Profiles
             .Where(p => p.AccountId == request.AccountId)
             .ToListAsync(ct);

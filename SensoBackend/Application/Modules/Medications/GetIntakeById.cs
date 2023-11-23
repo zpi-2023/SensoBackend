@@ -15,26 +15,23 @@ public sealed record GetIntakeByIdRequest : IRequest<IntakeDto>
 }
 
 [UsedImplicitly]
-public sealed class GetIntakeByIdHandler : IRequestHandler<GetIntakeByIdRequest, IntakeDto>
+public sealed class GetIntakeByIdHandler(AppDbContext context)
+    : IRequestHandler<GetIntakeByIdRequest, IntakeDto>
 {
-    private readonly AppDbContext _context;
-
-    public GetIntakeByIdHandler(AppDbContext context) => _context = context;
-
     public async Task<IntakeDto> Handle(GetIntakeByIdRequest request, CancellationToken ct)
     {
         var intake =
-            await _context.IntakeRecords.FindAsync(request.IntakeId, ct)
+            await context.IntakeRecords.FindAsync(request.IntakeId, ct)
             ?? throw new IntakeRecordNotFoundException(request.IntakeId);
 
         await ReminderUtils.CheckReminderAndProfile(
-            context: _context,
+            context: context,
             accountId: request.AccountId,
             reminderId: intake.ReminderId,
             ct: ct
         );
 
-        var intakeDto = ReminderUtils.AdaptToDto(_context, intake).Result;
+        var intakeDto = ReminderUtils.AdaptToDto(context, intake).Result;
         return intakeDto;
     }
 }
