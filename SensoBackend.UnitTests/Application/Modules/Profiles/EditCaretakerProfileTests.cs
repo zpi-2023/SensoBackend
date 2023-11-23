@@ -19,43 +19,53 @@ public sealed class EditCaretakerProfileHandlerTests : IDisposable
     [Fact]
     public async Task Handle_ShouldEditProfile()
     {
-        var profile = Generators.CaretakerProfile.Generate();
-        await _context.Profiles.AddAsync(profile);
-        await _context.SaveChangesAsync();
+        var seniorAccount = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(seniorAccount);
+
+        var caretakerAccount = await _context.SetUpAccount();
+        await _context.SetUpCaretakerProfile(caretakerAccount, seniorAccount);
 
         var dto = Generators.EditCaretakerProfileDto.Generate();
 
         await _sut.Handle(
             new EditCaretakerProfileRequest
             {
-                AccountId = profile.AccountId,
-                SeniorId = profile.SeniorId,
+                AccountId = caretakerAccount.Id,
+                SeniorId = seniorAccount.Id,
                 SeniorAlias = dto.SeniorAlias
             },
             CancellationToken.None
         );
 
-        var editedProfile = await _context.Profiles.FirstOrDefaultAsync(p => p.Id == profile.Id);
+        var editedProfile = await _context
+            .Profiles
+            .FirstOrDefaultAsync(
+                p => p.AccountId == caretakerAccount.Id && p.SeniorId == seniorAccount.Id
+            );
 
         editedProfile.Should().NotBeNull();
         if (editedProfile == null)
             return;
-
         editedProfile.Alias.Should().Be(dto.SeniorAlias);
     }
 
     [Fact]
     public async Task Handle_ShouldThrowProfileNotFoundException_WhenProfileDoesNotExist()
     {
-        var profile = Generators.CaretakerProfile.Generate();
+        var seniorAccount = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(seniorAccount);
+
+        var caretakerAccount = await _context.SetUpAccount();
+
+        var dto = Generators.EditCaretakerProfileDto.Generate();
 
         var act = async () =>
             await _sut.Handle(
                 new EditCaretakerProfileRequest
                 {
-                    AccountId = profile.AccountId,
-                    SeniorId = profile.SeniorId,
-                    SeniorAlias = profile.Alias
+                    AccountId = caretakerAccount.Id,
+                    SeniorId = seniorAccount.Id,
+                    SeniorAlias = dto.SeniorAlias
                 },
                 CancellationToken.None
             );
@@ -71,14 +81,12 @@ public sealed class EditCaretakerProfileValidatorTests
     [Fact]
     public void Validate_ShouldThrowValidationException_WhenSeniorAliasIsEmpty()
     {
-        var dto = Generators.CaretakerProfile.Generate();
-
         var act = () =>
             _sut.ValidateAndThrow(
                 new EditCaretakerProfileRequest
                 {
-                    AccountId = dto.AccountId,
-                    SeniorId = dto.SeniorId,
+                    AccountId = 0,
+                    SeniorId = 1,
                     SeniorAlias = string.Empty
                 }
             );
@@ -91,8 +99,8 @@ public sealed class EditCaretakerProfileValidatorTests
     {
         var request = new EditCaretakerProfileRequest
         {
-            AccountId = 1,
-            SeniorId = 1,
+            AccountId = 0,
+            SeniorId = 0,
             SeniorAlias = ""
         };
 

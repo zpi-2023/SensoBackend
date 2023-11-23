@@ -14,20 +14,16 @@ public sealed record GetSeniorCaretakersRequest : IRequest<ExtendedProfilesDto>
 }
 
 [UsedImplicitly]
-public sealed class GetSeniorCaretakersHandler
+public sealed class GetSeniorCaretakersHandler(AppDbContext context)
     : IRequestHandler<GetSeniorCaretakersRequest, ExtendedProfilesDto>
 {
-    private readonly AppDbContext _context;
-
-    public GetSeniorCaretakersHandler(AppDbContext context) => _context = context;
-
     public async Task<ExtendedProfilesDto> Handle(
         GetSeniorCaretakersRequest request,
         CancellationToken ct
     )
     {
         _ =
-            await _context
+            await context
                 .Profiles
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.AccountId,
@@ -37,7 +33,7 @@ public sealed class GetSeniorCaretakersHandler
                 $"Profile with AccountId {request.AccountId} and SeniorId {request.AccountId} was not found"
             );
 
-        var profiles = await _context
+        var profiles = await context
             .Profiles
             .Where(p => p.SeniorId == request.AccountId && p.AccountId != request.AccountId)
             .Include(p => p.Account)
@@ -49,7 +45,7 @@ public sealed class GetSeniorCaretakersHandler
                         SeniorId = p.SeniorId,
                         Type = "caretaker",
                         DisplayName = p.Account!.DisplayName,
-                        Email = p.Account.Email,
+                        Email = p.Account!.Email,
                         PhoneNumber = p.Account!.PhoneNumber
                     }
             )

@@ -20,20 +20,24 @@ public sealed class DeleteCaretakerProfileHandlerTests : IDisposable
     [Fact]
     public async Task Handle_ShouldDeleteProfile()
     {
-        var profile = Generators.CaretakerProfile.Generate();
-        await _context.Profiles.AddAsync(profile);
-        await _context.SaveChangesAsync();
+        var seniorAccount = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(seniorAccount);
+
+        var caretakerAccount = await _context.SetUpAccount();
+        await _context.SetUpCaretakerProfile(caretakerAccount, seniorAccount);
 
         await _sut.Handle(
             new DeleteCaretakerProfileRequest
             {
-                AccountId = profile.AccountId,
-                SeniorId = profile.SeniorId
+                AccountId = caretakerAccount.Id,
+                SeniorId = seniorAccount.Id
             },
             CancellationToken.None
         );
 
-        var deletedProfile = await _context.Profiles.FirstOrDefaultAsync(p => p.Id == profile.Id);
+        var deletedProfile = await _context
+            .Profiles
+            .FirstOrDefaultAsync(p => p.Id == caretakerAccount.Id);
 
         deletedProfile.Should().BeNull();
     }
@@ -41,14 +45,17 @@ public sealed class DeleteCaretakerProfileHandlerTests : IDisposable
     [Fact]
     public async Task Handle_ShouldThrowProfileNotFoundException_WhenProfileDoesNotExist()
     {
-        var profile = Generators.CaretakerProfile.Generate();
+        var seniorAccount = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(seniorAccount);
+
+        var caretakerAccount = await _context.SetUpAccount();
 
         var act = async () =>
             await _sut.Handle(
                 new DeleteCaretakerProfileRequest
                 {
-                    AccountId = profile.AccountId,
-                    SeniorId = profile.SeniorId
+                    AccountId = caretakerAccount.Id,
+                    SeniorId = seniorAccount.Id
                 },
                 CancellationToken.None
             );

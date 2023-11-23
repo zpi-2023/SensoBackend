@@ -14,7 +14,10 @@ public sealed class GetProfilesByAccountIdHandlerTests : IDisposable
 
     public GetProfilesByAccountIdHandlerTests()
     {
-        TypeAdapterConfig.GlobalSettings.Apply(new MappingConfig());
+        var typeAdapterConfig = TypeAdapterConfig.GlobalSettings;
+        typeAdapterConfig.RuleMap.Clear();
+        typeAdapterConfig.Apply(new MappingConfig());
+
         _sut = new(_context);
     }
 

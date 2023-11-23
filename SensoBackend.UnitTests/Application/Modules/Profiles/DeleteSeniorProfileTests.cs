@@ -18,16 +18,15 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
     [Fact]
     public async Task Handle_ShouldDeleteProfile()
     {
-        var profile = Generators.SeniorProfile.Generate();
-        await _context.Profiles.AddAsync(profile);
-        await _context.SaveChangesAsync();
+        var account = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(account);
 
         await _sut.Handle(
-            new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
+            new DeleteSeniorProfileRequest { AccountId = account.Id },
             CancellationToken.None
         );
 
-        var deletedProfile = await _context.Profiles.FirstOrDefaultAsync(p => p.Id == profile.Id);
+        var deletedProfile = await _context.Profiles.FirstOrDefaultAsync(p => p.Id == account.Id);
 
         deletedProfile.Should().BeNull();
     }
@@ -35,11 +34,11 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
     [Fact]
     public async Task Handle_ShouldThrowProfileNotFoundException_WhenProfileDoesNotExist()
     {
-        var profile = Generators.SeniorProfile.Generate();
+        var account = await _context.SetUpAccount();
 
         var act = async () =>
             await _sut.Handle(
-                new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
+                new DeleteSeniorProfileRequest { AccountId = account.Id },
                 CancellationToken.None
             );
 
@@ -49,17 +48,15 @@ public sealed class DeleteSeniorProfileHandlerTests : IDisposable
     [Fact]
     public async Task Handle_ShouldThrowRemoveSeniorProfileDeniedException_WhenProfileHasCaretakerProfiles()
     {
-        var profile = Generators.SeniorProfile.Generate();
-        await _context.Profiles.AddAsync(profile);
-        await _context.SaveChangesAsync();
+        var seniorAccount = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(seniorAccount);
 
-        var caretakerProfile = Generators.CaretakerProfile.Generate();
-        await _context.Profiles.AddAsync(caretakerProfile);
-        await _context.SaveChangesAsync();
+        var caretakerAccount = await _context.SetUpAccount();
+        await _context.SetUpCaretakerProfile(caretakerAccount, seniorAccount);
 
         var act = async () =>
             await _sut.Handle(
-                new DeleteSeniorProfileRequest { AccountId = profile.AccountId },
+                new DeleteSeniorProfileRequest { AccountId = seniorAccount.Id },
                 CancellationToken.None
             );
 
