@@ -19,5 +19,12 @@ public sealed class MappingConfig : IRegister
                 dst => dst.Profiles,
                 src => src.Select(p => p.Adapt<ProfileDisplayDto>()).ToList()
             );
+
+        config
+            .ForType<List<ExtendedProfileDto>, ExtendedProfilesDto>()
+            .Map(
+                dst => dst.Profiles,
+                src => src.Select(p => p.Adapt<ExtendedProfileDto>()).ToList()
+            );
     }
 }
