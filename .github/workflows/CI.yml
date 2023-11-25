@@ -47,7 +47,7 @@ jobs:
         uses: dotnet/code-analysis@main
         id: code-analysis
         with:
-        project: .\SensoBackend.sln
+          project: .\SensoBackend.sln
           build-breaking: true
           all-categories: all
 
