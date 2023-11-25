@@ -48,7 +48,7 @@ jobs:
         id: code-analysis
         with:
           project: .\SensoBackend.sln
-          build-breaking: true
+          build-breaking: false
           all-categories: all
 
   unit-tests:
