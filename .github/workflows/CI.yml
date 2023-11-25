@@ -28,12 +28,12 @@ jobs:
 
   static-analysis:
     needs: code-format
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     name: Static analysis
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -43,13 +43,10 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
-      - name: Run .NET Code Analysis
-        uses: dotnet/code-analysis@main
-        id: code-analysis
+      - name: Inspect code
+        uses: muno92/resharper_inspectcode@v1
         with:
-          project: .\SensoBackend.sln
-          build-breaking: false
-          all-categories: all
+          solutionPath: ./SensoBackend.sln
 
   unit-tests:
     needs: static-analysis
