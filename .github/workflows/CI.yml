@@ -43,10 +43,10 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
-      - name: Inspect code
-        uses: muno92/resharper_inspectcode@v1
+      - name: Inspect code by ReSharper
+        uses: JetBrains/ReSharper-InspectCode@v0.3
         with:
-          solutionPath: ./SensoBackend.sln
+          solution: ./SensoBackend.sln
 
   unit-tests:
     needs: static-analysis
