@@ -72,7 +72,7 @@ public sealed class UpdateReminderValidatorTests
         result.IsValid.Should().BeTrue();
     }
 
-    private UpdateReminderDto GetDto(
+    private static UpdateReminderDto GetDto(
         int amountPerIntake = 1,
         int amountOwned = 1,
         string cron = "1 1 1 * * *",

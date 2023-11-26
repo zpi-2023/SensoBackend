@@ -125,7 +125,7 @@ public sealed class CreateReminderValidatorTests
         result.IsValid.Should().BeTrue();
     }
 
-    private CreateReminderDto GetDto(
+    private static CreateReminderDto GetDto(
         string medicationName = "test",
         int medicationAmountInPackage = 1,
         int amountPerIntake = 1,
