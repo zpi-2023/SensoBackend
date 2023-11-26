@@ -1,7 +1,5 @@
-﻿using FluentValidation;
-using SensoBackend.Application.Modules.Medications;
+﻿using SensoBackend.Application.Modules.Medications;
 using SensoBackend.Application.Modules.Medications.Contracts;
-using System.Runtime.CompilerServices;
 
 namespace SensoBackend.Tests.Application.Modules.Medication;
 
@@ -60,6 +58,7 @@ public sealed class UpdateReminderValidatorTests
         var result = _validator.Validate(model);
         result.IsValid.Should().BeTrue();
     }
+
     [Fact]
     public void Validate_ShouldReturnTrue_WhenCronIsTwoDifferentHours()
     {
