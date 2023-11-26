@@ -116,7 +116,7 @@ public sealed class UpdateReminderByIdTests : IDisposable
 
         var action = async () =>
             await _sut.Handle(
-            new UpdateReminderByIdRequest
+                new UpdateReminderByIdRequest
                 {
                     AccountId = senior.Id,
                     ReminderId = reminder.Id,
