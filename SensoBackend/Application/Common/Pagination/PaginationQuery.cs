@@ -8,5 +8,5 @@ public sealed record PaginationQuery
     public required int Offset { get; init; }
 
     [FromQuery(Name = "limit")]
-    public required int Limit { get; init; }
+    public required int Limit { get; init; } = 5;
 }
