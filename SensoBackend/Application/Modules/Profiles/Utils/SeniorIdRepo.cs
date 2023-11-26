@@ -4,7 +4,7 @@ namespace SensoBackend.Application.Modules.Profiles.Utils;
 
 public sealed class SeniorIdRepo(TimeProvider timeProvider) : ISeniorIdRepo
 {
-    private readonly Dictionary<int, SeniorDataToEncode> _seniors =  [ ];
+    private readonly Dictionary<int, SeniorDataToEncode> _seniors = [];
 
     public SeniorDataToEncode? Get(int hash)
     {

@@ -21,11 +21,10 @@
 
 ### Developing the project
 
-- C# 11
-- .NET 7.0
+- C# 12
+- .NET 8.0
 - PostgreSQL 15
 - Docker
-- Plugin for Mermaid
 - Several .Net packages and tools that can be installed via  
 `dotnet restore`  
 `dotnet tool restore`
