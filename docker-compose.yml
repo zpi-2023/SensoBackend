@@ -2,7 +2,7 @@
 networks:
   dev:
     driver: bridge
-    
+
 services:
   sensobackend:
     image: sensobackend
@@ -17,13 +17,13 @@ services:
     environment:
       - JwtSettings__Issuer=SensoBackend
       - JwtSettings__Audience=SensoBackend
-      - JwtSettings__SecretKey=SensoBackendSecretKey
-      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=sensobackend_database;Port=5432;Database=SensoBackendDb;IntegratedSecurity=true;Pooling=true
+      - JwtSettings__SecretKey=SensoBackendSecretKeySensoBackendSecretKey
+      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=sensobackend_database;Port=5432;Database=SensoBackendDb;Pooling=true
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - dev
-        
+
   sensobackend_database:
     image: postgres:latest
     container_name: sensobackend_database
@@ -36,9 +36,8 @@ services:
     restart: always
     volumes:
       - "sensobackend_data:/var/lib/postgresql/data"
-    networks: 
+    networks:
       - dev
-  
+
 volumes:
   sensobackend_data:
-    

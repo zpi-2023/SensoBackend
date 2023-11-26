@@ -16,7 +16,7 @@ public sealed class JwtProviderTests
         {
             Issuer = "TestIssuer",
             Audience = "TestAudience",
-            SecretKey = "LongTestSecretKey"
+            SecretKey = "VeryVeryLong(256Bits)TestSecretKey"
         }
     );
 
