@@ -112,7 +112,7 @@ public sealed class UpdateReminderByIdTests : IDisposable
         var senior = await _context.SetUpAccount();
         await _context.SetUpSeniorProfile(senior);
         var medication = await _context.SetUpMedication();
-        var reminder = await _context.SetUpInactiveReminder(senior, senior, medication);
+        var reminder = await _context.SetUpReminder(senior, senior, medication, false);
 
         var action = async () =>
             await _sut.Handle(

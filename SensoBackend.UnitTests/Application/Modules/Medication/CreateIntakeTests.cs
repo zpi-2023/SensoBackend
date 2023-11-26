@@ -100,7 +100,7 @@ public sealed class CreateIntakeTests : IDisposable
         await _context.SetUpCaretakerProfile(account, senior);
         await _context.SaveChangesAsync();
 
-        var reminder = await _context.SetUpInactiveReminder(account, senior, medication);
+        var reminder = await _context.SetUpReminder(account, senior, medication, false);
         var createIntakeDto = Generators.CreateIntakeDto.Generate();
 
         var action = async () =>
