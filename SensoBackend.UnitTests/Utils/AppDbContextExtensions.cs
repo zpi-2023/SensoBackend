@@ -174,6 +174,42 @@ internal static class AppDbContextExtensions
         return reminder;
     }
 
+    public static async Task<Reminder> SetUpInactiveReminder(
+        this AppDbContext context,
+        Account userAccount,
+        Account seniorAccount,
+        Medication medication
+    )
+    {
+        if (
+            !await context
+                .Profiles
+                .AnyAsync(p => p.AccountId == userAccount.Id && p.SeniorId == seniorAccount.Id)
+        )
+        {
+            throw new ArgumentException(
+                "Account must have a profile related to the given senior",
+                nameof(seniorAccount)
+            );
+        }
+
+        var reminder = new Reminder
+        {
+            Id = default,
+            SeniorId = seniorAccount.Id,
+            MedicationId = medication.Id,
+            IsActive = false,
+            AmountPerIntake = 1,
+            AmountOwned = 3,
+            Cron = "1 1 1 * * *",
+            Description = "Description"
+        };
+        await context.Reminders.AddAsync(reminder);
+        await context.SaveChangesAsync();
+
+        return reminder;
+    }
+
     public static async Task<IntakeRecord> SetUpIntake(
         this AppDbContext context,
         Account userAccount,

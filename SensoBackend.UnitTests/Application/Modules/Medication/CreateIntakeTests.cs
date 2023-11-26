@@ -89,4 +89,31 @@ public sealed class CreateIntakeTests : IDisposable
 
         await action.Should().ThrowAsync<ReminderNotFoundException>();
     }
+
+    [Fact]
+    public async Task Handle_ShouldThrow_WhenReminderIsNotActive()
+    {
+        var medication = await _context.SetUpMedication();
+        var senior = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(senior);
+        var account = await _context.SetUpAccount();
+        await _context.SetUpCaretakerProfile(account, senior);
+        await _context.SaveChangesAsync();
+
+        var reminder = await _context.SetUpInactiveReminder(account, senior, medication);
+        var createIntakeDto = Generators.CreateIntakeDto.Generate();
+
+        var action = async () =>
+            await _sut.Handle(
+                new CreateIntakeRequest
+                {
+                    AccountId = account.Id,
+                    ReminderId = reminder.Id,
+                    Dto = createIntakeDto
+                },
+                CancellationToken.None
+            );
+
+        await action.Should().ThrowAsync<ReminderNotActiveException>();
+    }
 }

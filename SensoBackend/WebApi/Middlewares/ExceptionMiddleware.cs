@@ -26,6 +26,7 @@ public sealed class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionM
                 InvalidCredentialException => 401,
                 SeniorReminderAccessDeniedException => 403,
                 ReminderAccessDeniedException => 403,
+                ReminderNotActiveException => 403,
                 NoteAccessDeniedException => 403,
                 RemoveSeniorProfileDeniedException => 403,
                 GameNotFoundException => 404,

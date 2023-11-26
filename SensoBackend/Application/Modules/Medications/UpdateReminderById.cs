@@ -42,6 +42,9 @@ public sealed class UpdateReminderByIdHandler(AppDbContext context)
             ct
         );
 
+        if (!reminder.IsActive)
+            throw new ReminderNotActiveException(request.ReminderId);
+
         reminder.AmountPerIntake = request.Dto.AmountPerIntake;
         reminder.AmountOwned = request.Dto.AmountOwned;
         reminder.Cron = request.Dto.Cron;
