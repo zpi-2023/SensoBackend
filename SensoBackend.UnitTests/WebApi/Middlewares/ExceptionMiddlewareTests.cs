@@ -158,4 +158,64 @@ public sealed class ExceptionMiddlewareTests
         context.Response.Should().NotBeNull();
         context.Response.StatusCode.Should().Be(500);
     }
+
+    [Fact]
+    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenReminderNotActiveExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new ReminderNotActiveException(0));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(403);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenReminderNotFoundExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new ReminderNotFoundException(0));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenReminderAccessDeniedExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new ReminderAccessDeniedException(0));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(403);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenIntakeRecordNotFoundExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new IntakeRecordNotFoundException(0));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(404);
+    }
+
+    [Fact]
+    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenSeniorReminderAccessDeniedExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new SeniorReminderAccessDeniedException(0));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(403);
+    }
 }

@@ -142,7 +142,8 @@ internal static class AppDbContextExtensions
         this AppDbContext context,
         Account userAccount,
         Account seniorAccount,
-        Medication medication
+        Medication medication,
+        bool isActive = true
     )
     {
         if (
@@ -162,7 +163,7 @@ internal static class AppDbContextExtensions
             Id = default,
             SeniorId = seniorAccount.Id,
             MedicationId = medication.Id,
-            IsActive = true,
+            IsActive = isActive,
             AmountPerIntake = 1,
             AmountOwned = 3,
             Cron = "1 1 1 * * *",

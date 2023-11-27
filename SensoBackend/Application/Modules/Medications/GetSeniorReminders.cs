@@ -39,7 +39,8 @@ public sealed class GetSeniorRemindersHandler(AppDbContext context)
             .Reminders
             .Where(r => r.SeniorId == request.SeniorId)
             .Include(r => r.Medication)
-            .OrderBy(r => r.Id)
+            .OrderBy(r => r.IsActive ? 0 : 1)
+            .ThenBy(r => r.Id)
             .Paged(request.PaginationQuery)
             .ToListAsync(ct);
 

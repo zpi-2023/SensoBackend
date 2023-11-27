@@ -26,6 +26,11 @@ public sealed class UpdateReminderValidator : AbstractValidator<UpdateReminderBy
         RuleFor(r => r.Dto.AmountPerIntake)
             .NotEmpty()
             .WithMessage("AmountPerIntake cannot be empty");
+        RuleFor(r => r.Dto.Cron)
+            .Matches(
+                "(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(\\/|-)\\d+)|(\\*\\/\\d+)|\\d+|\\*) ?){5,7})"
+            )
+            .WithMessage("Cron expression is invalid");
     }
 }
 
@@ -41,6 +46,9 @@ public sealed class UpdateReminderByIdHandler(AppDbContext context)
             request.ReminderId,
             ct
         );
+
+        if (!reminder.IsActive)
+            throw new ReminderNotActiveException(request.ReminderId);
 
         reminder.AmountPerIntake = request.Dto.AmountPerIntake;
         reminder.AmountOwned = request.Dto.AmountOwned;

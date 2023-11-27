@@ -105,4 +105,26 @@ public sealed class UpdateReminderByIdTests : IDisposable
 
         await action.Should().ThrowAsync<ReminderNotFoundException>();
     }
+
+    [Fact]
+    public async Task Handle_ShouldThrow_WhenReminderIsNotActive()
+    {
+        var senior = await _context.SetUpAccount();
+        await _context.SetUpSeniorProfile(senior);
+        var medication = await _context.SetUpMedication();
+        var reminder = await _context.SetUpReminder(senior, senior, medication, false);
+
+        var action = async () =>
+            await _sut.Handle(
+                new UpdateReminderByIdRequest
+                {
+                    AccountId = senior.Id,
+                    ReminderId = reminder.Id,
+                    Dto = Generators.UpdateReminderDto.Generate()
+                },
+                CancellationToken.None
+            );
+
+        await action.Should().ThrowAsync<ReminderNotActiveException>();
+    }
 }

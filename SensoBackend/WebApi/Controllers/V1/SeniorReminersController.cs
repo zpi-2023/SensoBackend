@@ -56,7 +56,7 @@ public sealed class SeniorRemindersController(IMediator mediator) : ControllerBa
 
         return CreatedAtAction(
             actionName: nameof(RemindersController.GetReminderById),
-            controllerName: nameof(RemindersController),
+            controllerName: "Reminders",
             routeValues: new { reminderId = reminderDto.Id },
             value: reminderDto
         );

@@ -44,6 +44,9 @@ public sealed class CreateIntakeHandler(AppDbContext context)
             await context.Reminders.FindAsync(request.ReminderId, ct)
             ?? throw new ReminderNotFoundException(request.ReminderId);
 
+        if (!reminder.IsActive)
+            throw new ReminderNotActiveException(request.ReminderId);
+
         var neededProfile =
             await context
                 .Profiles
