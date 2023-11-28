@@ -136,6 +136,18 @@ public sealed class ExceptionMiddlewareTests
     }
 
     [Fact]
+    public async Task Invoke_ShouldSetConflictStatusCode_WhenEmailIsTakenExceptionOccurred()
+    {
+        var context = new DefaultHttpContext();
+        _next.Invoke(context).Throws(new EmailIsTakenException(String.Empty));
+
+        await _sut.Invoke(context);
+
+        context.Response.Should().NotBeNull();
+        context.Response.StatusCode.Should().Be(409);
+    }
+
+    [Fact]
     public async Task Invoke_ShouldSetConflictStatusCode_WhenSeniorProfileAlreadyExistsExceptionOccurred()
     {
         var context = new DefaultHttpContext();

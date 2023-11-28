@@ -30,7 +30,6 @@ public sealed class NotesController(IMediator mediator) : ControllerBase
     [HasPermission(Permission.ReadNotes)]
     [HttpGet("senior/{seniorId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(NoteListDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ReadAllBySeniorId(int seniorId)
     {

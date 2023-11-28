@@ -36,6 +36,7 @@ public sealed class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionM
                 ReminderNotFoundException => 404,
                 IntakeRecordNotFoundException => 404,
                 CaretakerProfileAlreadyExistsException => 409,
+                EmailIsTakenException => 409,
                 SeniorProfileAlreadyExistsException => 409,
                 _ => 500
             };

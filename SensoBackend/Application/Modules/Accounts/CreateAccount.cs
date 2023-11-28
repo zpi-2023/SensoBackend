@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
+using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Accounts.CreateAccount;
@@ -47,7 +48,7 @@ public sealed class CreateAccountHandler(AppDbContext context, TimeProvider time
     {
         if (await context.Accounts.AnyAsync(a => a.Email == request.Dto.Email, ct))
         {
-            throw new ValidationException("Email is already taken");
+            throw new EmailIsTakenException(request.Dto.Email);
         }
 
         var now = timeProvider.GetUtcNow();
