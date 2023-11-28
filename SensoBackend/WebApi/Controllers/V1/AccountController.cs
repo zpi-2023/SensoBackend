@@ -13,7 +13,8 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public sealed class AccountController(IMediator mediator) : ControllerBase
+public sealed class AccountController(ILogger<AccountController> logger, IMediator mediator)
+    : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -21,6 +22,7 @@ public sealed class AccountController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create(CreateAccountDto dto)
     {
+        logger.LogInformation("Creating new account for {Email}.", dto.Email);
         await mediator.Send(new CreateAccountRequest { Dto = dto });
         return NoContent();
     }
