@@ -19,6 +19,32 @@ public sealed class ExceptionMiddlewareTests
 
     public ExceptionMiddlewareTests() => _sut = new ExceptionMiddleware(_next, _logger);
 
+    private Exception? CreateExceptionOfType(Type exceptionType)
+    {
+        var paramsInfo = exceptionType.GetConstructors().First().GetParameters();
+        var paramsList = new List<object>();
+        foreach (var param in paramsInfo)
+        {
+            paramsList.Add(
+                param.ParameterType switch
+                {
+                    var t when t == typeof(int) => 0,
+                    var t when t == typeof(string) => string.Empty,
+                    var t when t == typeof(IEnumerable) => new List<object>(),
+                    _
+                        => throw new TypeInitializationException(
+                            exceptionType.FullName,
+                            new Exception(
+                                $"Type {exceptionType.FullName} has unsupported constructor parameter type {param.ParameterType.FullName}"
+                            )
+                        )
+                }
+            );
+        }
+
+        return Activator.CreateInstance(exceptionType, args: [.. paramsList]) as Exception;
+    }
+
     [Fact]
     public async Task Invoke_ShouldCallNextDelegateInChain()
     {
@@ -62,28 +88,7 @@ public sealed class ExceptionMiddlewareTests
         Type exceptionType
     )
     {
-        var paramsInfo = exceptionType.GetConstructors().First().GetParameters();
-        var paramsList = new List<object>();
-        foreach (var param in paramsInfo)
-        {
-            paramsList.Add(
-                param.ParameterType switch
-                {
-                    var t when t == typeof(int) => 0,
-                    var t when t == typeof(string) => string.Empty,
-                    var t when t == typeof(IEnumerable) => new List<object>(),
-                    _
-                        => throw new TypeInitializationException(
-                            exceptionType.FullName,
-                            new Exception(
-                                $"Type {exceptionType.FullName} has unsupported constructor parameter type {param.ParameterType.FullName}"
-                            )
-                        )
-                }
-            );
-        }
-
-        var exception = Activator.CreateInstance(exceptionType, args: [.. paramsList]) as Exception;
+        var exception = CreateExceptionOfType(exceptionType);
 
         var context = new DefaultHttpContext();
         _next.Invoke(context).Throws(exception);
