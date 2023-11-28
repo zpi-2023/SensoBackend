@@ -28,10 +28,7 @@ public sealed class GetSeniorCaretakersHandler(AppDbContext context)
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.AccountId,
                     ct
-                )
-            ?? throw new ProfileNotFoundException(
-                $"Profile with AccountId {request.AccountId} and SeniorId {request.AccountId} was not found"
-            );
+                ) ?? throw new ProfileNotFoundException(request.AccountId, request.AccountId);
 
         var profiles = await context
             .Profiles

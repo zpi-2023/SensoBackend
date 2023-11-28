@@ -27,9 +27,7 @@ public sealed class CreateSeniorProfileHandler(AppDbContext context, IMediator m
     {
         if (await context.Profiles.AnyAsync(p => p.SeniorId == request.AccountId, ct))
         {
-            throw new SeniorProfileAlreadyExistsException(
-                "This account already has a senior profile"
-            );
+            throw new SeniorProfileAlreadyExistsException(request.AccountId);
         }
 
         var account = await context

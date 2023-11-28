@@ -1,4 +1,9 @@
-﻿namespace SensoBackend.Domain.Exceptions;
+﻿using SensoBackend.Domain.Exceptions.Abstractions;
+
+namespace SensoBackend.Domain.Exceptions;
 
 public class SeniorReminderAccessDeniedException(int seniorId)
-    : Exception($"You are not allowed to access or edit reminders of senior with id {seniorId}") { }
+    : ApiException(
+        403,
+        $"You are not allowed to access or edit reminders of senior with id {seniorId}"
+    ) { }

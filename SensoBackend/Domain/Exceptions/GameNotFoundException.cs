@@ -1,3 +1,6 @@
+using SensoBackend.Domain.Exceptions.Abstractions;
+
 namespace SensoBackend.Domain.Exceptions;
 
-public class GameNotFoundException(string gameName) : Exception($"Game {gameName} not found") { }
+public class GameNotFoundException(string gameName)
+    : ApiException(404, $"Game {gameName} not found") { }

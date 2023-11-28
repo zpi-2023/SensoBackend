@@ -40,7 +40,7 @@ public sealed class CreateCaretakerProfileHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task Handle_ShouldThrowSeniorNotFoundException_WhenCodeIsMissingInRepo()
+    public async Task Handle_ShouldThrowHashNotFoundException_WhenCodeIsMissingInRepo()
     {
         var account = await _context.SetUpAccount();
 
@@ -55,7 +55,7 @@ public sealed class CreateCaretakerProfileHandlerTests : IDisposable
                 CancellationToken.None
             );
 
-        await action.Should().ThrowAsync<SeniorNotFoundException>();
+        await action.Should().ThrowAsync<HashNotFoundException>();
     }
 
     [Fact]

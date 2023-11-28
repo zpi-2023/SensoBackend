@@ -19,6 +19,7 @@ public sealed class AccountController(ILogger<AccountController> logger, IMediat
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create(CreateAccountDto dto)
     {
         logger.LogInformation("Creating new account for {Email}.", dto.Email);
@@ -115,16 +116,21 @@ public sealed class AccountController(ILogger<AccountController> logger, IMediat
     }
 
     [HasPermission(Permission.ManageProfiles)]
-    [HttpDelete("profiles/caretaker/{seniorId}")]
+    [HttpDelete("profiles/caretaker/{seniorId}/{caretakerId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteCaretakerProfile(int seniorId)
+    public async Task<IActionResult> DeleteCaretakerProfile(int seniorId, int caretakerId)
     {
         var accountId = this.GetAccountId();
         await mediator.Send(
-            new DeleteCaretakerProfileRequest { AccountId = accountId, SeniorId = seniorId }
+            new DeleteCaretakerProfileRequest
+            {
+                AccountId = accountId,
+                SeniorId = seniorId,
+                CaretakerId = caretakerId
+            }
         );
         return NoContent();
     }

@@ -3,6 +3,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Time.Testing;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
+using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
 
@@ -45,7 +46,7 @@ public sealed class CreateAccountHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task Handle_ShouldThrowValidationException_WhenEmailIsTaken()
+    public async Task Handle_ShouldThrowEmailIsTakenException_WhenEmailIsTaken()
     {
         var dto = Generators.CreateAccountDto.Generate();
         await _context.Accounts.AddAsync(dto.Adapt<Domain.Entities.Account>());
@@ -54,7 +55,7 @@ public sealed class CreateAccountHandlerTests : IDisposable
         var act = async () =>
             await _sut.Handle(new CreateAccountRequest { Dto = dto }, CancellationToken.None);
 
-        await act.Should().ThrowAsync<ValidationException>();
+        await act.Should().ThrowAsync<EmailIsTakenException>();
     }
 }
 

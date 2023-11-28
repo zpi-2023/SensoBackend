@@ -1,3 +1,6 @@
-﻿namespace SensoBackend.Domain.Exceptions;
+﻿using SensoBackend.Domain.Exceptions.Abstractions;
 
-public class CaretakerProfileAlreadyExistsException(string message) : Exception(message) { }
+namespace SensoBackend.Domain.Exceptions;
+
+public class CaretakerProfileAlreadyExistsException()
+    : ApiException(409, "This caretaker profile already exists") { }
