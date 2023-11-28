@@ -58,7 +58,7 @@ public sealed class CreateNoteHandler(AppDbContext context, TimeProvider timePro
                 .AnyAsync(p => p.AccountId == accountId && p.AccountId == p.SeniorId, ct)
         )
         {
-            throw new SeniorNotFoundException("Given account does not have a senior profile");
+            throw new SeniorNotFoundException(accountId);
         }
     }
 }

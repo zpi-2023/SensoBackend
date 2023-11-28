@@ -1,6 +1,7 @@
 using System.Security.Authentication;
 using FluentValidation;
 using SensoBackend.Domain.Exceptions;
+using SensoBackend.Domain.Exceptions.Abstractions;
 
 namespace SensoBackend.WebApi.Middlewares;
 
@@ -22,22 +23,9 @@ public sealed class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionM
             context.Response.Headers.Append("X-Error-Message", noControlCharsExceptionMessage);
             context.Response.StatusCode = exception switch
             {
+                ApiException apiException => apiException.StatusCode,
                 ValidationException => 400,
                 InvalidCredentialException => 401,
-                SeniorReminderAccessDeniedException => 403,
-                ReminderAccessDeniedException => 403,
-                ReminderNotActiveException => 403,
-                NoteAccessDeniedException => 403,
-                RemoveSeniorProfileDeniedException => 403,
-                GameNotFoundException => 404,
-                NoteNotFoundException => 404,
-                ProfileNotFoundException => 404,
-                SeniorNotFoundException => 404,
-                ReminderNotFoundException => 404,
-                IntakeRecordNotFoundException => 404,
-                CaretakerProfileAlreadyExistsException => 409,
-                EmailIsTakenException => 409,
-                SeniorProfileAlreadyExistsException => 409,
                 _ => 500
             };
         }

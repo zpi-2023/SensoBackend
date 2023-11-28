@@ -36,7 +36,7 @@ public sealed class GetEncodedSeniorIdHandler(AppDbContext context, ISeniorIdRep
             )
         )
         {
-            throw new SeniorNotFoundException("Given account does not have a senior profile");
+            throw new SeniorNotFoundException(request.AccountId);
         }
 
         var account = await context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);

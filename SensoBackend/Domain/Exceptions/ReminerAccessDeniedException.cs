@@ -1,4 +1,6 @@
-﻿namespace SensoBackend.Domain.Exceptions;
+﻿using SensoBackend.Domain.Exceptions.Abstractions;
+
+namespace SensoBackend.Domain.Exceptions;
 
 public class ReminderAccessDeniedException(int reminderId)
-    : Exception($"Access to the reminder with id {reminderId} was denied") { }
+    : ApiException(403, $"Access to the reminder with id {reminderId} was denied") { }

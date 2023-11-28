@@ -1,6 +1,6 @@
+using System.Collections;
 using System.Security.Authentication;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ExceptionExtensions;
@@ -28,138 +28,6 @@ public sealed class ExceptionMiddlewareTests
     }
 
     [Fact]
-    public async Task Invoke_ShouldSetBadRequestStatusCode_WhenValidationExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new ValidationException(new List<ValidationFailure>()));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(400);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetUnauthorizedStatusCode_WhenInvalidCredentialExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new InvalidCredentialException());
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(401);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenNoteAccessDeniedExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new NoteAccessDeniedException(0));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(403);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenRemoveSeniorProfileDeniedExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new RemoveSeniorProfileDeniedException(String.Empty));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(403);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenGameNotFoundExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new GameNotFoundException(string.Empty));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(404);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenNoteNotFoundExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new NoteNotFoundException(0));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(404);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetBadRequestStatusCode_WhenProfileNotFoundExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new ProfileNotFoundException(""));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(404);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenSeniorNotFoundExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new SeniorNotFoundException(String.Empty));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(404);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetConflictStatusCode_WhenCaretakerProfileAlreadyExistsExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new CaretakerProfileAlreadyExistsException(String.Empty));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(409);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetConflictStatusCode_WhenEmailIsTakenExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new EmailIsTakenException(String.Empty));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(409);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetConflictStatusCode_WhenSeniorProfileAlreadyExistsExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new SeniorProfileAlreadyExistsException(String.Empty));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(409);
-    }
-
-    [Fact]
     public async Task Invoke_ShouldSetInternalErrorStatusCode_WhenUnknownExceptionOccurred()
     {
         var context = new DefaultHttpContext();
@@ -171,63 +39,58 @@ public sealed class ExceptionMiddlewareTests
         context.Response.StatusCode.Should().Be(500);
     }
 
-    [Fact]
-    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenReminderNotActiveExceptionOccurred()
+    [Theory]
+    [InlineData(400, typeof(ValidationException))]
+    [InlineData(401, typeof(InvalidCredentialException))]
+    [InlineData(403, typeof(NoteAccessDeniedException))]
+    [InlineData(403, typeof(ReminderAccessDeniedException))]
+    [InlineData(403, typeof(ReminderNotActiveException))]
+    [InlineData(403, typeof(RemoveSeniorProfileDeniedException))]
+    [InlineData(403, typeof(SeniorReminderAccessDeniedException))]
+    [InlineData(404, typeof(GameNotFoundException))]
+    [InlineData(404, typeof(HashNotFoundException))]
+    [InlineData(404, typeof(IntakeRecordNotFoundException))]
+    [InlineData(404, typeof(NoteNotFoundException))]
+    [InlineData(404, typeof(ProfileNotFoundException))]
+    [InlineData(404, typeof(ReminderNotFoundException))]
+    [InlineData(404, typeof(SeniorNotFoundException))]
+    [InlineData(409, typeof(CaretakerProfileAlreadyExistsException))]
+    [InlineData(409, typeof(EmailIsTakenException))]
+    [InlineData(409, typeof(SeniorProfileAlreadyExistsException))]
+    public async Task Invoke_ShouldSetGivenStatusCode_WhenGivenExceptionOccured(
+        int statusCode,
+        Type exceptionType
+    )
     {
+        var paramsInfo = exceptionType.GetConstructors().First().GetParameters();
+        var paramsList = new List<object>();
+        foreach (var param in paramsInfo)
+        {
+            paramsList.Add(
+                param.ParameterType switch
+                {
+                    var t when t == typeof(int) => 0,
+                    var t when t == typeof(string) => string.Empty,
+                    var t when t == typeof(IEnumerable) => new List<object>(),
+                    _
+                        => throw new TypeInitializationException(
+                            exceptionType.FullName,
+                            new Exception(
+                                $"Type {exceptionType.FullName} has unsupported constructor parameter type {param.ParameterType.FullName}"
+                            )
+                        )
+                }
+            );
+        }
+
+        var exception = Activator.CreateInstance(exceptionType, args: [.. paramsList]) as Exception;
+
         var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new ReminderNotActiveException(0));
+        _next.Invoke(context).Throws(exception);
 
         await _sut.Invoke(context);
 
         context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(403);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenReminderNotFoundExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new ReminderNotFoundException(0));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(404);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenReminderAccessDeniedExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new ReminderAccessDeniedException(0));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(403);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetNotFoundStatusCode_WhenIntakeRecordNotFoundExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new IntakeRecordNotFoundException(0));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(404);
-    }
-
-    [Fact]
-    public async Task Invoke_ShouldSetForbiddenStatusCode_WhenSeniorReminderAccessDeniedExceptionOccurred()
-    {
-        var context = new DefaultHttpContext();
-        _next.Invoke(context).Throws(new SeniorReminderAccessDeniedException(0));
-
-        await _sut.Invoke(context);
-
-        context.Response.Should().NotBeNull();
-        context.Response.StatusCode.Should().Be(403);
+        context.Response.StatusCode.Should().Be(statusCode);
     }
 }

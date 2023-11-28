@@ -33,10 +33,7 @@ public sealed class DeleteSeniorProfileHandler(AppDbContext context)
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.AccountId,
                     ct
-                )
-            ?? throw new ProfileNotFoundException(
-                $"Profile with AccountId {request.AccountId} and SeniorId {request.AccountId} was not found"
-            );
+                ) ?? throw new ProfileNotFoundException(request.AccountId, request.AccountId);
 
         var hasCaretakerProfiles = await context
             .Profiles
@@ -44,9 +41,7 @@ public sealed class DeleteSeniorProfileHandler(AppDbContext context)
 
         if (hasCaretakerProfiles)
         {
-            throw new RemoveSeniorProfileDeniedException(
-                "This senior profile has caretaker profiles associated with it"
-            );
+            throw new RemoveSeniorProfileDeniedException();
         }
 
         context.Profiles.Remove(profile);

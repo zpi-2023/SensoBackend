@@ -1,3 +1,6 @@
-﻿namespace SensoBackend.Domain.Exceptions;
+﻿using SensoBackend.Domain.Exceptions.Abstractions;
 
-public class SeniorProfileAlreadyExistsException(string message) : Exception(message) { }
+namespace SensoBackend.Domain.Exceptions;
+
+public class SeniorProfileAlreadyExistsException(int accountId)
+    : ApiException(409, $"Account with id {accountId} already has a senior profile") { }

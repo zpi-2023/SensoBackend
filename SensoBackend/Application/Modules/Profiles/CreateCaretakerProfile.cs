@@ -29,9 +29,7 @@ public sealed class CreateCaretakerProfileHandler(AppDbContext context, ISeniorI
         CancellationToken ct
     )
     {
-        var seniorData =
-            seniorIdRepo.Get(request.Hash)
-            ?? throw new SeniorNotFoundException("Provided hash was not found in the database");
+        var seniorData = seniorIdRepo.Get(request.Hash) ?? throw new HashNotFoundException();
 
         if (seniorData.SeniorId == request.AccountId)
         {
@@ -47,9 +45,7 @@ public sealed class CreateCaretakerProfileHandler(AppDbContext context, ISeniorI
                 )
         )
         {
-            throw new CaretakerProfileAlreadyExistsException(
-                "This caretaker profile already exists"
-            );
+            throw new CaretakerProfileAlreadyExistsException();
         }
 
         var account = await context.Accounts.FirstAsync(a => a.Id == request.AccountId, ct);
@@ -62,9 +58,7 @@ public sealed class CreateCaretakerProfileHandler(AppDbContext context, ISeniorI
             );
         if (!seniorExists)
         {
-            throw new SeniorNotFoundException(
-                $"A senior with the given Id ({seniorData.SeniorId}) does not exist"
-            );
+            throw new SeniorNotFoundException(seniorData.SeniorId);
         }
 
         var profile = request.Adapt<Profile>();

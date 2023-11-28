@@ -1,3 +1,6 @@
-﻿namespace SensoBackend.Domain.Exceptions;
+﻿using SensoBackend.Domain.Exceptions.Abstractions;
 
-public class SeniorNotFoundException(string message) : Exception(message) { }
+namespace SensoBackend.Domain.Exceptions;
+
+public class SeniorNotFoundException(int seniorId)
+    : ApiException(404, $"A senior with Id {seniorId} does not exist") { }

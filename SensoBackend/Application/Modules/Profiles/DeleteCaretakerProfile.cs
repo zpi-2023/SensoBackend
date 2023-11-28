@@ -43,10 +43,7 @@ public sealed class DeleteCaretakerProfileHandler(AppDbContext context)
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.CaretakerId && p.SeniorId == request.SeniorId,
                     ct
-                )
-            ?? throw new ProfileNotFoundException(
-                $"Profile with AccountId {request.CaretakerId} and SeniorId {request.SeniorId} was not found"
-            );
+                ) ?? throw new ProfileNotFoundException(request.CaretakerId, request.SeniorId);
 
         context.Profiles.Remove(profile);
         await context.SaveChangesAsync(ct);

@@ -1,4 +1,6 @@
-﻿namespace SensoBackend.Domain.Exceptions;
+﻿using SensoBackend.Domain.Exceptions.Abstractions;
+
+namespace SensoBackend.Domain.Exceptions;
 
 public class ReminderNotFoundException(int reminderId)
-    : Exception($"Reminder with id {reminderId} was not found") { }
+    : ApiException(404, $"Reminder with id {reminderId} was not found") { }

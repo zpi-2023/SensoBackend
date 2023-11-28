@@ -47,10 +47,7 @@ public sealed class EditCaretakerProfileHandler(AppDbContext context)
                 .FirstOrDefaultAsync(
                     p => p.AccountId == request.AccountId && p.SeniorId == request.SeniorId,
                     ct
-                )
-            ?? throw new ProfileNotFoundException(
-                $"Profile with AccountId {request.AccountId} and SeniorId {request.SeniorId} was not found"
-            );
+                ) ?? throw new ProfileNotFoundException(request.AccountId, request.SeniorId);
 
         profile.Alias = request.SeniorAlias;
         await context.SaveChangesAsync(ct);
