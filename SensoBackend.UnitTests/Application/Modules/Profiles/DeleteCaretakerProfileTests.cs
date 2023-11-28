@@ -162,4 +162,19 @@ public sealed class DeleteCaretakerProfileValidatorTests
 
         act.Should().NotThrow<ValidationException>();
     }
+
+    [Fact]
+    public void Validate_ShouldThrow_WhenSeniorIdIsEqualCaretakerId()
+    {
+        var request = new DeleteCaretakerProfileRequest
+        {
+            AccountId = 1,
+            SeniorId = 1,
+            CaretakerId = 1
+        };
+
+        var act = () => _sut.ValidateAndThrow(request);
+
+        act.Should().Throw<ValidationException>();
+    }
 }

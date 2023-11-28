@@ -28,6 +28,9 @@ public sealed class DeleteCaretakerProfileValidator
         RuleFor(r => r.AccountId)
             .Must((r, _) => r.AccountId == r.SeniorId || r.AccountId == r.CaretakerId)
             .WithMessage("AccountId must be equal to either SeniorId or CaretakerId.");
+        RuleFor(r => r.SeniorId)
+            .NotEqual(r => r.CaretakerId)
+            .WithMessage("SeniorId must not be equal to CaretakerId.");
     }
 }
 
