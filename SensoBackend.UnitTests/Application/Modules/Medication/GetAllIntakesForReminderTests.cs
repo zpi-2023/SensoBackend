@@ -70,7 +70,7 @@ public sealed class GetAllIntakesForReminderTests : IDisposable
     }
 
     [Fact]
-    public async Task Handle_ResultShouldNotContainFirstIntake_WhenOffsetIsOne()
+    public async Task Handle_ResultShouldNotContainNewestIntake_WhenOffsetIsOne()
     {
         var limit = 3;
         var senior = await _context.SetUpAccount();
@@ -78,10 +78,10 @@ public sealed class GetAllIntakesForReminderTests : IDisposable
         var medication = await _context.SetUpMedication();
         var reminder = await _context.SetUpReminder(senior, senior, medication);
 
+        await _context.SetUpIntakeForReminder(reminder);
+        await _context.SetUpIntakeForReminder(reminder);
+        await _context.SetUpIntakeForReminder(reminder);
         var intake = await _context.SetUpIntakeForReminder(reminder);
-        await _context.SetUpIntakeForReminder(reminder);
-        await _context.SetUpIntakeForReminder(reminder);
-        await _context.SetUpIntakeForReminder(reminder);
 
         var result = await _sut.Handle(
             new GetAllIntakesForReminderRequest

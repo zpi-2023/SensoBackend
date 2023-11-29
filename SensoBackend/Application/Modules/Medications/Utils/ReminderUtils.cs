@@ -64,7 +64,7 @@ public static class ReminderUtils
     public static async Task<IntakeDto> AdaptToDto(AppDbContext context, IntakeRecord intake)
     {
         var reminder = await context.Reminders.FindAsync(intake.ReminderId);
-        var medication = await context.Medications.FindAsync(reminder!.Id);
+        var medication = await context.Medications.FindAsync(reminder!.MedicationId);
 
         return new IntakeDto
         {
