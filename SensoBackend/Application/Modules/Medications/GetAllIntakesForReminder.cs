@@ -37,7 +37,7 @@ public sealed class GetAllIntakesForReminderHandler(AppDbContext context)
         var intakes = await context
             .IntakeRecords
             .Where(ir => ir.ReminderId == request.ReminderId)
-            .OrderBy(ir => ir.Id)
+            .OrderByDescending(ir => ir.Id)
             .Paged(request.PaginationQuery)
             .ToListAsync(ct);
 

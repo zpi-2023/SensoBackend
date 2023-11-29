@@ -38,7 +38,7 @@ public sealed class GetAllIntakesForSeniorHandler(AppDbContext context)
             .IntakeRecords
             .Include(ir => ir.Reminder)
             .Where(ir => ir.Reminder!.SeniorId == request.SeniorId)
-            .OrderBy(ir => ir.Id)
+            .OrderByDescending(ir => ir.Id)
             .Paged(request.PaginationQuery)
             .ToListAsync(ct);
 
