@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
+using SensoBackend.Application.Modules.Token.Contracts;
 
 namespace SensoBackend.Controllers.V1;
 
@@ -23,6 +24,7 @@ public sealed class TokenController(
     {
         logger.LogInformation("Creating new token for {Email}.", dto.Email);
         var account = await mediator.Send(new GetAccountByCredentialsRequest { Dto = dto });
-        return Ok(jwtProvider.GenerateToken(account));
+        var token = jwtProvider.GenerateToken(account);
+        return Ok(new TokenDto { Token = token, AccountId = account.Id });
     }
 }
