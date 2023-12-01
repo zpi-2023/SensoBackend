@@ -6,7 +6,6 @@ using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
 using SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
 using SensoBackend.Application.Modules.Accounts.GetAccountById;
-using SensoBackend.Application.Modules.Token.Contracts;
 using SensoBackend.WebApi.Authorization;
 using SensoBackend.WebApi.Authorization.Data;
 
