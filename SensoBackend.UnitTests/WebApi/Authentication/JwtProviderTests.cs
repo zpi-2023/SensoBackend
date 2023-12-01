@@ -30,7 +30,6 @@ public sealed class JwtProviderTests
         var account = Generators.AccountDto.Generate();
         var tokenValue = _sut.GenerateToken(account);
 
-        tokenValue.Should().NotBeNull();
         tokenValue.Should().NotBeNullOrEmpty();
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(tokenValue);

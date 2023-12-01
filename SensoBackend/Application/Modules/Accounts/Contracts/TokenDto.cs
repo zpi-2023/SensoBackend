@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SensoBackend.Application.Modules.Token.Contracts;
+namespace SensoBackend.Application.Modules.Accounts.Contracts;
 
 public sealed record TokenDto
 {
