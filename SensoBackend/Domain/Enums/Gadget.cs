@@ -2,18 +2,19 @@
 
 public enum Gadget
 {
-    openMenu,
-    switchProfile,
-    logOut,
     activateSos,
-    pairCareTaker,
     editDashboard,
-    toggleLanguage,
-    trackMedication,
+    logOut,
+    manageNotes,
+    openMenu,
+    pairCareTaker,
     playGames,
     playMemoryGame,
     playSudokuGame,
     playWordleGame,
-    manageNotes,
-    quickCreateNote
+    quickCreateNote,
+    switchProfile,
+    toggleLanguage,
+    trackMedication,
+    viewCaretakerList,
 }

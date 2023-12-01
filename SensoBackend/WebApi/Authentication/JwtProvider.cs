@@ -14,7 +14,7 @@ public sealed class JwtProvider(IOptions<JwtOptions> options, TimeProvider timeP
 {
     private readonly JwtOptions _options = options.Value;
 
-    public TokenDto GenerateToken(AccountDto account)
+    public string GenerateToken(AccountDto account)
     {
         var claims = new Claim[]
         {
@@ -38,6 +38,6 @@ public sealed class JwtProvider(IOptions<JwtOptions> options, TimeProvider timeP
 
         var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new TokenDto { Token = tokenValue };
+        return tokenValue;
     }
 }

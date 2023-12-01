@@ -30,10 +30,9 @@ public sealed class JwtProviderTests
         var account = Generators.AccountDto.Generate();
         var tokenValue = _sut.GenerateToken(account);
 
-        tokenValue.Should().NotBeNull();
-        tokenValue.Token.Should().NotBeNullOrEmpty();
+        tokenValue.Should().NotBeNullOrEmpty();
 
-        var token = new JwtSecurityTokenHandler().ReadJwtToken(tokenValue.Token);
+        var token = new JwtSecurityTokenHandler().ReadJwtToken(tokenValue);
 
         token.ValidTo.Should().Be(Now.UtcDateTime.AddDays(7));
         token.Issuer.Should().Be(_jwtOptions.Value.Issuer);
