@@ -6,10 +6,11 @@
 // - ManageXXX - permission to perform all CRUD operations
 public enum Permission
 {
-    ManageProfiles,
+    ManageAccount,
     ManageDashboard,
-    ReadNotes,
-    MutateNotes,
     ManageGames,
-    ManageReminders
+    ManageProfiles,
+    ManageReminders,
+    MutateNotes,
+    ReadNotes,
 }

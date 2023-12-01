@@ -40,7 +40,7 @@ public sealed class ProfilesController(IMediator mediator) : ControllerBase
     }
 
     [HasPermission(Permission.ManageProfiles)]
-    [HttpGet("senior")]
+    [HttpGet("senior/pairing")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EncodedSeniorDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -5,7 +5,10 @@ using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
 using SensoBackend.Application.Modules.Accounts.GetAccountByCredentials;
+using SensoBackend.Application.Modules.Accounts.GetAccountById;
 using SensoBackend.Application.Modules.Token.Contracts;
+using SensoBackend.WebApi.Authorization;
+using SensoBackend.WebApi.Authorization.Data;
 
 namespace SensoBackend.WebApi.Controllers.V1;
 
@@ -27,6 +30,17 @@ public sealed class AccountController(
         logger.LogInformation("Creating new account for {Email}.", dto.Email);
         await mediator.Send(new CreateAccountRequest { Dto = dto });
         return NoContent();
+    }
+
+    [HasPermission(Permission.ManageAccount)]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAccountDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Get()
+    {
+        var accountId = this.GetAccountId();
+        var accountDto = await mediator.Send(new GetAccountRequest { AccountId = accountId });
+        return Ok(accountDto);
     }
 
     [HttpPost("token")]

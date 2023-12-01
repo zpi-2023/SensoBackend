@@ -5,17 +5,18 @@ namespace SensoBackend.WebApi.Authorization.Data;
 public static class RolePermission
 {
     private static HashSet<Permission> MemberPermissions =>
-        new()
-        {
-            Permission.ManageProfiles,
-            Permission.ManageDashboard,
-            Permission.ReadNotes,
-            Permission.MutateNotes,
-            Permission.ManageGames,
-            Permission.ManageReminders
-        };
 
-    private static HashSet<Permission> AdminPermissions => Enum.GetValues<Permission>().ToHashSet();
+        [
+            Permission.ManageAccount,
+            Permission.ManageDashboard,
+            Permission.ManageGames,
+            Permission.ManageProfiles,
+            Permission.ManageReminders,
+            Permission.MutateNotes,
+            Permission.ReadNotes
+        ];
+
+    private static HashSet<Permission> AdminPermissions => [.. Enum.GetValues<Permission>()];
 
     public static HashSet<Permission> GetPermissions(this Role role) =>
         role switch
