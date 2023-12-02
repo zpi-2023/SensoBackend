@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.WebApi.Authenticaion;
@@ -21,11 +20,7 @@ public static class ServiceExtensions
         services.ConfigureOptions<ApiVersioningOptionsSetup>();
         services.ConfigureOptions<ApiExplorerOptionsSetup>();
 
-        services.AddSwaggerGen(options =>
-        {
-            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-        });
+        services.AddSwaggerGen();
         services.ConfigureOptions<SwaggerGenOptionsSetup>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
