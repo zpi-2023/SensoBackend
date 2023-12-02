@@ -15,13 +15,13 @@ namespace SensoBackend.WebApi.Controllers.V1;
 public sealed class RemindersController(IMediator mediator) : ControllerBase
 {
     /// <summary>
-    /// Returns reminder with a given Id
+    /// Returns reminder with a given id
     /// </summary>
     /// <param name="reminderId"> Id of a reminder to be returned </param>
     /// <response code="200"> Returns reminder with given id </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this reminder </response>
-    /// <response code="404"> If reminder with given Id does not exist in the database </response>
+    /// <response code="404"> If reminder with given id does not exist in the database </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("{reminderId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReminderDto))]
@@ -36,7 +36,7 @@ public sealed class RemindersController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Updates reminder with a given Id
+    /// Updates reminder with a given id
     /// </summary>
     /// <param name="reminderId"> Id of a reminder to be returned </param>
     /// <param name="dto"> Data to be updated </param>
@@ -44,7 +44,7 @@ public sealed class RemindersController(IMediator mediator) : ControllerBase
     /// <response code="400"> If validation failed </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this reminder </response>
-    /// <response code="404"> If reminder with given Id does not exist in the database </response>
+    /// <response code="404"> If reminder with given id does not exist in the database </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpPut("{reminderId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReminderDto))]
@@ -71,7 +71,7 @@ public sealed class RemindersController(IMediator mediator) : ControllerBase
     /// <response code="204"> If operation was successful </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this reminder </response>
-    /// <response code="404"> If reminder with given Id does not exist in the database </response>
+    /// <response code="404"> If reminder with given id does not exist in the database </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpDelete("{reminderId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -91,7 +91,7 @@ public sealed class RemindersController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Returns reminders for a senior with a given id
     /// </summary>
-    /// <param name="seniorId"> Id of a senior who's reminders are to be returned </param>
+    /// <param name="seniorId"> Id of a senior whose reminders are to be returned </param>
     /// <response code="200"> Returns reminders for a senior with a given id </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this senior's reminders </response>
@@ -116,7 +116,7 @@ public sealed class RemindersController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new reminder for a senior with a given Id
+    /// Creates a new reminder for a senior with a given id
     /// </summary>
     /// <param name="seniorId"> Id of a senior </param>
     /// <param name="dto"> Data used to create a new reminder </param>

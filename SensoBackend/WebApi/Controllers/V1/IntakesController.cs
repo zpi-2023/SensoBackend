@@ -15,9 +15,9 @@ namespace SensoBackend.WebApi.Controllers.V1;
 public sealed class IntakesController(IMediator mediator) : ControllerBase
 {
     /// <summary>
-    /// Returns intakes for a senior with a given idd
+    /// Returns intakes for a senior with a given id
     /// </summary>
-    /// <param name="seniorId"> Id of a senior who's reminders are to be returned </param>
+    /// <param name="seniorId"> Id of a senior whose reminders are to be returned </param>
     /// <response code="200"> Returns intakes for a senior with a given id </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this senior's reminders and their intakes </response>
@@ -48,7 +48,7 @@ public sealed class IntakesController(IMediator mediator) : ControllerBase
     /// <response code="200"> Returns paginated intakes for a reminder with a given id </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this reminder </response>
-    /// <response code="404"> If reminder with given Id does not exist in the database </response>
+    /// <response code="404"> If reminder with given id does not exist in the database </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("reminder/{reminderId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<IntakeDto>))]
@@ -79,7 +79,7 @@ public sealed class IntakesController(IMediator mediator) : ControllerBase
     /// <response code="400"> If validation failed </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this reminder </response>
-    /// <response code="404"> If reminder with given Id does not exist in the database </response>
+    /// <response code="404"> If reminder with given id does not exist in the database </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpPost("reminder/{reminderId}")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IntakeDto))]
@@ -113,7 +113,7 @@ public sealed class IntakesController(IMediator mediator) : ControllerBase
     /// <response code="200"> Returns intake with a given id </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this intake </response>
-    /// <response code="404"> If intake with given Id does not exist in the database </response>
+    /// <response code="404"> If intake with given id does not exist in the database </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("{intakeId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IntakeDto))]

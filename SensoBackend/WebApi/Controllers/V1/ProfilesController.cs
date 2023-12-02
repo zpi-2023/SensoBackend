@@ -114,7 +114,7 @@ public sealed class ProfilesController(IMediator mediator) : ControllerBase
     /// Creates a new caretaker profile for the user
     /// </summary>
     /// <param name="dto"> Data needed to pair caretaker with the senior </param>
-    /// <response code="200"> Returnsnewly created caretaker profile </response>
+    /// <response code="200"> Returns newly created caretaker profile </response>
     /// <response code="400"> If user tried to create caretaker profile for themself </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="404"> If senior profile user wanted to pair with does not exist </response>
@@ -147,7 +147,7 @@ public sealed class ProfilesController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="caretakerId"> Id of a caretaker </param>
     /// <param name="seniorId"> Id of a senior </param>
-    /// <response code="200"> Returnsnewly created caretaker profile </response>
+    /// <response code="200"> Returns newly created caretaker profile </response>
     /// <response code="400"> If validation failed </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="404"> If given profile was not found </response>

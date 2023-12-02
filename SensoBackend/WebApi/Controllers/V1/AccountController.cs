@@ -25,7 +25,7 @@ public sealed class AccountController(
     /// </summary>
     /// <param name="dto"> Data needed to create an account </param>
     /// <response code="204"> Account successfully created </response>
-    /// <response code="400"> If dto validation failed </response>
+    /// <response code="400"> If DTO validation failed </response>
     /// <response code="409"> If an email is already taken </response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
