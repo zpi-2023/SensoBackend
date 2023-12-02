@@ -20,6 +20,13 @@ public sealed class AccountController(
     IJwtProvider jwtProvider
 ) : ControllerBase
 {
+    /// <summary>
+    /// Creates a new account
+    /// </summary>
+    /// <param name="dto"> Data needed to create an account </param>
+    /// <response code="204"> Account successfully created </response>
+    /// <response code="400"> If DTO validation failed </response>
+    /// <response code="409"> If an email is already taken </response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -31,6 +38,11 @@ public sealed class AccountController(
         return NoContent();
     }
 
+    /// <summary>
+    /// Returns the id of user's account
+    /// </summary>
+    /// <response code="200"> Returns the id of user's account </response>
+    /// <response code="401"> If user is not logged in </response>
     [HasPermission(Permission.ManageAccount)]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAccountDto))]
@@ -42,6 +54,12 @@ public sealed class AccountController(
         return Ok(accountDto);
     }
 
+    /// <summary>
+    /// Creates a token for an account to log in
+    /// </summary>
+    /// <param name="dto"> Credentials </param>
+    /// <response code="200"> Returns token </response>
+    /// <response code="401"> Credentials are invalid </response>
     [HttpPost("token")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
