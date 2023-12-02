@@ -14,8 +14,13 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiVersion("1.0")]
 public sealed class SeniorRemindersController(IMediator mediator) : ControllerBase
 {
-    #region SeniorReminders
-
+    /// <summary>
+    /// Returns reminders for a senior with a given id
+    /// </summary>
+    /// <param name="seniorId"> Id of a senior who's reminders are to be returned </param>
+    /// <response code="200"> Returns reminders for a senior with a given id </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="403"> If user does not have a profile needed to access this senior's reminders </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("{seniorId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<ReminderDto>))]
@@ -36,9 +41,19 @@ public sealed class SeniorRemindersController(IMediator mediator) : ControllerBa
         return Ok(await mediator.Send(request));
     }
 
+    /// <summary>
+    /// Creates a new reminder for a senior with a given Id
+    /// </summary>
+    /// <param name="seniorId"> Id of a senior </param>
+    /// <param name="dto"> Data used to create a new reminder </param>
+    /// <response code="201"> Returns newly created reminder </response>
+    /// <response code="401"> If validation failed </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="403"> If user does not have a profile needed to access this senior's reminders </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpPost("{seniorId}")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReminderDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateReminder(int seniorId, CreateReminderDto dto)
@@ -62,6 +77,13 @@ public sealed class SeniorRemindersController(IMediator mediator) : ControllerBa
         );
     }
 
+    /// <summary>
+    /// Returns intakes for a senior with a given idd
+    /// </summary>
+    /// <param name="seniorId"> Id of a senior who's reminders are to be returned </param>
+    /// <response code="200"> Returns intakes for a senior with a given id </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="403"> If user does not have a profile needed to access this senior's reminders and their intakes </response>
     [HasPermission(Permission.ManageReminders)]
     [HttpGet("{seniorId}/intakes")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<IntakeDto>))]
@@ -81,6 +103,4 @@ public sealed class SeniorRemindersController(IMediator mediator) : ControllerBa
         };
         return Ok(await mediator.Send(request));
     }
-
-    #endregion SeniorReminders
 }

@@ -12,6 +12,11 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiVersion("1.0")]
 public sealed class MedicationController(IMediator mediator) : ControllerBase
 {
+    /// <summary>
+    /// Returns all medications that fit the search criteria
+    /// </summary>
+    /// <param name="search"> Search criteria (not case-sensitive) </param>
+    /// <response code="200"> Medications that fit the search criteria </response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<MedicationDto>))]
     public async Task<IActionResult> GetMedicationList(

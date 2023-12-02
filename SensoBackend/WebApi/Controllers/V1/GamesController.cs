@@ -14,6 +14,13 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiVersion("1.0")]
 public sealed class GamesController(IMediator mediator) : ControllerBase
 {
+    /// <summary>
+    /// Returns user's best score in a given game
+    /// </summary>
+    /// <param name="gameName"> The name of a game </param>
+    /// <response code="200"> Returns dashboard for a given senior </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="404"> If the name of a game was not found </response>
     [HasPermission(Permission.ManageGames)]
     [HttpGet("{gameName}/score")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ScoreDto))]
@@ -28,6 +35,15 @@ public sealed class GamesController(IMediator mediator) : ControllerBase
         return Ok(score);
     }
 
+    /// <summary>
+    /// Updates user's best score in the given game if the new score is better
+    /// </summary>
+    /// <param name="gameName"> The name of a game </param>
+    /// <param name="dto"> Achieved score </param>
+    /// <response code="200"> Returns dashboard for a given senior </response>
+    /// <response code="400"> If validation failed </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="404"> If the name of a game was not found </response>
     [HasPermission(Permission.ManageGames)]
     [HttpPost("{gameName}/score")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -48,6 +64,12 @@ public sealed class GamesController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Returns leaderbord
+    /// </summary>
+    /// <param name="gameName"> The name of a game </param>
+    /// <response code="200"> Returns part of the leaderboard </response>
+    /// <response code="404"> If the name of a game was not found </response>
     [HttpGet("{gameName}/leaderboard")]
     [ProducesResponseType(
         StatusCodes.Status200OK,

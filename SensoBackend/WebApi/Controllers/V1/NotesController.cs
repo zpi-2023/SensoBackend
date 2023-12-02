@@ -13,6 +13,14 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiVersion("1.0")]
 public sealed class NotesController(IMediator mediator) : ControllerBase
 {
+    /// <summary>
+    /// Creates a new note
+    /// </summary>
+    /// <param name="dto"> Data needed to create note </param>
+    /// <response code="201"> Returns newly created note </response>
+    /// <response code="400"> If validation failed </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="404"> If user does not have a senior profile </response>
     [HasPermission(Permission.MutateNotes)]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(NoteDto))]
@@ -27,6 +35,12 @@ public sealed class NotesController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(ReadOneByNoteId), new { noteId = noteDto.Id }, noteDto);
     }
 
+    /// <summary>
+    /// Returns all senior's notes
+    /// </summary>
+    /// <param name="seniorId"> Id of a senior </param>
+    /// <response code="200"> Returns list of notes </response>
+    /// <response code="401"> If user is not logged in </response>
     [HasPermission(Permission.ReadNotes)]
     [HttpGet("senior/{seniorId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(NoteListDto))]
@@ -44,6 +58,14 @@ public sealed class NotesController(IMediator mediator) : ControllerBase
         return Ok(noteListDto);
     }
 
+    /// <summary>
+    /// Returns note with a given id
+    /// </summary>
+    /// <param name="noteId"> Id of a note </param>
+    /// <response code="200"> Returns note with a given id </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="403"> If user is not allowed to access the note with a given id </response>
+    /// <response code="404"> If note with a given id was not found </response>
     [HasPermission(Permission.ReadNotes)]
     [HttpGet("{noteId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(NoteDto))]
@@ -59,6 +81,16 @@ public sealed class NotesController(IMediator mediator) : ControllerBase
         return Ok(noteDto);
     }
 
+    /// <summary>
+    /// Updates note with a given id
+    /// </summary>
+    /// <param name="noteId"> Id of a note </param>
+    /// <param name="dto"> Data needed to update the note </param>
+    /// <response code="200"> Returns updated note </response>
+    /// <response code="400"> If validation failed </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="403"> If user is not allowed to access the note with a given id </response>
+    /// <response code="404"> If note with a given id was not found </response>
     [HasPermission(Permission.MutateNotes)]
     [HttpPut("{noteId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(NoteDto))]
@@ -80,6 +112,14 @@ public sealed class NotesController(IMediator mediator) : ControllerBase
         return Ok(noteDto);
     }
 
+    /// <summary>
+    /// Deletes note with a given id
+    /// </summary>
+    /// <param name="noteId"> Id of a note </param>
+    /// <response code="204"> Returns updated note </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="403"> If user is not allowed to access the note with a given id </response>
+    /// <response code="404"> If note with a given id was not found </response>
     [HasPermission(Permission.MutateNotes)]
     [HttpDelete("{noteId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
