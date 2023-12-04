@@ -28,6 +28,7 @@ public sealed class GetMedicationListHandler(AppDbContext context)
             .Medications
             .Where(m => m.Name.ToLower().Contains(searchTermLowerCase))
             .Select(m => m.Adapt<MedicationDto>())
+            .Take(5)
             .ToListAsync(ct);
 
         return new MedicationListDto { Medications = medicationList };
