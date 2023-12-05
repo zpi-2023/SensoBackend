@@ -156,7 +156,7 @@ public sealed class RemindersController(IMediator mediator) : ControllerBase
     /// <param name="search"> Search criteria (not case-sensitive) </param>
     /// <response code="200"> Medications that fit the search criteria </response>
     [HttpGet("medications")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<MedicationDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MedicationListDto))]
     public async Task<IActionResult> GetMedicationList(
         [FromQuery(Name = "search")] string search
     ) => Ok(await mediator.Send(new GetMedicationListRequest { SearchTerm = search }));
