@@ -2,6 +2,7 @@
 
 public enum AlertType
 {
-    Sos,
-    MedicationNotTaken
+    sos,
+    medicationToTake,
+    medicationNotTaken,
 }

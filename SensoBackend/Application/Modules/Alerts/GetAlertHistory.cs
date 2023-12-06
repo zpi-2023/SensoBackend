@@ -39,11 +39,6 @@ public sealed class GetAlertHistoryHandler(AppDbContext context)
                     ct
                 ) ?? throw new ProfileNotFoundException(request.AccountId, request.SeniorId);
 
-        if (request.Type is not null)
-        {
-            var alertType = GetAlertType.FromName(request.Type);
-        }
-
         var alerts = request.Type is null
             ? await FindAlerts(profile.SeniorId, request.PaginationQuery, ct)
             : await FindAlertsOfType(

@@ -15,14 +15,14 @@ namespace SensoBackend.WebApi.Controllers.V1;
 public sealed class AlertsController(IMediator mediator) : ControllerBase
 {
     [HasPermission(Permission.MutateAlerts)]
-    [HttpPost]
+    [HttpPost("sos")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Create(CreateAlertDto dto)
+    public async Task<IActionResult> CreateSosAlert()
     {
         var accountId = this.GetAccountId();
-        await mediator.Send(new CreateAlertRequest { AccountId = accountId, Dto = dto });
+        await mediator.Send(new CreateSosAlertRequest { AccountId = accountId });
         return NoContent();
     }
 
