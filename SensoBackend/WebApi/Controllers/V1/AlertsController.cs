@@ -14,6 +14,12 @@ namespace SensoBackend.WebApi.Controllers.V1;
 [ApiVersion("1.0")]
 public sealed class AlertsController(IMediator mediator) : ControllerBase
 {
+    /// <summary>
+    /// Creates an sos alert
+    /// </summary>
+    /// <response code="204"> Returned when succedded </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="404"> If user has no senior profile </response>
     [HasPermission(Permission.MutateAlerts)]
     [HttpPost("sos")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -26,10 +32,18 @@ public sealed class AlertsController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Returns alerts history for a given senior
+    /// </summary>
+    /// <param name="seniorId"> The id of a senior </param>
+    /// <param name="query"> Pagination query </param>
+    /// <param name="type"> Type of alerts to return. When null all alerts types are returned. </param>
+    /// <response code="200"> Returns alerts history for a given senior </response>
+    /// <response code="401"> If user is not logged in </response>
+    /// <response code="404"> If user has no profile associated with given senior </response>
     [HasPermission(Permission.ReadAlerts)]
     [HttpGet("history/{seniorId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<GetAlertHistoryDto>))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ReadHistory(
