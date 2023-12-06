@@ -28,9 +28,19 @@ public sealed class ReadLeaderboardHandler(AppDbContext context)
 
         var leaderboard = await context
             .LeaderboardEntries
+            .Include(l => l.Account)
             .Where(l => l.Game == game)
             .OrderByDescending(l => l.Score)
             .Paged(request.Pagination)
+            .Select(
+                l =>
+                    new LeaderboardEntryDto
+                    {
+                        AccountId = l.AccountId,
+                        Score = l.Score,
+                        DisplayName = l.Account!.DisplayName
+                    }
+            )
             .ToListAsync(ct);
 
         return new PaginatedDto<LeaderboardEntryDto>

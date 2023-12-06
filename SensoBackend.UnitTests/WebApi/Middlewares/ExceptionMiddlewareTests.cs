@@ -73,6 +73,7 @@ public sealed class ExceptionMiddlewareTests
     [InlineData(403, typeof(ReminderNotActiveException))]
     [InlineData(403, typeof(RemoveSeniorProfileDeniedException))]
     [InlineData(403, typeof(SeniorReminderAccessDeniedException))]
+    [InlineData(404, typeof(AlertTypeNotFoundException))]
     [InlineData(404, typeof(GameNotFoundException))]
     [InlineData(404, typeof(HashNotFoundException))]
     [InlineData(404, typeof(IntakeRecordNotFoundException))]

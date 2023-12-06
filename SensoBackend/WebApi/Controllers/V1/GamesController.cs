@@ -68,6 +68,7 @@ public sealed class GamesController(IMediator mediator) : ControllerBase
     /// Returns leaderbord
     /// </summary>
     /// <param name="gameName"> The name of a game </param>
+    /// <param name="query"> Pagination query parameters </param>
     /// <response code="200"> Returns part of the leaderboard </response>
     /// <response code="404"> If the name of a game was not found </response>
     [HttpGet("{gameName}/leaderboard")]
