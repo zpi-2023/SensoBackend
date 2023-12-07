@@ -40,7 +40,7 @@ public sealed class AlertsController(IMediator mediator) : ControllerBase
     /// <param name="type"> Type of alerts to return. When null all alerts types are returned. </param>
     /// <response code="200"> Returns alerts history for a given senior </response>
     /// <response code="401"> If user is not logged in </response>
-    /// <response code="404"> If user has no profile associated with given senior </response>
+    /// <response code="404"> If user has no profile associated with given senior or given alert type does not exists </response>
     [HasPermission(Permission.ReadAlerts)]
     [HttpGet("history/{seniorId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedDto<GetAlertHistoryDto>))]
