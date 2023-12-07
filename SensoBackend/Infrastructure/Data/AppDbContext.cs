@@ -19,7 +19,6 @@ public class AppDbContext : DbContext
     public virtual DbSet<IntakeRecord> IntakeRecords => Set<IntakeRecord>();
     public virtual DbSet<LeaderboardEntry> LeaderboardEntries => Set<LeaderboardEntry>();
     public virtual DbSet<Alert> Alerts => Set<Alert>();
-
     public virtual DbSet<Device> Devices => Set<Device>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>

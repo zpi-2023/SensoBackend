@@ -66,6 +66,7 @@ public sealed class ExceptionMiddlewareTests
     }
 
     [Theory]
+    [InlineData(400, typeof(IncorrectDeviceTypeNameException))]
     [InlineData(400, typeof(ValidationException))]
     [InlineData(401, typeof(InvalidCredentialException))]
     [InlineData(403, typeof(NoteAccessDeniedException))]
