@@ -92,6 +92,7 @@ public sealed class RemindersController(IMediator mediator) : ControllerBase
     /// Returns reminders for a senior with a given id
     /// </summary>
     /// <param name="seniorId"> Id of a senior whose reminders are to be returned </param>
+    /// <param name="query"> Pagination query parameters </param>
     /// <response code="200"> Returns reminders for a senior with a given id </response>
     /// <response code="401"> If user is not logged in </response>
     /// <response code="403"> If user does not have a profile needed to access this senior's reminders </response>

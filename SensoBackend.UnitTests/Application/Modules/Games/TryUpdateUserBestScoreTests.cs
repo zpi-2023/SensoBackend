@@ -46,6 +46,86 @@ public sealed class TryUpdateUserBestScoreHandlerTests : IDisposable
     }
 
     [Fact]
+    public async Task Handle_ShouldCreateOneUserBestScore_WhenDoneTwiceWithSameScore()
+    {
+        var account = await _context.SetUpAccount();
+        var bestScoreDto = new ScoreDto { Score = 100 };
+
+        await _sut.Handle(
+            new TryUpdateUserBestScoreRequest
+            {
+                AccountId = account.Id,
+                GameName = _validGameName,
+                Dto = bestScoreDto
+            },
+            CancellationToken.None
+        );
+
+        await _sut.Handle(
+            new TryUpdateUserBestScoreRequest
+            {
+                AccountId = account.Id,
+                GameName = _validGameName,
+                Dto = bestScoreDto
+            },
+            CancellationToken.None
+        );
+
+        var leaderboardEntry = await _context
+            .LeaderboardEntries
+            .Where(l => l.AccountId == account.Id && l.Game == _game)
+            .ToListAsync();
+
+        leaderboardEntry.Should().HaveCount(1);
+        leaderboardEntry.First().Score.Should().Be(bestScoreDto.Score);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldCreateOneAndUpdateUserBestScore_WhenDoneTwiceWithLowerAndHigherScore()
+    {
+        var account = await _context.SetUpAccount();
+        var bestScoreDto = new ScoreDto { Score = 100 };
+
+        await _sut.Handle(
+            new TryUpdateUserBestScoreRequest
+            {
+                AccountId = account.Id,
+                GameName = _validGameName,
+                Dto = bestScoreDto
+            },
+            CancellationToken.None
+        );
+
+        var leaderboardEntry = await _context
+            .LeaderboardEntries
+            .Where(l => l.AccountId == account.Id && l.Game == _game)
+            .ToListAsync();
+
+        leaderboardEntry.Should().HaveCount(1);
+        leaderboardEntry.First().Score.Should().Be(bestScoreDto.Score);
+
+        bestScoreDto = new ScoreDto { Score = 101 };
+
+        await _sut.Handle(
+            new TryUpdateUserBestScoreRequest
+            {
+                AccountId = account.Id,
+                GameName = _validGameName,
+                Dto = bestScoreDto
+            },
+            CancellationToken.None
+        );
+
+        leaderboardEntry = await _context
+            .LeaderboardEntries
+            .Where(l => l.AccountId == account.Id && l.Game == _game)
+            .ToListAsync();
+
+        leaderboardEntry.Should().HaveCount(1);
+        leaderboardEntry.First().Score.Should().Be(bestScoreDto.Score);
+    }
+
+    [Fact]
     public async Task Handle_ShouldCreateUserBestScore_WhenScoreDoesNotExists()
     {
         var account = await _context.SetUpAccount();

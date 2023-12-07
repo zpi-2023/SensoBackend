@@ -15,5 +15,7 @@ internal sealed class LeaderboardEntryConfiguration : IEntityTypeConfiguration<L
         builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.Account).WithMany().HasForeignKey(x => x.AccountId);
+
+        builder.HasIndex(x => new { x.AccountId, x.Game }).IsUnique();
     }
 }

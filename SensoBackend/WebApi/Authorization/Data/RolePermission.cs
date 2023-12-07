@@ -13,7 +13,9 @@ public static class RolePermission
             Permission.ManageProfiles,
             Permission.ManageReminders,
             Permission.MutateNotes,
-            Permission.ReadNotes
+            Permission.ReadNotes,
+            Permission.ReadAlerts,
+            Permission.MutateAlerts
         ];
 
     private static HashSet<Permission> AdminPermissions => [.. Enum.GetValues<Permission>()];

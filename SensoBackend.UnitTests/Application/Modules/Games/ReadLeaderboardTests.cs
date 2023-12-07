@@ -1,4 +1,3 @@
-using Mapster;
 using SensoBackend.Application.Common.Pagination;
 using SensoBackend.Application.Modules.Games;
 using SensoBackend.Application.Modules.Games.Contracts;
@@ -16,7 +15,7 @@ public sealed class ReadLeaderboardHandlerTests : IDisposable
     private static readonly string _validGameName = "wordle";
     private static readonly Game _game = Game.Wordle;
     private static readonly PaginationQuery _defaultPaginationQuery =
-        new() { Offset = 0, Limit = 10 };
+        new() { Offset = 0, Limit = 5 };
 
     public ReadLeaderboardHandlerTests() => _sut = new ReadLeaderboardHandler(_context);
 
@@ -28,8 +27,16 @@ public sealed class ReadLeaderboardHandlerTests : IDisposable
         var expectedLeaderboard = new List<LeaderboardEntryDto>();
         for (int i = 0; i < _defaultPaginationQuery.Limit; i++)
         {
-            var leaderboardEntry = await _context.SetupLeaderboardEntry(_game, i);
-            expectedLeaderboard.Add(leaderboardEntry.Adapt<LeaderboardEntryDto>());
+            var account = await _context.SetUpAccount();
+            var leaderboardEntry = await _context.SetupLeaderboardEntry(_game, account, i);
+            expectedLeaderboard.Add(
+                new LeaderboardEntryDto
+                {
+                    AccountId = account.Id,
+                    Score = leaderboardEntry.Score,
+                    DisplayName = account.DisplayName
+                }
+            );
         }
 
         var leaderboard = await _sut.Handle(

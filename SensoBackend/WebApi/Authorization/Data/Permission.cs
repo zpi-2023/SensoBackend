@@ -13,4 +13,6 @@ public enum Permission
     ManageReminders,
     MutateNotes,
     ReadNotes,
+    ReadAlerts,
+    MutateAlerts,
 }
