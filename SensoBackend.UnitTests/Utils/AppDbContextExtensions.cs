@@ -1,5 +1,6 @@
 using Bogus;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.Replication;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
@@ -14,6 +15,26 @@ internal static class AppDbContextExtensions
         await context.Accounts.AddAsync(account);
         await context.SaveChangesAsync();
         return account;
+    }
+
+    public static async Task<Device> SetUpDevice(
+        this AppDbContext context,
+        int accountId,
+        string token,
+        DeviceType deviceType
+    )
+    {
+        var device = new Device
+        {
+            Id = default,
+            AccountId = accountId,
+            Token = token,
+            Type = deviceType,
+            AddedAt = new Bogus.DataSets.Date().RecentOffset(),
+        };
+        await context.Devices.AddAsync(device);
+        await context.SaveChangesAsync();
+        return device;
     }
 
     public static async Task<Profile> SetUpSeniorProfile(this AppDbContext context, Account account)
