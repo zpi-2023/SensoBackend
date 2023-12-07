@@ -11,6 +11,6 @@ public static class GetAlertType
         {
             return result;
         }
-        throw new GameNotFoundException(alertTypeName);
+        throw new AlertTypeNotFoundException(alertTypeName);
     }
 }

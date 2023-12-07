@@ -1,4 +1,3 @@
-using Mapster;
 using SensoBackend.Application.Common.Pagination;
 using SensoBackend.Application.Modules.Games;
 using SensoBackend.Application.Modules.Games.Contracts;
@@ -16,7 +15,7 @@ public sealed class ReadLeaderboardHandlerTests : IDisposable
     private static readonly string _validGameName = "wordle";
     private static readonly Game _game = Game.Wordle;
     private static readonly PaginationQuery _defaultPaginationQuery =
-        new() { Offset = 0, Limit = 10 };
+        new() { Offset = 0, Limit = 5 };
 
     public ReadLeaderboardHandlerTests() => _sut = new ReadLeaderboardHandler(_context);
 

@@ -1,3 +1,4 @@
+using Bogus;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
@@ -45,6 +46,35 @@ internal static class AppDbContextExtensions
         await context.Profiles.AddAsync(profile);
         await context.SaveChangesAsync();
         return profile;
+    }
+
+    public static async Task<Alert> SetUpAlert(
+        this AppDbContext context,
+        Profile seniorProfile,
+        AlertType alertType
+    )
+    {
+        var dateTimeOffset = new Bogus.DataSets.Date().RecentOffset();
+        return await context.SetUpAlert(seniorProfile, alertType, dateTimeOffset);
+    }
+
+    public static async Task<Alert> SetUpAlert(
+        this AppDbContext context,
+        Profile seniorProfile,
+        AlertType alertType,
+        DateTimeOffset firedAt
+    )
+    {
+        var alert = new Alert
+        {
+            Id = default,
+            SeniorId = seniorProfile.SeniorId,
+            Type = alertType,
+            FiredAt = firedAt,
+        };
+        await context.Alerts.AddAsync(alert);
+        await context.SaveChangesAsync();
+        return alert;
     }
 
     public static async Task<Note> SetUpNote(
