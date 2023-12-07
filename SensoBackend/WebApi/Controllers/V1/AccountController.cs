@@ -70,4 +70,23 @@ public sealed class AccountController(
         var token = jwtProvider.GenerateToken(account);
         return Ok(new TokenDto { Token = token, AccountId = account.Id });
     }
+
+    /// <summary>
+    /// Adds a device token to an account
+    /// </summary>
+    /// <param name="dto"> Device token </param>
+    /// <response code="204"> Device token successfully added </response>
+    /// <response code="400"> If DTO validation failed </response>
+    /// <response code="401"> If user is not logged in </response>
+    [HasPermission(Permission.ManageAccount)]
+    [HttpPost("device")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> AddDeviceToken(AddDeviceTokenDto dto)
+    {
+        var accountId = this.GetAccountId();
+        await mediator.Send(new AddDeviceTokenRequest { AccountId = accountId, Dto = dto });
+        return NoContent();
+    }
 }
