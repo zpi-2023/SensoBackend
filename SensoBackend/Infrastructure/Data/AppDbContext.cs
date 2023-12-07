@@ -20,6 +20,8 @@ public class AppDbContext : DbContext
     public virtual DbSet<LeaderboardEntry> LeaderboardEntries => Set<LeaderboardEntry>();
     public virtual DbSet<Alert> Alerts => Set<Alert>();
 
+    public virtual DbSet<Device> Devices => Set<Device>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 }
