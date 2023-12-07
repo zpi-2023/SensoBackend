@@ -15,7 +15,7 @@ public sealed record DispatchAlertRequest : IRequest
 }
 
 [UsedImplicitly]
-public sealed class DispatchAlertHandler(AppDbContext context, ILogger<DispatchAlertHandler> logger)
+public sealed class DispatchAlertHandler(AppDbContext context)
     : IRequestHandler<DispatchAlertRequest>
 {
     private static readonly AlertType[] alertToSenior = [AlertType.medicationToTake];
