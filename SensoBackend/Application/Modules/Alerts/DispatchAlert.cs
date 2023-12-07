@@ -32,12 +32,12 @@ public sealed class DispatchAlertHandler(AppDbContext context, ILogger<DispatchA
 
         if (alertToSenior.Contains(request.Alert.Type))
         {
-            _ = SendAlertToSenior(request.Alert, ct);
+            await SendAlertToSenior(request.Alert, ct);
         }
 
         if (alertToCaretaker.Contains(request.Alert.Type))
         {
-            _ = SendAlertToCaretaker(request.Alert, ct);
+            await SendAlertToCaretaker(request.Alert, ct);
         }
     }
 
@@ -126,11 +126,11 @@ public sealed class DispatchAlertHandler(AppDbContext context, ILogger<DispatchA
         {
             foreach (var error in result.PushTicketErrors)
             {
-                logger.LogError(
-                    "Error sending push notification: {error.ErrorCode} - {error.ErrorMessage}",
-                    error.ErrorCode,
-                    error.ErrorMessage
-                );
+                // logger.LogError(
+                //     "Error sending push notification: {ErrorCode} - {ErrorMessage}",
+                //     error.ErrorCode,
+                //     error.ErrorMessage
+                // );
             }
         }
     }
