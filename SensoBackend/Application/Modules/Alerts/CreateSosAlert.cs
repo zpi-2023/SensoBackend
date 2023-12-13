@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
 using SensoBackend.Domain.Exceptions;
@@ -17,7 +18,7 @@ public sealed record CreateSosAlertRequest : IRequest
 public sealed class CreateSosAlertHandler(
     AppDbContext context,
     TimeProvider timeProvider,
-    IMediator mediator
+    IAlertDispatcher alertDispatcher
 ) : IRequestHandler<CreateSosAlertRequest>
 {
     public async Task Handle(CreateSosAlertRequest request, CancellationToken ct)
@@ -38,6 +39,6 @@ public sealed class CreateSosAlertHandler(
             FiredAt = timeProvider.GetUtcNow(),
         };
 
-        await mediator.Send(new DispatchAlertRequest { Alert = alert }, ct);
+        _ = alertDispatcher.Dispatch(alert, ct);
     }
 }

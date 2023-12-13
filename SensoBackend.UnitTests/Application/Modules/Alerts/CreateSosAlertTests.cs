@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.Extensions.Time.Testing;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Common.Pagination;
 using SensoBackend.Application.Modules.Alerts;
+using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
@@ -13,7 +15,7 @@ public sealed class CreateSosAlertHandlerTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly CreateSosAlertHandler _sut;
-    private readonly IMediator _mediator = Substitute.For<IMediator>();
+    private readonly IAlertDispatcher _alertDispatcher = Substitute.For<IAlertDispatcher>();
 
     private static readonly DateTimeOffset _firedAt = DateTimeOffset.UtcNow;
 
@@ -30,7 +32,11 @@ public sealed class CreateSosAlertHandlerTests : IDisposable
         new() { Offset = 0, Limit = 5 };
 
     public CreateSosAlertHandlerTests() =>
-        _sut = new CreateSosAlertHandler(_context, new FakeTimeProvider(_firedAt), _mediator);
+        _sut = new CreateSosAlertHandler(
+            _context,
+            new FakeTimeProvider(_firedAt),
+            _alertDispatcher
+        );
 
     public void Dispose() => _context.Dispose();
 
@@ -44,14 +50,14 @@ public sealed class CreateSosAlertHandlerTests : IDisposable
 
         await _sut.Handle(request, CancellationToken.None);
 
-        await _mediator
+        await _alertDispatcher
             .Received()
-            .Send(
-                Arg.Is<DispatchAlertRequest>(
+            .Dispatch(
+                Arg.Is<Alert>(
                     a =>
-                        a.Alert.SeniorId == seniorProfile.SeniorId
-                        && a.Alert.Type == AlertType.sos
-                        && a.Alert.FiredAt == _firedAt
+                        a.SeniorId == seniorProfile.SeniorId
+                        && a.Type == AlertType.sos
+                        && a.FiredAt == _firedAt
                 ),
                 Arg.Any<CancellationToken>()
             );
