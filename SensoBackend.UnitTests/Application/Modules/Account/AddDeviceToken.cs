@@ -101,4 +101,36 @@ public sealed class AddDeviceTokenHandlerTests : IDisposable
         deviceInDb.Type.Should().Be(_deviceType);
         deviceInDb.AddedAt.Should().Be(device.AddedAt);
     }
+
+    [Fact]
+    public async Task Handle_ShouldUpdateDeviceToken_WhenDeviceTokenIsAssignedToAnotherAccount()
+    {
+        var account = await _context.SetUpAccount();
+        var anotherAccount = await _context.SetUpAccount();
+        await _context.SetUpDevice(anotherAccount.Id, _deviceToken, _deviceType);
+        var dto = new AddDeviceTokenDto
+        {
+            DeviceToken = _deviceToken,
+            DeviceType = _deviceTypeName,
+        };
+
+        var request = new AddDeviceTokenRequest { AccountId = account.Id, Dto = dto };
+        await _sut.Handle(request, CancellationToken.None);
+
+        var anotherDeviceInDb = await _context
+            .Devices
+            .FirstOrDefaultAsync(d => d.AccountId == anotherAccount.Id);
+
+        anotherDeviceInDb.Should().BeNull();
+
+        var deviceInDb = await _context.Devices.FirstOrDefaultAsync(d => d.AccountId == account.Id);
+
+        deviceInDb.Should().NotBeNull();
+        if (deviceInDb == null)
+            return;
+
+        deviceInDb.Token.Should().Be(_deviceToken);
+        deviceInDb.Type.Should().Be(_deviceType);
+        deviceInDb.AddedAt.Should().Be(AddedAt);
+    }
 }
