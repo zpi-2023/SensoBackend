@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Hangfire;
 using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
 using SensoBackend.Application.RemindersScheduler;
@@ -47,8 +47,11 @@ public sealed class CreateReminderValidator : AbstractValidator<CreateReminderRe
 }
 
 [UsedImplicitly]
-public sealed class CreateReminderHandler(AppDbContext context, IMediator mediator)
-    : IRequestHandler<CreateReminderRequest, ReminderDto>
+public sealed class CreateReminderHandler(
+    AppDbContext context,
+    IMediator mediator,
+    IHangfireWrapper hangfireWrapper
+) : IRequestHandler<CreateReminderRequest, ReminderDto>
 {
     public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken ct)
     {
@@ -101,7 +104,7 @@ public sealed class CreateReminderHandler(AppDbContext context, IMediator mediat
 
         if (reminder.Cron is not null)
         {
-            RecurringJob.AddOrUpdate(
+            hangfireWrapper.AddOrUpdate(
                 reminder.Id.ToString(),
                 () => CreateReminderAlert(reminder.Id, reminder.SeniorId),
                 reminder.Cron

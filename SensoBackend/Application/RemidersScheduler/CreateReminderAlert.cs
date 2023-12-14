@@ -1,12 +1,8 @@
 using FluentValidation;
-using Hangfire;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Abstractions;
-using SensoBackend.Application.Modules.Accounts.Contracts;
-using SensoBackend.Application.Modules.Accounts.Utils;
-using SensoBackend.Application.PushNotifications;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
@@ -24,7 +20,8 @@ public sealed class CreateReminderAlertHandler(
     AppDbContext context,
     TimeProvider timeProvider,
     IMediator mediator,
-    IAlertDispatcher alertDispatcher
+    IAlertDispatcher alertDispatcher,
+    IHangfireWrapper hangfireWrapper
 ) : IRequestHandler<CreateReminderAlertRequest>
 {
     private static readonly TimeSpan intakeTreshold = TimeSpan.FromMinutes(5);
@@ -47,7 +44,7 @@ public sealed class CreateReminderAlertHandler(
                 FiredAt = timeProvider.GetUtcNow(),
             };
 
-            BackgroundJob.Schedule(
+            hangfireWrapper.Schedule(
                 () => CreateReminderAlert(request.ReminderId, request.SeniorId),
                 intakeTreshold
             );

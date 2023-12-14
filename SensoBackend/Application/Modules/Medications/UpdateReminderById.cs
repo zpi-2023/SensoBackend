@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using Hangfire;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
 using SensoBackend.Application.RemindersScheduler;
@@ -37,8 +37,11 @@ public sealed class UpdateReminderValidator : AbstractValidator<UpdateReminderBy
 }
 
 [UsedImplicitly]
-public sealed class UpdateReminderByIdHandler(AppDbContext context, IMediator mediator)
-    : IRequestHandler<UpdateReminderByIdRequest, ReminderDto>
+public sealed class UpdateReminderByIdHandler(
+    AppDbContext context,
+    IMediator mediator,
+    IHangfireWrapper hangfireWrapper
+) : IRequestHandler<UpdateReminderByIdRequest, ReminderDto>
 {
     public async Task<ReminderDto> Handle(UpdateReminderByIdRequest request, CancellationToken ct)
     {
@@ -60,7 +63,7 @@ public sealed class UpdateReminderByIdHandler(AppDbContext context, IMediator me
 
         if (reminder.Cron is not null)
         {
-            RecurringJob.AddOrUpdate(
+            hangfireWrapper.AddOrUpdate(
                 reminder.Id.ToString(),
                 () => CreateReminderAlert(reminder.Id, reminder.SeniorId),
                 reminder.Cron
@@ -68,7 +71,7 @@ public sealed class UpdateReminderByIdHandler(AppDbContext context, IMediator me
         }
         else
         {
-            RecurringJob.RemoveIfExists(reminder.Id.ToString());
+            hangfireWrapper.RemoveIfExists(reminder.Id.ToString());
         }
 
         return ReminderUtils.AdaptToDto(context, reminder).Result;

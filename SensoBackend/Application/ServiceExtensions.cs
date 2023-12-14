@@ -27,6 +27,7 @@ public static class ServiceExtensions
 
         services.AddTransient<IPayloadFactory, PayloadFactory>();
         services.AddTransient<IAlertDispatcher, AlertDispatcher>();
+        services.AddSingleton<IHangfireWrapper, HangfireWrapper>();
 
         services.AddHostedService<InitializeExistingReminders>();
 

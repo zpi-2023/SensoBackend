@@ -1,4 +1,6 @@
-﻿using SensoBackend.Application.Modules.Medications;
+﻿using MediatR;
+using SensoBackend.Application.Abstractions;
+using SensoBackend.Application.Modules.Medications;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 using SensoBackend.UnitTests.Utils;
@@ -8,9 +10,12 @@ namespace SensoBackend.Tests.Application.Modules.Medication;
 public sealed class CreateReminderTests : IDisposable
 {
     private readonly AppDbContext _context = Database.CreateFixture();
+    private readonly IMediator _mediator = Substitute.For<IMediator>();
+    private readonly IHangfireWrapper _hangfireWrapper = Substitute.For<IHangfireWrapper>();
     private readonly CreateReminderHandler _sut;
 
-    public CreateReminderTests() => _sut = new CreateReminderHandler(_context);
+    public CreateReminderTests() =>
+        _sut = new CreateReminderHandler(_context, _mediator, _hangfireWrapper);
 
     public void Dispose() => _context.Dispose();
 

@@ -1,12 +1,8 @@
 using FluentValidation;
-using Hangfire;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Abstractions;
-using SensoBackend.Application.Modules.Accounts.Contracts;
-using SensoBackend.Application.Modules.Accounts.Utils;
-using SensoBackend.Application.PushNotifications;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;

@@ -1,6 +1,6 @@
-﻿using Hangfire;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using MediatR;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Medications.Utils;
 using SensoBackend.Infrastructure.Data;
 
@@ -14,7 +14,7 @@ public sealed record DeleteReminderRequest : IRequest
 }
 
 [UsedImplicitly]
-public sealed class DeleteReminderHandler(AppDbContext context)
+public sealed class DeleteReminderHandler(AppDbContext context, IHangfireWrapper hangfireWrapper)
     : IRequestHandler<DeleteReminderRequest>
 {
     public async Task Handle(DeleteReminderRequest request, CancellationToken ct)
@@ -29,6 +29,6 @@ public sealed class DeleteReminderHandler(AppDbContext context)
         reminder.IsActive = false;
         await context.SaveChangesAsync(ct);
 
-        RecurringJob.RemoveIfExists(reminder.Id.ToString());
+        hangfireWrapper.RemoveIfExists(reminder.Id.ToString());
     }
 }

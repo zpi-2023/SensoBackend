@@ -1,13 +1,14 @@
-using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.RemindersScheduler;
 
 public sealed class InitializeExistingReminders(
     IMediator mediator,
-    IServiceScopeFactory scopeFactory
+    IServiceScopeFactory scopeFactory,
+    IHangfireWrapper hangfireWrapper
 ) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -26,7 +27,7 @@ public sealed class InitializeExistingReminders(
                 continue;
             }
 
-            RecurringJob.AddOrUpdate(
+            hangfireWrapper.AddOrUpdate(
                 reminder.Id.ToString(),
                 () => CreateReminderAlert(reminder.Id, reminder.SeniorId),
                 reminder.Cron
