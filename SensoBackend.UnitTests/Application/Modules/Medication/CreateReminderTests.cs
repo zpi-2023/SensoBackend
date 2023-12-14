@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Medications;
 using SensoBackend.Domain.Exceptions;
@@ -12,10 +13,13 @@ public sealed class CreateReminderTests : IDisposable
     private readonly AppDbContext _context = Database.CreateFixture();
     private readonly IMediator _mediator = Substitute.For<IMediator>();
     private readonly IHangfireWrapper _hangfireWrapper = Substitute.For<IHangfireWrapper>();
+    private readonly ILogger<CreateReminderHandler> _logger = Substitute.For<
+        ILogger<CreateReminderHandler>
+    >();
     private readonly CreateReminderHandler _sut;
 
     public CreateReminderTests() =>
-        _sut = new CreateReminderHandler(_context, _mediator, _hangfireWrapper);
+        _sut = new CreateReminderHandler(_context, _mediator, _hangfireWrapper, _logger);
 
     public void Dispose() => _context.Dispose();
 

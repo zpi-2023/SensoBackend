@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Cronos;
+using FluentValidation;
 using JetBrains.Annotations;
 using Mapster;
 using MediatR;
@@ -50,7 +51,8 @@ public sealed class CreateReminderValidator : AbstractValidator<CreateReminderRe
 public sealed class CreateReminderHandler(
     AppDbContext context,
     IMediator mediator,
-    IHangfireWrapper hangfireWrapper
+    IHangfireWrapper hangfireWrapper,
+    ILogger<CreateReminderHandler> logger
 ) : IRequestHandler<CreateReminderRequest, ReminderDto>
 {
     public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken ct)
@@ -104,10 +106,26 @@ public sealed class CreateReminderHandler(
 
         if (reminder.Cron is not null)
         {
+            var cronExpression = CronExpression.Parse(reminder.Cron);
+            var nextOccurrence = cronExpression.GetNextOccurrence(DateTime.UtcNow);
+            logger.LogInformation(
+                "Adding reminder {ReminderId} to hangfire with cron {Cron} that will fire at {NextOccurrence}",
+                reminder.Id,
+                reminder.Cron,
+                nextOccurrence
+            );
+
             hangfireWrapper.AddOrUpdate(
                 reminder.Id.ToString(),
                 () => CreateReminderAlert(reminder.Id, reminder.SeniorId),
                 reminder.Cron
+            );
+        }
+        else
+        {
+            logger.LogInformation(
+                "Reminder {ReminderId} has no cron expression - not adding to hangfire",
+                reminder.Id
             );
         }
 
