@@ -8,7 +8,8 @@ namespace SensoBackend.Application.RemindersScheduler;
 public sealed class InitializeExistingReminders(
     IMediator mediator,
     IServiceScopeFactory scopeFactory,
-    IHangfireWrapper hangfireWrapper
+    IHangfireWrapper hangfireWrapper,
+    ILogger<InitializeExistingReminders> logger
 ) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -37,6 +38,10 @@ public sealed class InitializeExistingReminders(
 
     public async Task CreateReminderAlert(int reminderId, int seniorId)
     {
+        logger.LogInformation(
+            "Sending to mediator request to create alert for reminder: {ReminderId}",
+            reminderId
+        );
         await mediator.Send(
             new CreateReminderAlertRequest { ReminderId = reminderId, SeniorId = seniorId }
         );

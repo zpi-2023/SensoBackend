@@ -27,27 +27,54 @@ public sealed class AddDeviceTokenValidator : AbstractValidator<AddDeviceTokenRe
 }
 
 [UsedImplicitly]
-public sealed class AddDeviceTokenHandler(AppDbContext context, TimeProvider timeProvider)
-    : IRequestHandler<AddDeviceTokenRequest>
+public sealed class AddDeviceTokenHandler(
+    AppDbContext context,
+    TimeProvider timeProvider,
+    ILogger<AddDeviceTokenHandler> logger
+) : IRequestHandler<AddDeviceTokenRequest>
 {
     public async Task Handle(AddDeviceTokenRequest request, CancellationToken ct)
     {
+        logger.LogInformation(
+            "Adding device token {DeviceToken} for account {AccountId}",
+            request.Dto.DeviceToken,
+            request.AccountId
+        );
         var deviceType = GetDeviceType.FromName(request.Dto.DeviceType);
 
         if (await IsDeviceTokenAssignedToAccount(request, deviceType, ct))
         {
+            logger.LogInformation(
+                "Device token {DeviceToken} is already assigned to account {AccountId}",
+                request.Dto.DeviceToken,
+                request.AccountId
+            );
             return;
         }
 
         if (await IsDeviceTokenAssignedToAnyAccount(request, deviceType, ct))
         {
+            logger.LogInformation(
+                "Device token {DeviceToken} is already assigned to another account. Removing it from all accounts",
+                request.Dto.DeviceToken
+            );
             await RemoveDeviceTokenFromAllAccounts(request, deviceType, ct);
         }
 
         if (await IsAnyDeviceTokenAssignedToAccount(request, ct))
         {
+            logger.LogInformation(
+                "Account {AccountId} already has a device token assigned. Removing it",
+                request.AccountId
+            );
             await RemoveAccountDeviceTokens(request, ct);
         }
+
+        logger.LogInformation(
+            "Assigning device token {DeviceToken} to account {AccountId}",
+            request.Dto.DeviceToken,
+            request.AccountId
+        );
 
         await CreateDeviceTokenForAccount(request, deviceType, ct);
         await context.SaveChangesAsync(ct);

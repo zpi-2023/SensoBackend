@@ -1,6 +1,8 @@
+using Castle.Core.Logging;
 using FluentValidation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Time.Testing;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.CreateAccount;
@@ -16,6 +18,9 @@ public sealed class AddDeviceTokenHandlerTests : IDisposable
     private static readonly DateTimeOffset AddedAt = DateTimeOffset.UtcNow;
 
     private readonly AppDbContext _context = Database.CreateFixture();
+    private readonly ILogger<AddDeviceTokenHandler> _logger = Substitute.For<
+        ILogger<AddDeviceTokenHandler>
+    >();
 
     private static readonly string _deviceTypeName = "Android";
     private static readonly DeviceType _deviceType = DeviceType.Android;
@@ -24,7 +29,7 @@ public sealed class AddDeviceTokenHandlerTests : IDisposable
     private readonly AddDeviceTokenHandler _sut;
 
     public AddDeviceTokenHandlerTests() =>
-        _sut = new AddDeviceTokenHandler(_context, new FakeTimeProvider(AddedAt));
+        _sut = new AddDeviceTokenHandler(_context, new FakeTimeProvider(AddedAt), _logger);
 
     public void Dispose() => _context.Dispose();
 

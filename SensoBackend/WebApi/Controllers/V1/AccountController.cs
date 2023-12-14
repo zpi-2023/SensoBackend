@@ -86,6 +86,7 @@ public sealed class AccountController(
     public async Task<IActionResult> AddDeviceToken(AddDeviceTokenDto dto)
     {
         var accountId = this.GetAccountId();
+        logger.LogInformation("Adding device token for {AccountId}.", accountId);
         await mediator.Send(new AddDeviceTokenRequest { AccountId = accountId, Dto = dto });
         return NoContent();
     }
