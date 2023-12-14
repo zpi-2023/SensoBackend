@@ -22,27 +22,67 @@ public sealed class AlertDispatcher(
 
     public async Task Dispatch(Alert alert, CancellationToken ct)
     {
+        logger.LogInformation(
+            "Dispatching alert {AlertId} of type {AlertType} for senior {SeniorId}",
+            alert.Id,
+            alert.Type,
+            alert.SeniorId
+        );
+
         await SaveAlertInHistory(alert, ct);
         await SendPushNotification(alert, ct);
     }
 
     private async Task SaveAlertInHistory(Alert alert, CancellationToken ct)
     {
+        logger.LogInformation(
+            "Saving alert {AlertId} of type {AlertType} for senior {SeniorId} in history",
+            alert.Id,
+            alert.Type,
+            alert.SeniorId
+        );
+
         await context.Alerts.AddAsync(alert, ct);
         await context.SaveChangesAsync(ct);
+
+        logger.LogInformation(
+            "Alert {AlertId} of type {AlertType} for senior {SeniorId} saved in history",
+            alert.Id,
+            alert.Type,
+            alert.SeniorId
+        );
     }
 
     private async Task SendPushNotification(Alert alert, CancellationToken ct)
     {
+        logger.LogInformation(
+            "Sending push notification for alert {AlertId} of type {AlertType} for senior {SeniorId}",
+            alert.Id,
+            alert.Type,
+            alert.SeniorId
+        );
+
         var devices = new List<Device>();
 
         if (alertsSendToCaretaker.Contains(alert.Type))
         {
+            logger.LogInformation(
+                "Gathering devices for alert {AlertId} of type {AlertType} for senior {SeniorId} to caretakers",
+                alert.Id,
+                alert.Type,
+                alert.SeniorId
+            );
             devices.AddRange(await GetCaretakersDevices(alert.SeniorId, ct));
         }
 
         if (alertsSendToSenior.Contains(alert.Type))
         {
+            logger.LogInformation(
+                "Gathering devices for alert {AlertId} of type {AlertType} for senior {SeniorId} to senior",
+                alert.Id,
+                alert.Type,
+                alert.SeniorId
+            );
             var device = await GetSeniorDevice(alert.SeniorId, ct);
             if (device is not null)
             {
@@ -50,16 +90,43 @@ public sealed class AlertDispatcher(
             }
         }
 
+        logger.LogInformation(
+            "Number of devices to send push notification for alert {AlertId} of type {AlertType} for senior {SeniorId}: {DevicesCount}",
+            alert.Id,
+            alert.Type,
+            alert.SeniorId,
+            devices.Count
+        );
+
         var expoPushClient = new PushApiClient();
 
         foreach (var device in devices)
         {
+            logger.LogInformation(
+                "Sending push notification for alert {AlertId} of type {AlertType} for senior {SeniorId} to device {DeviceId} with token {DeviceToken}",
+                alert.Id,
+                alert.Type,
+                alert.SeniorId,
+                device.Id,
+                device.Token
+            );
+
             var pushTicketRequest = await payloadFactory.Create(
                 alert,
                 device.AccountId,
                 device.Token
             );
             var result = await expoPushClient.PushSendAsync(pushTicketRequest);
+
+            logger.LogInformation(
+                "Push notification for alert {AlertId} of type {AlertType} for senior {SeniorId} to device {DeviceId} with token {DeviceToken} sent with status {PushTicketStatus}",
+                alert.Id,
+                alert.Type,
+                alert.SeniorId,
+                device.Id,
+                device.Token,
+                result?.PushTicketStatuses[0]
+            );
 
             if (result?.PushTicketErrors?.Count > 0)
             {
