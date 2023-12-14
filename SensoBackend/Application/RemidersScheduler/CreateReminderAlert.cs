@@ -24,7 +24,7 @@ public sealed class CreateReminderAlertHandler(
     IHangfireWrapper hangfireWrapper
 ) : IRequestHandler<CreateReminderAlertRequest>
 {
-    private static readonly TimeSpan intakeTreshold = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan intakeThreshold = TimeSpan.FromMinutes(5);
 
     public async Task Handle(CreateReminderAlertRequest request, CancellationToken ct)
     {
@@ -34,7 +34,7 @@ public sealed class CreateReminderAlertHandler(
             .OrderByDescending(r => r.TakenAt)
             .FirstOrDefaultAsync(ct);
 
-        if (lastIntake is null || timeProvider.GetUtcNow() - lastIntake.TakenAt > intakeTreshold)
+        if (lastIntake is null || timeProvider.GetUtcNow() - lastIntake.TakenAt > intakeThreshold)
         {
             var alert = new Alert
             {
@@ -46,7 +46,7 @@ public sealed class CreateReminderAlertHandler(
 
             hangfireWrapper.Schedule(
                 () => CreateReminderAlert(request.ReminderId, request.SeniorId),
-                intakeTreshold
+                intakeThreshold
             );
 
             await alertDispatcher.Dispatch(alert, ct);

@@ -22,7 +22,7 @@ public sealed class CreateCaretakerReminderAlertHandler(
     IAlertDispatcher alertDispatcher
 ) : IRequestHandler<CreateCaretakerReminderAlertRequest>
 {
-    private static readonly TimeSpan intakeTreshold = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan intakeThreshold = TimeSpan.FromMinutes(5);
 
     public async Task Handle(CreateCaretakerReminderAlertRequest request, CancellationToken ct)
     {
@@ -32,7 +32,7 @@ public sealed class CreateCaretakerReminderAlertHandler(
             .OrderByDescending(r => r.TakenAt)
             .FirstOrDefaultAsync(ct);
 
-        if (lastIntake is null || timeProvider.GetUtcNow() - lastIntake.TakenAt > intakeTreshold)
+        if (lastIntake is null || timeProvider.GetUtcNow() - lastIntake.TakenAt > intakeThreshold)
         {
             var alert = new Alert
             {
