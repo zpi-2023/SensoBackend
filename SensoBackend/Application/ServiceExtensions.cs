@@ -6,6 +6,7 @@ using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Behaviors;
 using SensoBackend.Application.Modules.Profiles.Utils;
 using SensoBackend.Application.PushNotifications;
+using SensoBackend.Application.RemindersScheduler;
 
 namespace SensoBackend.Application;
 
@@ -26,6 +27,8 @@ public static class ServiceExtensions
 
         services.AddTransient<IPayloadFactory, PayloadFactory>();
         services.AddTransient<IAlertDispatcher, AlertDispatcher>();
+
+        services.AddHostedService<InitializeExistingReminders>();
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly);
     }

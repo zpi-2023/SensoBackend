@@ -50,6 +50,7 @@ public sealed class AddDeviceTokenHandler(AppDbContext context, TimeProvider tim
         }
 
         await CreateDeviceTokenForAccount(request, deviceType, ct);
+        await context.SaveChangesAsync(ct);
     }
 
     private async Task<bool> IsDeviceTokenAssignedToAccount(
@@ -111,7 +112,6 @@ public sealed class AddDeviceTokenHandler(AppDbContext context, TimeProvider tim
             .ToListAsync(ct);
 
         context.Devices.RemoveRange(devices);
-        await context.SaveChangesAsync(ct);
     }
 
     private async Task RemoveAccountDeviceTokens(
@@ -125,7 +125,6 @@ public sealed class AddDeviceTokenHandler(AppDbContext context, TimeProvider tim
             .ToListAsync(ct);
 
         context.Devices.RemoveRange(devices);
-        await context.SaveChangesAsync(ct);
     }
 
     private async Task CreateDeviceTokenForAccount(
@@ -143,7 +142,6 @@ public sealed class AddDeviceTokenHandler(AppDbContext context, TimeProvider tim
             AddedAt = timeProvider.GetUtcNow(),
         };
 
-        context.Devices.Add(device);
-        await context.SaveChangesAsync(ct);
+        await context.Devices.AddAsync(device, ct);
     }
 }

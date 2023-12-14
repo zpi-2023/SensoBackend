@@ -39,6 +39,6 @@ public sealed class CreateSosAlertHandler(
             FiredAt = timeProvider.GetUtcNow(),
         };
 
-        _ = alertDispatcher.Dispatch(alert, ct);
+        await alertDispatcher.Dispatch(alert, ct);
     }
 }

@@ -5,12 +5,16 @@ namespace SensoBackend.Application.PushNotifications.Payloads;
 
 public sealed class MedicationToTakePayload : IPayload
 {
-    public async Task<(string title, string body, string priority)> Create(
+    public Task<(string title, string body, string priority)> Create(
         Alert alert,
         int receiverAccountId,
         AppDbContext context
     )
     {
-        throw new NotImplementedException();
+        var title = "Senso - Medication to take!";
+        var body = $"You need to take your medication!";
+        var priority = "default";
+
+        return Task.FromResult((title, body, priority));
     }
 }

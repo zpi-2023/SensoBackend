@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SensoBackend.Application.Modules.Healthcheck;
@@ -17,5 +18,8 @@ public sealed class HealthcheckController(IMediator mediator) : ControllerBase
     /// <response code="200"> Returns status of the services </response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HealthcheckDto))]
-    public async Task<IActionResult> Get() => Ok(await mediator.Send(new GetHealthRequest()));
+    public async Task<IActionResult> Get()
+    {
+        return Ok(await mediator.Send(new GetHealthRequest()));
+    }
 }

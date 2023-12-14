@@ -1,11 +1,7 @@
-﻿using FluentValidation;
+﻿using Hangfire;
 using JetBrains.Annotations;
-using Mapster;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
-using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Medications;
@@ -32,5 +28,7 @@ public sealed class DeleteReminderHandler(AppDbContext context)
 
         reminder.IsActive = false;
         await context.SaveChangesAsync(ct);
+
+        RecurringJob.RemoveIfExists(reminder.Id.ToString());
     }
 }
