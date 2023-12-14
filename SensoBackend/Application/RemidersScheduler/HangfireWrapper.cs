@@ -12,7 +12,12 @@ public sealed class HangfireWrapper : IHangfireWrapper
         string cronExpression
     )
     {
-        RecurringJob.AddOrUpdate(recurringJobId, methodCall, cronExpression);
+        RecurringJob.AddOrUpdate(
+            recurringJobId,
+            methodCall,
+            cronExpression,
+            new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc }
+        );
     }
 
     public void RemoveIfExists(string recurringJobId)
