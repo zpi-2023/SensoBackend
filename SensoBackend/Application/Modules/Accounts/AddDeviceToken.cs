@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SensoBackend.Application.Modules.Accounts.Contracts;
 using SensoBackend.Application.Modules.Accounts.Utils;
 using SensoBackend.Domain.Entities;
+using SensoBackend.Domain.Enums;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Accounts.CreateAccount;
@@ -33,34 +34,114 @@ public sealed class AddDeviceTokenHandler(AppDbContext context, TimeProvider tim
     {
         var deviceType = GetDeviceType.FromName(request.Dto.DeviceType);
 
-        var deviceInDb = await context
-            .Devices
-            .Where(d => d.AccountId == request.AccountId && d.Type == deviceType)
-            .FirstOrDefaultAsync(ct);
-
-        if (deviceInDb is null)
-        {
-            var device = new Device
-            {
-                Id = default,
-                AccountId = request.AccountId,
-                Token = request.Dto.DeviceToken,
-                Type = deviceType,
-                AddedAt = timeProvider.GetUtcNow(),
-            };
-
-            context.Devices.Add(device);
-            await context.SaveChangesAsync(ct);
-            return;
-        }
-
-        if (deviceInDb.Token == request.Dto.DeviceToken)
+        if (await IsDeviceTokenAssignedToAccount(request, deviceType, ct))
         {
             return;
         }
 
-        deviceInDb.Token = request.Dto.DeviceToken;
-        deviceInDb.AddedAt = timeProvider.GetUtcNow();
+        if (await IsDeviceTokenAssignedToAnyAccount(request, deviceType, ct))
+        {
+            await RemoveDeviceTokenFromAllAccounts(request, deviceType, ct);
+        }
+
+        if (await IsAnyDeviceTokenAssignedToAccount(request, ct))
+        {
+            await RemoveAccountDeviceTokens(request, ct);
+        }
+
+        await CreateDeviceTokenForAccount(request, deviceType, ct);
         await context.SaveChangesAsync(ct);
+    }
+
+    private async Task<bool> IsDeviceTokenAssignedToAccount(
+        AddDeviceTokenRequest request,
+        DeviceType deviceType,
+        CancellationToken ct
+    )
+    {
+        var device = await context
+            .Devices
+            .FirstOrDefaultAsync(
+                d =>
+                    d.AccountId == request.AccountId
+                    && d.Token == request.Dto.DeviceToken
+                    && d.Type == deviceType,
+                ct
+            );
+
+        return device is not null;
+    }
+
+    private async Task<bool> IsDeviceTokenAssignedToAnyAccount(
+        AddDeviceTokenRequest request,
+        DeviceType deviceType,
+        CancellationToken ct = default
+    )
+    {
+        var device = await context
+            .Devices
+            .FirstOrDefaultAsync(
+                d => d.Token == request.Dto.DeviceToken && d.Type == deviceType,
+                ct
+            );
+
+        return device is not null;
+    }
+
+    private async Task<bool> IsAnyDeviceTokenAssignedToAccount(
+        AddDeviceTokenRequest request,
+        CancellationToken ct = default
+    )
+    {
+        var device = await context
+            .Devices
+            .FirstOrDefaultAsync(d => d.AccountId == request.AccountId, ct);
+
+        return device is not null;
+    }
+
+    private async Task RemoveDeviceTokenFromAllAccounts(
+        AddDeviceTokenRequest request,
+        DeviceType deviceType,
+        CancellationToken ct = default
+    )
+    {
+        var devices = await context
+            .Devices
+            .Where(d => d.Token == request.Dto.DeviceToken && d.Type == deviceType)
+            .ToListAsync(ct);
+
+        context.Devices.RemoveRange(devices);
+    }
+
+    private async Task RemoveAccountDeviceTokens(
+        AddDeviceTokenRequest request,
+        CancellationToken ct = default
+    )
+    {
+        var devices = await context
+            .Devices
+            .Where(d => d.AccountId == request.AccountId)
+            .ToListAsync(ct);
+
+        context.Devices.RemoveRange(devices);
+    }
+
+    private async Task CreateDeviceTokenForAccount(
+        AddDeviceTokenRequest request,
+        DeviceType deviceType,
+        CancellationToken ct = default
+    )
+    {
+        var device = new Device
+        {
+            Id = default,
+            AccountId = request.AccountId,
+            Token = request.Dto.DeviceToken,
+            Type = deviceType,
+            AddedAt = timeProvider.GetUtcNow(),
+        };
+
+        await context.Devices.AddAsync(device, ct);
     }
 }

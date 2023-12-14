@@ -5,6 +5,8 @@ using MediatR;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Behaviors;
 using SensoBackend.Application.Modules.Profiles.Utils;
+using SensoBackend.Application.PushNotifications;
+using SensoBackend.Application.RemindersScheduler;
 
 namespace SensoBackend.Application;
 
@@ -22,6 +24,12 @@ public static class ServiceExtensions
 
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<ISeniorIdRepo, SeniorIdRepo>();
+
+        services.AddTransient<IPayloadFactory, PayloadFactory>();
+        services.AddTransient<IAlertDispatcher, AlertDispatcher>();
+        services.AddSingleton<IHangfireWrapper, HangfireWrapper>();
+
+        services.AddHostedService<InitializeExistingReminders>();
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly);
     }

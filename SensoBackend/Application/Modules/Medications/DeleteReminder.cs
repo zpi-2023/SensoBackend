@@ -1,11 +1,7 @@
-﻿using FluentValidation;
-using JetBrains.Annotations;
-using Mapster;
+﻿using JetBrains.Annotations;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SensoBackend.Application.Modules.Medications.Contracts;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Medications.Utils;
-using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
 
 namespace SensoBackend.Application.Modules.Medications;
@@ -18,7 +14,7 @@ public sealed record DeleteReminderRequest : IRequest
 }
 
 [UsedImplicitly]
-public sealed class DeleteReminderHandler(AppDbContext context)
+public sealed class DeleteReminderHandler(AppDbContext context, IHangfireWrapper hangfireWrapper)
     : IRequestHandler<DeleteReminderRequest>
 {
     public async Task Handle(DeleteReminderRequest request, CancellationToken ct)
@@ -32,5 +28,7 @@ public sealed class DeleteReminderHandler(AppDbContext context)
 
         reminder.IsActive = false;
         await context.SaveChangesAsync(ct);
+
+        hangfireWrapper.RemoveIfExists(reminder.Id.ToString());
     }
 }

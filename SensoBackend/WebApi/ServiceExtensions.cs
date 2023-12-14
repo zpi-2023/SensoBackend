@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SensoBackend.Application.Abstractions;
 using SensoBackend.WebApi.Authenticaion;
@@ -31,5 +32,15 @@ public static class ServiceExtensions
         services.AddScoped<IAuthorizationService, AuthorizationService>();
 
         services.AddTransient<IJwtProvider, JwtProvider>();
+
+        services.AddHangfire(
+            c =>
+                c.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseInMemoryStorage()
+        );
+
+        services.AddHangfireServer();
     }
 }

@@ -3,8 +3,10 @@ using JetBrains.Annotations;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SensoBackend.Application.Abstractions;
 using SensoBackend.Application.Modules.Medications.Contracts;
 using SensoBackend.Application.Modules.Medications.Utils;
+using SensoBackend.Application.RemindersScheduler;
 using SensoBackend.Domain.Entities;
 using SensoBackend.Domain.Exceptions;
 using SensoBackend.Infrastructure.Data;
@@ -45,8 +47,11 @@ public sealed class CreateReminderValidator : AbstractValidator<CreateReminderRe
 }
 
 [UsedImplicitly]
-public sealed class CreateReminderHandler(AppDbContext context)
-    : IRequestHandler<CreateReminderRequest, ReminderDto>
+public sealed class CreateReminderHandler(
+    AppDbContext context,
+    IMediator mediator,
+    IHangfireWrapper hangfireWrapper
+) : IRequestHandler<CreateReminderRequest, ReminderDto>
 {
     public async Task<ReminderDto> Handle(CreateReminderRequest request, CancellationToken ct)
     {
@@ -72,7 +77,7 @@ public sealed class CreateReminderHandler(AppDbContext context)
             )
             .ToListAsync(ct);
 
-        if (!medicationsFromDb.Any())
+        if (medicationsFromDb.Count == 0)
         {
             var medicationDto = new MedicationDto
             {
@@ -97,6 +102,22 @@ public sealed class CreateReminderHandler(AppDbContext context)
         await context.Reminders.AddAsync(reminder, ct);
         await context.SaveChangesAsync(ct);
 
+        if (reminder.Cron is not null)
+        {
+            hangfireWrapper.AddOrUpdate(
+                reminder.Id.ToString(),
+                () => CreateReminderAlert(reminder.Id, reminder.SeniorId),
+                reminder.Cron
+            );
+        }
+
         return ReminderUtils.AdaptToDto(context, reminder).Result;
+    }
+
+    public async Task CreateReminderAlert(int reminderId, int seniorId)
+    {
+        await mediator.Send(
+            new CreateReminderAlertRequest { ReminderId = reminderId, SeniorId = seniorId }
+        );
     }
 }
